@@ -1,11 +1,12 @@
 <?php
 include("config.php");
+
 session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST")
 {
 // username and password sent from Form
 $myusername=addslashes($_POST['username']);
-$mypassword=addslashes($_POST['password']);
+$mypassword=md5(addslashes($_POST['password']));
 
 $sql="SELECT uid FROM cs_users WHERE uname='$myusername' and ucryptsum='$mypassword'";
 $result=mysql_query($sql);
