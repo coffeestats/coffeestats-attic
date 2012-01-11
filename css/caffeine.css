@@ -9,44 +9,35 @@
 body {
 	padding: 0;
 	margin: 0;
-	background-image: url('../images/nami.png');
-	background-repeat: repeat;
-	background-color: #000;
-	color: #FFF;
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	font-size: 14px;
-	font-style: normal;
+	background-color: #FFF;
+	color: #000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 76%;
 }
 
-#wrapper {
-	padding: 0;
-	margin: 0;
-}
+#header {
 
-#header { 
-	
 }
 
 #footer {
 
 }
 
-#content {
-
-}
-
-#welcome {
+#box {
 	padding: 0;
-	margin: 100px auto;
-	width: 600px;
-	text-align: center;
+	margin: 0;
 }
 
-	#welcome .greetings {
-		padding: 0.8em;
-		margin: 0 0 0.2em 0;
-		background-color: #FFF;
-		color: #000;
-		font-weight: bold;
-		font-size: 24px;
-	}
+#sidebar {
+	padding-right: 0;
+	margin: 0;
+	width: 300px;
+	border-right: 1px solid #9C9C9C;
+	float: left;
+}
+
+#content {
+	padding: 0;
+	margin: 0;
+	margin-left: 350px;
+}
