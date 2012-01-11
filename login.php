@@ -15,7 +15,7 @@ $count=mysql_num_rows($result);
 
 if($count==1)
 {
-session_register("$myusername");
+session_register("myusername");
 $_SESSION['login_user']=$myusername;
 header("location: welcome.php");
 }
