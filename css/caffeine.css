@@ -11,6 +11,8 @@ body {
 	margin: 0;
 	background-image: url('../images/nami.png');
 	background-repeat: repeat;
+	background-color: #000;
+	color: #FFF;
 	font-family: Helvetica, Verdana, Arial, sans-serif;
 	font-size: 14px;
 	font-style: normal;
