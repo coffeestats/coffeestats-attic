@@ -8,7 +8,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
 $myusername=addslashes($_POST['username']);
 $mypassword=md5(addslashes($_POST['password']));
 
-$sql="SELECT uid FROM cs_users WHERE uname='$myusername' and ucryptsum='$mypassword'";
+$sql="SELECT uid FROM cs_users WHERE ulogin='$myusername' and ucryptsum='$mypassword'";
 $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
 $count=mysql_num_rows($result);
