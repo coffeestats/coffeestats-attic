@@ -1,6 +1,6 @@
 <?php
 include("config.php");
-
+include("../header.php");
 session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST")
 {
@@ -34,3 +34,6 @@ $error="Your Login Name or Password is invalid";
 <input type="password" name="password"/><br/>
 <input type="submit" value=" Submit "/><br />
 </form>
+<?php
+include("../footer.php");
+?>
