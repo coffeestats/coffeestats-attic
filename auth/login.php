@@ -31,7 +31,7 @@ $count=mysql_num_rows($result);
 <input type="text" name="username"/><br />
 <label>Password :</label>
 <input type="password" name="password"/><br/>
-<input type="submit" value=" Login "/><br />
+<input type="submit" value=" Login! "/><br />
 </form>
 
 Or simply <a href="../register.php">register a new account</a>!
