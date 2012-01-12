@@ -13,16 +13,16 @@ $row=mysql_fetch_array($result);
 $count=mysql_num_rows($result);
 // If result matched $myusername and $mypassword, table row must be 1 row
 
-if($count==1)
-{
-session_register("myusername");
-$_SESSION['login_user']=$myusername;
-header("location: ../index.php");
-}
-else
-{
-$error="Your Login Name or Password is invalid";
-}
+  if($count==1)
+  {
+    session_register("myusername");
+    $_SESSION['login_user']=$myusername;
+    header("location: ../index.php");
+  }
+  else
+  {
+    $error="Your Login Name or Password is invalid";
+  }
 }
 ?>
 
@@ -33,3 +33,5 @@ $error="Your Login Name or Password is invalid";
 <input type="password" name="password"/><br/>
 <input type="submit" value=" Submit "/><br />
 </form>
+
+Or simply <a href="../register.php">register a new account</a>!
