@@ -24,10 +24,10 @@ $id=$row['uid'];
   else
   {
     $error="Your Login Name or Password is invalid";
+    //echo("$error");
   }
 }
 ?>
-
 <form action="" method="post">
 <label>UserName :</label>
 <input type="text" name="username"/><br />
