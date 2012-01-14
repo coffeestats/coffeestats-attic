@@ -1,4 +1,3 @@
-<?php include('header.php'); ?>
 <center><form action="" method="post">
 <?php
 require_once('lib/recaptchalib.php');

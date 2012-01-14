@@ -8,3 +8,6 @@
 		<link rel="stylesheet" href="../css/caffeine.css" type="text/css" media="screen" />
 	</head>
 <body>
+
+Menue: <a href="index.php">Home</a> - <a href="plusone.php">I made coffee!</a> - <a href="stats.php">Statistics</a> - <a href="about.php">About</a> - <a href="auth/logout.php">Logout</a></p>
+<br/>

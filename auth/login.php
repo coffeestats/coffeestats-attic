@@ -11,12 +11,14 @@ $sql="SELECT uid FROM cs_users WHERE ulogin='$myusername' and ucryptsum='$mypass
 $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
 $count=mysql_num_rows($result);
+$id=$row['uid'];
 // If result matched $myusername and $mypassword, table row must be 1 row
 
   if($count==1)
   {
     session_register("myusername");
     $_SESSION['login_user']=$myusername;
+    $_SESSION['login_id']=$id;
     header("location: ../index.php");
   }
   else
