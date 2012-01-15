@@ -1,13 +1,36 @@
-
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="author" content="F. Baumann, H. Winter" />
-		<meta name="description" content="You can always count on coffee!" />
-		<link rel="stylesheet" href="../css/caffeine.css" type="text/css" media="screen" />
-	</head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="author" content="F. Baumann, H. Winter" />
+<meta name="description" content="CoffeeStats | All about coffee" />
+<title>CoffeeStats</title>
+<link rel="stylesheet" type="text/css" href="css/caffeine.css" />
+</head>
 <body>
-coffeestats.org<br/>
-Menue: <a href="index.php">Home</a> - <a href="plusone.php">I made coffee!</a> - <a href="statistic.php">Statistics</a> - <a href="about.php">About</a> - <a href="auth/logout.php">Logout</a></p>
-<br/>
+
+<div id="wrapper">
+
+	<div id="header">
+		<h1>CoffeeStats - You drink, we count!</h1>
+	</div>
+	
+	<div id="sidebar">
+		<div class="section">
+			<p>Welcome <strong>$username</strong>.</p>
+			<p>What would you like to do?</p>
+				<ul>
+				<li><a href="#">Navigation</a></li>
+				<li><a href="#">Navigation</a></li>
+				<li><a href="#">Navigation</a></li>
+				<li><a href="#">Navigation</a></li>
+				<li><a href="#">Navigation</a></li>
+				</ul>
+		</div>
+		
+		<div class="section">
+			<p class="center">A <strong>fbaumann</strong> and <strong>hwinter</strong> production</p>
+		</div>
+	</div>
+	
+	<div id="content"> <!-- end of header.php -->
