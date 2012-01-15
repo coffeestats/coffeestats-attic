@@ -1,0 +1,102 @@
+/*
+	caffeine.css:
+	author:
+	license:
+	date:
+	version:
+*/
+
+@font-face {
+	font-family: "DroidSans";
+	src: url('../fonts/DroidSans.ttf');
+}
+
+@font-face {
+	font-family: "DroidSans-Bold";
+	src: url('../fonts/DroidSans-Bold.ttf');
+}
+
+body {
+	padding: 0;
+	margin: 0;
+	background-color: #FFF;
+	color: #000;
+	font-family: "DroidSans", Helvetica, Verdana, Arial, sans-serif;
+	font-size: 14px;
+	font-style: normal;
+}
+
+a, a:link, a:visited, a:focus, a:hover, a:active {
+	text-decoration: none;
+	font-weight: bold;
+}
+
+strong, b {
+	font-family: "DroidSans-Bold", Helvetica, Verdana, Arial, sans-serif;
+}
+
+li {
+	padding: 0 0 10px 0;
+	list-style-type: square;
+}
+
+p {
+	line-height: 20px;
+}
+
+#wrapper {
+	padding: 0;
+	margin: 0 auto;
+	width: 800px;
+}
+
+#header {
+	padding: 10px;
+	margin: 0;
+	background-color: #000;
+	color: #FFF;
+}
+
+#sidebar {
+	padding: 0;
+	margin: 0;
+	width: 200px;
+	float: left;
+}
+
+	#sidebar .section {
+		padding: 10px;
+		background-color: #000;
+		color: #FFF;
+		border-top: 1px solid #FFF;
+	}
+	
+		#sidebar .section .center {
+			text-align: center;
+		}
+
+	#sidebar ul {
+		padding: 0;
+		margin: 0;
+		list-style-type: none;
+	}
+	
+		#sidebar ul li {
+			padding: 0 0 10px 0;
+			margin: 0;
+			list-style-type: none;
+		}
+		
+			#sidebar ul li a, #sidebar ul li a:link {
+				color: #FFF;
+				font-family: "DroidSans-Bold", Helvetica, Verdana, Arial, sans-serif;
+			}
+			
+			#sidebar ul li a:hover {
+				text-decoration: underline;
+			}
+			
+#content {
+	padding: 10px;
+	margin: 0 0 0 220px;
+}
