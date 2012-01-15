@@ -29,7 +29,7 @@
 		</div>
 		
 		<div class="section">
-			<p class="center">A <strong>fbaumann</strong> and <strong>hwinter</strong> production</p>
+            <p class="center">coffeestats.org is a project, written with &hearts; by Florian Baumann and Holger Winter. Get in touch <a href="about.php">&rarr;</a></p>
 		</div>
 	</div>
 	
