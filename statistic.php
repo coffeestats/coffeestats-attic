@@ -11,12 +11,16 @@ include("auth/config.php");
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Year');
         data.addColumn('number', 'Sales');
-        data.addColumn('number', 'Expenses');
         data.addRows([
-          ['2004', 1000, 400],
-          ['2005', 1170, 460],
-          ['2006', 660, 1120],
-          ['2007', 1030, 540]
+<?php
+        $sql="select DATE_FORMAT(cdate,'%H') as hour, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') and cuid = '".$_SESSION['login_id']."' GROUP BY DATE_FORMAT(cdate,'%h'); ";
+        $result=mysql_query($sql);
+          while ($row = mysql_fetch_assoc($result)) {
+                    echo ("\t\t['".$row['hour']."', '".$row['coffees']."'],\n");
+          }
+        echo ("\t\t['17','2']");
+?>
+
         ]);
 
         var options = {
