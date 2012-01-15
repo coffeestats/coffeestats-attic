@@ -1,6 +1,6 @@
 <?php
-include("header.php"); 
 include('auth/lock.php');
+include("header.php"); 
 ?>
 <center>
 <form action="" method="post">
