@@ -5,7 +5,7 @@
 <meta name="author" content="F. Baumann, H. Winter" />
 <meta name="description" content="CoffeeStats | All about coffee" />
 <title>CoffeeStats</title>
-<link rel="stylesheet" type="text/css" href="css/caffeine.css" />
+<link rel="stylesheet" type="text/css" href="./css/caffeine.css" />
 </head>
 <body>
 
