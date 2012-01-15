@@ -19,10 +19,20 @@ if ($_POST["recaptcha_response_field"]) {
                                         $_POST["recaptcha_response_field"]);
 
         if ($resp->is_valid) {
+          
+              $sql="SELECT uid FROM cs_users WHERE ulogin='".$_POST['Login']."'";
+              $result=mysql_query($sql);
+              $row=mysql_fetch_array($result);
+              $count=mysql_num_rows($result);
+
+              if ($count == 0) { 
                 echo "<br/><b>You got it! Click <a href=\"index.php\">here</a></b><br/><br/>";
                 echo "<i>Yes. We hate CAPTCHAs too.</i><br/><br/><br/>";
-                $sql="INSERT INTO cs_users VALUES ('', '".$_POST['Login']."', '', '', '".md5($_POST['Password'])."', NOW(), ''); ";
+                $sql="INSERT INTO cs_users VALUES ('', '".$_POST['Login']."', '', '', '".md5(md5($_POST['Password']))."', NOW(), '".$_POST['Location']."'); ";
                 $result = mysql_query($sql) OR die(mysql_error());
+              } else {
+                echo("Sorry. Username already taken");
+              }
         } else {
                 # set the error code so that we can display it
                 $error = $resp->error;
@@ -33,10 +43,14 @@ if ($_POST["recaptcha_response_field"]) {
 <tr>
     <td> Login: </td>
     <td> Password: </td>
+    <td> EMail: </td>
+    <td> Location: </td>
 </tr>
 <tr>
     <td><input type="TEXT" name="Login" maxlength="20" size="20"></td>
     <td><input type="PASSWORD" name="Password" maxlength="20" size="20"></td>
+    <td><input type="TEXT" name="Email" maxlength="20" size="20"></td>
+    <td><input type="TEXT" name="Location" maxlength="20" size="20"></td>
 </tr>
 </table>
 <br/><br/>
