@@ -100,3 +100,13 @@ p {
 	padding: 10px;
 	margin: 0 0 0 220px;
 }
+
+	#content .imadecoffee {
+		padding: 10px;
+		margin: 0;
+		border: 1px solid #663300;
+		border-radius: 4px;
+		background-color: #663300;
+		color: #FFF;
+		font-size: 24px;
+	}
