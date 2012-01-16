@@ -24,7 +24,8 @@
 body {
 	padding: 0;
 	margin: 0;
-	background-color: #FFF;
+    background-image: url(./../images/pattern.png);
+    background-repeat: repeat-x;
 	color: #000;
 	font-family: "DroidSans", Helvetica, Verdana, Arial, sans-serif;
 	font-size: 14px;
