@@ -1,7 +1,8 @@
 <center><form action="" method="post">
 <?php
-require_once('lib/recaptchalib.php');
-include('auth/config.php');
+include('../preheader.php');
+include('config.php');
+require_once('../lib/recaptchalib.php');
 // Get a key from https://www.google.com/recaptcha/admin/create
 $publickey = "6LdnPswSAAAAAFSYLEH9f_b0JcPQ2G1VsOHDmJZY";
 $privatekey = "6LdnPswSAAAAALLCLsZt2AFTnl5VAcNH5WUDZBvf";
@@ -26,7 +27,7 @@ if ($_POST["recaptcha_response_field"]) {
               $count=mysql_num_rows($result);
 
               if ($count == 0) { 
-                echo "<br/><b>You got it! Click <a href=\"index.php\">here</a></b><br/><br/>";
+                echo "<br/><b>You got it! Click <a href=\"../index.php\">here</a></b><br/><br/>";
                 echo "<i>Yes. We hate CAPTCHAs too.</i><br/><br/><br/>";
                 $sql="INSERT INTO cs_users VALUES ('', '".$_POST['Login']."', '', '', '".md5(md5($_POST['Password']))."', NOW(), '".$_POST['Location']."'); ";
                 $result = mysql_query($sql) OR die(mysql_error());
@@ -43,12 +44,15 @@ if ($_POST["recaptcha_response_field"]) {
 <tr>
     <td> Login: </td>
     <td> Password: </td>
-    <td> EMail: </td>
-    <td> Location: </td>
 </tr>
 <tr>
     <td><input type="TEXT" name="Login" maxlength="20" size="20"></td>
     <td><input type="PASSWORD" name="Password" maxlength="20" size="20"></td>
+</tr>
+<tr>
+    <td> EMail: </td>
+    <td> Location: </td>
+</tr>
     <td><input type="TEXT" name="Email" maxlength="20" size="20"></td>
     <td><input type="TEXT" name="Location" maxlength="20" size="20"></td>
 </tr>

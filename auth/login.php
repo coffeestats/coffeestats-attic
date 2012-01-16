@@ -24,16 +24,24 @@ $id=$row['uid'];
   else
   {
     $error="Your Login Name or Password is invalid";
-    //echo("$error");
+    echo("$error");
   }
 }
+include("../preheader.php");
 ?>
 <form action="" method="post">
-<label>UserName :</label>
-<input type="text" name="username"/><br />
-<label>Password :</label>
-<input type="password" name="password"/><br/>
-<input type="submit" value=" Login! "/><br />
+<center>
+<table><tr>
+    <td> Login: </td>
+    <td> Password: </td>
+</tr>
+<tr>
+    <td><input type="text" name="username"/><br /></td>
+    <td><input type="password" name="password"/><br/></td>
+</tr>
+</table>
+    <?php if (isset($error)) { echo("<br/>$error<br/>"); } ; ?> 
+    <br/><input type="submit" value=" Login! "/> or simply <a href="register.php">register a new account</a>!
+</center>
 </form>
 
-Or simply <a href="../register.php">register a new account</a>!

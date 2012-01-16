@@ -28,7 +28,7 @@ include("auth/config.php");
         ]);
 
         var options = {
-          width: 700, height: 240,
+          width: 550, height: 240,
           title: 'Your coffees today',
           hAxis: {title: 'Hour'}
         };
@@ -62,7 +62,7 @@ include("auth/config.php");
         ]);
 
         var options = {
-          width: 700, height: 240,
+          width: 550, height: 240,
           title: 'Your coffees this month',
           hAxis: {title: 'Day'}
         };

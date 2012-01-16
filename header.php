@@ -19,7 +19,6 @@
 	<div id="sidebar">
 		<div class="section">
         <p>Welcome <strong><?php echo $_SESSION['login_user']; ?></strong>.</p>
-			<p>What would you like to do?</p>
 				<ul>
 				<li><a href="index.php">Home</a></li>
 				<li><a href="plusone.php">I made Coffee!</a></li>

@@ -34,7 +34,7 @@ body {
 
 a, a:link, a:visited, a:focus, a:hover, a:active {
 	text-decoration: none;
-	font-weight: bold;
+    /* font-weight: bold; */
 }
 
 strong, b {
@@ -59,14 +59,13 @@ p {
 #header {
 	padding: 10px;
 	margin: 0;
-	background-color: #000;
 	color: #FFF;
-	text-align: center;
 }
 
 	#header h1 {
 		font-family: "Harabara";
 		font-size: 48px;
+        margin-bottom: 1px;
 	}
 
 #sidebar {
@@ -78,9 +77,9 @@ p {
 
 	#sidebar .section {
 		padding: 10px;
-		background-color: #000;
-		color: #FFF;
-		border-top: 1px solid #FFF;
+		background-color: #FFF;
+		color: #000;
+		border-top: 1px solid #000;
 	}
 	
 		#sidebar .section .center {
@@ -100,7 +99,7 @@ p {
 		}
 		
 			#sidebar ul li a, #sidebar ul li a:link {
-				color: #FFF;
+				color: #333;
 				font-family: "DroidSans-Bold", Helvetica, Verdana, Arial, sans-serif;
 			}
 			
@@ -111,14 +110,13 @@ p {
 #content {
 	padding: 10px;
 	margin: 0 0 0 220px;
+    background-color: #FFF;
+    min-height: 75px;
 }
 
 	#content .imadecoffee {
 		padding: 10px;
 		margin: 0;
-		border: 1px solid #663300;
-		border-radius: 4px;
-		background-color: #663300;
-		color: #FFF;
-		font-size: 24px;
+		color: #333;
+		font-size: 18px;
 	}

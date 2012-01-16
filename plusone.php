@@ -2,9 +2,10 @@
 include('auth/lock.php');
 include("header.php"); 
 ?>
+We heard you made coffee, right?<br/><br/>
 <center>
 <form action="" method="post">
-<input class="imadecoffee" type="submit" value="Mhh. Coffee. It tastes awesome"/><br />
+<input class="imadecoffee" type="submit" value="Uuh yeah. And It tastes awesome"/><br />
 </form></center>
 
 <?php 
