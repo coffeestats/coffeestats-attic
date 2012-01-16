@@ -3,7 +3,10 @@ include("auth/lock.php");
 include("header.php");
 include("auth/config.php");
 ?>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<b>Statistic</b><br/>
+<br/>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);

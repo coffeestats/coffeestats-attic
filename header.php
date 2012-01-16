@@ -13,7 +13,7 @@
 
 	<div id="header">
         <h1><img src="../images/coffee.png">coffeestats.org</h1>
-        You drink, we count!
+         You drink, we count!
 	</div>
 	
 	<div id="sidebar">
