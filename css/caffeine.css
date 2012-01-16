@@ -17,8 +17,8 @@
 }
 
 @font-face {
-	font-family: "SongJennifer";
-	src: url('../fonts/SongJennifer.ttf');
+	font-family: "Harabara";
+	src: url('../fonts/Harabara.ttf');
 }
 
 body {
@@ -64,7 +64,7 @@ p {
 }
 
 	#header h1 {
-		font-family: "SongJennifer";
+		font-family: "Harabara";
 		font-size: 48px;
 	}
 
