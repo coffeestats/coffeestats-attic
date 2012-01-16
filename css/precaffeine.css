@@ -1,0 +1,83 @@
+/*
+	caffeine.css:
+	author:
+	license:
+	date:
+	version:
+*/
+
+@font-face {
+	font-family: "DroidSans";
+	src: url('../fonts/DroidSans.ttf');
+}
+
+@font-face {
+	font-family: "DroidSans-Bold";
+	src: url('../fonts/DroidSans-Bold.ttf');
+}
+
+@font-face {
+	font-family: "Harabara";
+	src: url('../fonts/Harabara.ttf');
+}
+
+body {
+	padding: 0;
+	margin: 0;
+    background-image: url(./../images/pattern.png);
+    background-repeat: repeat;
+	color: #000;
+	font-family: "DroidSans", Helvetica, Verdana, Arial, sans-serif;
+	font-size: 14px;
+	font-style: normal;
+}
+
+a, a:link, a:visited, a:focus, a:hover, a:active {
+	text-decoration: none;
+    /* font-weight: bold; */
+}
+
+strong, b {
+	font-family: "DroidSans-Bold", Helvetica, Verdana, Arial, sans-serif;
+}
+
+li {
+	padding: 0 0 10px 0;
+	list-style-type: square;
+}
+
+p {
+	line-height: 20px;
+}
+
+#wrapper {
+	padding: 0;
+	margin: 0 auto;
+	width: 500px;
+}
+
+#header {
+	padding: 10px;
+	margin: 0;
+	color: #FFF;
+}
+
+	#header h1 {
+		font-family: "Harabara";
+		font-size: 48px;
+        margin-bottom: 1px;
+	}
+
+			
+#content {
+	padding: 10px;
+	margin: 0 0 0 0px;
+    background-color: #FFF;
+}
+
+	#content .imadecoffee {
+		padding: 10px;
+		margin: 0;
+		color: #333;
+		font-size: 18px;
+	}
