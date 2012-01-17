@@ -101,7 +101,7 @@ include("auth/config.php");
 
         var options = {
           width: 550, height: 240,
-          title: 'Your coffees this month',
+          title: 'Your coffees this year',
           hAxis: {title: 'Year'}
         };
 
