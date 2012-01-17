@@ -12,6 +12,6 @@
 <div id="wrapper">
 
 	<div id="header">
-        <h1>CoffeeStats</h1>
+        <h1>coffeestats.org</h1>
         	<p>You drink it, we count!</p>
 	</div>
