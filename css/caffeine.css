@@ -111,12 +111,12 @@ body {
 /* HEADER */
 
 #header {
-	padding: 10px;
+	padding: 10px 10px 10px 100px;
 	margin: 0;
 	color: #FFF;
 	background-image: url('../images/coffee.png');
 	background-repeat: no-repeat;
-	background-position: right center;
+	background-position: left center;
 }
 
 #header h1 {
