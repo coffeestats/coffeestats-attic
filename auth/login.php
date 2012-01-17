@@ -40,7 +40,8 @@
 		</div>
 	
 		<div class="white-box">
-			<h2>You want to log in?</h2>
+			<h2>Login</h2>
+			<p>Oh, don't have an account? Simply <a href="register.php">register</a> yourself.</p>
 				<form action="" method="post">
 					<input type="text" name="username" placeholder="Username" id="login_field_username" />
 					<input type="password" name="password" placeholder="Password" id="login_field_password" />
@@ -57,45 +58,48 @@
 		
 		<div class="white-box">
 			<h2>Chart Example</h2>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Hour');
-        data.addColumn('number', 'noqqe');
-        data.addColumn('number', 'savier');
-        data.addRows([
-        ['6', 0, 1],
-        ['7', 0, 1],
-        ['8', 2, 0],
-        ['9', 1, 0],
-        ['10', 0, 1],
-        ['11', 0, 1],
-        ['12', 3, 1],
-        ['13', 0, 0],
-        ['14', 0, 0],
-        ['15', 0, 2],
-        ['16', 0, 1],
-        ['17', 2, 0],
-        ['18', 0, 1],
-        ]);
+   				<script type="text/javascript">
+      				google.load("visualization", "1", {packages:["corechart"]});
+      				google.setOnLoadCallback(drawChart);
+      
+      				function drawChart() {
+        				var data = new google.visualization.DataTable();
+        
+        				data.addColumn('string', 'Hour');
+        				data.addColumn('number', 'noqqe');
+        				data.addColumn('number', 'dreary');
+        				data.addRows([
+        				['6', 0, 1],
+        				['7', 0, 1],
+				        ['8', 2, 0],
+				        ['9', 1, 0],
+				        ['10', 0, 1],
+				        ['11', 0, 1],
+				        ['12', 3, 1],
+				        ['13', 0, 0],
+				        ['14', 0, 0],
+				        ['15', 0, 2],
+				        ['16', 0, 1],
+				        ['17', 2, 0],
+				        ['18', 0, 1],
+				        ]);
 
-            var options = {
-                    width: 550, height: 240,
-                            title: 'Coffees of savier and noqqe (compared)',
-                                  hAxis: {title: 'Hour'}
-                                      };
+            			var options = {
+                    		width: 550, height: 240,
+                            title: 'Coffees of dreary and noqqe (compared)',
+                            hAxis: {
+                            	title: 'Hour'}
+                            };
 
-            var chart = new google.visualization.ColumnChart(document.getElementById('coffeeexample'));
-            chart.draw(data, options);
-              }
-      </script>
-        <div id="coffeeexample"></div>    
+            			var chart = new google.visualization.ColumnChart(document.getElementById('coffeeexample'));
+            			chart.draw(data, options);
+              		}
+      			</script>
+        
+        	<div id="coffeeexample"> <!-- example chart --> </div>    
 
-<!-- hier kommt dein chart-example rein -->
 		</div>
 	</div>
 

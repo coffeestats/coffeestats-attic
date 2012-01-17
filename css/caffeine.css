@@ -1,26 +1,26 @@
 /*
-	caffeine.css:
-	author:
+	caffeine.css: Cascading Style Sheet for coffeestats.org
+	Author: Holger Winter <dreary@online.de>
 	license:
-	date:
-	version:
+	Date: January 17th, 2012
+	Version: 1.0
 */
 
 
-/* Fonts */
+/* FONTS */
 
 @font-face {
-	font-family: "Droid Sans";
+	font-family: 'Droid Sans';
 	font-style: normal;
 	font-weight: normal;
-	src: url('../fonts/DroidSans.ttf');
+	src: url("../fonts/DroidSans.ttf");
 }
 
 @font-face {
-	font-family: "Droid Sans";
+	font-family: 'Droid Sans';
 	font-style: normal;
 	font-weight: bold;
-	src: url('../fonts/DroidSans-Bold.ttf');
+	src: url("../fonts/DroidSans-Bold.ttf");
 }
 
 @font-face {
@@ -30,17 +30,17 @@
 }
 
 
-/* General */
+/* GENERAL */
 
 body {
 	padding: 0;
 	margin: 0;
-    background-image: url(./../images/pattern.png);
+    background-image: url("../images/pattern.png");
     background-repeat: repeat;
 	color: #000;
 	font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif;
 	font-size: 14px;
-	font-style: normal;
+	font-weight: normal;
 }
 
 .white-box {
@@ -55,6 +55,28 @@ body {
 
 .white-box-center {
 	text-align: center;
+}
+
+.white-box form {
+	margin: 20px 0;
+}
+
+a {
+	text-decoration: none;
+	font-weight: bold;
+	color: inherit;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a img {
+	border: none;
+}
+
+strong {
+	font-weight: bold;
 }
 
 
@@ -99,7 +121,7 @@ body {
 }
 
 
-/* Layout */
+/* WRAPPER */
 
 #wrapper {
 	padding: 0;
@@ -125,6 +147,9 @@ body {
     margin-bottom: 1px;
 }
 
+
+/* SIDEBAR */
+
 #sidebar {
 	padding: 0;
 	margin: 0;
@@ -132,37 +157,40 @@ body {
 	float: left;
 }
 
-	#sidebar .section {
-		padding: 10px;
-		background-color: #FFF;
-		color: #000;
-		border-top: 1px solid #000;
-	}
-	
-		#sidebar .section .center {
-			text-align: center;
-		}
+#sidebar .section {
+	padding: 10px;
+	background-color: #FFF;
+	color: #000;
+	border-top: 1px solid #000;
+}
 
-	#sidebar ul {
-		padding: 0;
-		margin: 0;
-		list-style-type: none;
+	#sidebar .section .center {
+		text-align: center;
 	}
+
+#sidebar ul {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+
+#sidebar ul li {
+	padding: 0 0 10px 0;
+	margin: 0;
+	list-style-type: none;
+}
 	
-		#sidebar ul li {
-			padding: 0 0 10px 0;
-			margin: 0;
-			list-style-type: none;
-		}
-		
-			#sidebar ul li a, #sidebar ul li a:link {
-				color: #333;
-				font-family: "DroidSans-Bold", Helvetica, Verdana, Arial, sans-serif;
-			}
-			
-			#sidebar ul li a:hover {
-				text-decoration: underline;
-			}
+#sidebar ul li a, #sidebar ul li a:link {
+	color: #333;
+	font-family: "DroidSans-Bold", Helvetica, Verdana, Arial, sans-serif;
+}
+
+#sidebar ul li a:hover {
+	text-decoration: underline;
+}
+
+
+/* CONTENT */
 			
 #content {
 	padding: 10px;
@@ -170,10 +198,3 @@ body {
     background-color: #FFF;
     min-height: 75px;
 }
-
-	#content .imadecoffee {
-		padding: 10px;
-		margin: 0;
-		color: #333;
-		font-size: 18px;
-	}
