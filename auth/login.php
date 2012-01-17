@@ -34,7 +34,7 @@
 
 	<div id="login">
 		<div class="white-box">
-			<h2>What is CoffeeStats.org?</h2>
+			<h2>What is coffeestats.org?</h2>
 				<p>CoffeeStats is a project written with &hearts; by <strong>F. Baumann</strong> and 
 				<strong>H. Winter</strong>.</p>
 					<p>If you like coffee and graphs, you're on the right way. You drink this awesome 
