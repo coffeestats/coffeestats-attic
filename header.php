@@ -23,6 +23,8 @@
 				<li><a href="index.php">Home</a></li>
 				<li><a href="plusone.php">I made Coffee!</a></li>
 				<li><a href="statistic.php">Statistic</a></li>
+				<li><a href="overallstatistic.php">Overall Statistic</a></li>
+				<li><a href="settings.php">Settings</a></li>
 				<li><a href="about.php">About</a></li>
 				<li><a href="auth/logout.php">Logout</a></li>
 				</ul>

@@ -3,7 +3,7 @@ include("auth/lock.php");
 include("header.php");
 include("auth/config.php");
 ?>
-<b>Statistic</b><br/>
+<b>Overall Statistic</b><br/>
 <br/>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -17,12 +17,12 @@ include("auth/config.php");
         data.addRows([
 <?php
                 for ( $counter = 0; $counter <= 23; $counter += 1) {
-                  $sql="select '".$counter."' as hour, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') and ( DATE_FORMAT(cdate,'%H') = '".$counter."' or DATE_FORMAT(cdate,'%H') = '0".$counter."') and cuid = '".$_SESSION['login_id']."'; ";
+                  $sql="select '".$counter."' as hour, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') and ( DATE_FORMAT(cdate,'%H') = '".$counter."' or DATE_FORMAT(cdate,'%H') = '0".$counter."') ; ";
                   $result=mysql_query($sql);
                   $row=mysql_fetch_array($result);
                   echo ("\t\t['".$row['hour']."', ".$row['coffees']."],\n");
                 }
-                  $sql="select '24' as hour, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') and ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24') and cuid = '".$_SESSION['login_id']."'; ";
+                  $sql="select '24' as hour, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') and ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24'); ";
                   $result=mysql_query($sql);
                   $row=mysql_fetch_array($result);
                   echo ("\t\t['".$row['hour']."', ".$row['coffees']."]");
@@ -51,12 +51,12 @@ include("auth/config.php");
         data.addRows([
 <?php
                 for ( $counter = 1; $counter <= 30; $counter += 1) {
-                  $sql="select '".$counter."' as day, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') and ( DATE_FORMAT(cdate,'%d') = '".$counter."' or DATE_FORMAT(cdate,'%d') = '0".$counter."') and cuid = '".$_SESSION['login_id']."'; ";
+                  $sql="select '".$counter."' as day, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') and ( DATE_FORMAT(cdate,'%d') = '".$counter."' or DATE_FORMAT(cdate,'%d') = '0".$counter."') ; ";
                   $result=mysql_query($sql);
                   $row=mysql_fetch_array($result);
                   echo ("\t\t['".$row['day']."', ".$row['coffees']."],\n");
                 }
-                  $sql="select '31' as day, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') and ( DATE_FORMAT(cdate,'%d') = '12' or DATE_FORMAT(cdate,'%d') = '12') and cuid = '".$_SESSION['login_id']."'; ";
+                  $sql="select '31' as day, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') and ( DATE_FORMAT(cdate,'%d') = '12' or DATE_FORMAT(cdate,'%d') = '12'); ";
                   $result=mysql_query($sql);
                   $row=mysql_fetch_array($result);
                   echo ("\t\t['".$row['day']."', ".$row['coffees']."]");
@@ -86,12 +86,12 @@ include("auth/config.php");
         data.addRows([
 <?php
                 for ( $counter = 1; $counter <= 11; $counter += 1) {
-                  $sql="select '".$counter."' as year, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') and ( DATE_FORMAT(cdate,'%m') = '".$counter."' or DATE_FORMAT(cdate,'%m') = '0".$counter."') and cuid = '".$_SESSION['login_id']."'; ";
+                  $sql="select '".$counter."' as year, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') and ( DATE_FORMAT(cdate,'%m') = '".$counter."' or DATE_FORMAT(cdate,'%m') = '0".$counter."') ; ";
                   $result=mysql_query($sql);
                   $row=mysql_fetch_array($result);
                   echo ("\t\t['".$row['year']."', ".$row['coffees']."],\n");
                 }
-                  $sql="select '12' as year, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') and ( DATE_FORMAT(cdate,'%m') = '12' or DATE_FORMAT(cdate,'%m') = '12') and cuid = '".$_SESSION['login_id']."'; ";
+                  $sql="select '12' as year, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') and ( DATE_FORMAT(cdate,'%m') = '12' or DATE_FORMAT(cdate,'%m') = '12') ; ";
                   $result=mysql_query($sql);
                   $row=mysql_fetch_array($result);
                   echo ("\t\t['".$row['year']."', ".$row['coffees']."]");
