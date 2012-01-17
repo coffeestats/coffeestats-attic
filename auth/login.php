@@ -35,8 +35,6 @@
 	<div id="login">
 		<div class="white-box">
 			<h2>What is coffeestats.org?</h2>
-				<p>CoffeeStats is a project written with &hearts; by <strong>F. Baumann</strong> and 
-				<strong>H. Winter</strong>.</p>
 					<p>If you like coffee and graphs, you're on the right way. You drink this awesome 
 					tasting black hot stuff, we count it!</p>
 		</div>
@@ -56,10 +54,6 @@
 				</form>
 		</div>
 		
-		<div class="white-box">
-			<h2>About us</h2>	
-				<p>F. Baumann and H. Winter are old schoold colleague.</p>
-		</div>
 		
 		<div class="white-box">
 			<h2>Chart Example</h2>
@@ -105,6 +99,10 @@
 		</div>
 	</div>
 
+		<div class="white-box">
+				<p>coffeestats.org is a project written with &hearts; by <strong>F. Baumann</strong> and 
+				<strong>H. Winter</strong>.</p>
+		</div>
 </div> <!-- closing div for #wrapper -->
 </body>
 </html>
