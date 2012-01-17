@@ -6,20 +6,31 @@
 	version:
 */
 
+
+/* Fonts */
+
 @font-face {
-	font-family: "DroidSans";
+	font-family: "Droid Sans";
+	font-style: normal;
+	font-weight: normal;
 	src: url('../fonts/DroidSans.ttf');
 }
 
 @font-face {
-	font-family: "DroidSans-Bold";
+	font-family: "Droid Sans";
+	font-style: normal;
+	font-weight: bold;
 	src: url('../fonts/DroidSans-Bold.ttf');
 }
 
 @font-face {
 	font-family: "Harabara";
+	font-style: normal;
 	src: url('../fonts/Harabara.ttf');
 }
+
+
+/* General */
 
 body {
 	padding: 0;
@@ -27,46 +38,93 @@ body {
     background-image: url(./../images/pattern.png);
     background-repeat: repeat;
 	color: #000;
-	font-family: "DroidSans", Helvetica, Verdana, Arial, sans-serif;
+	font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif;
 	font-size: 14px;
 	font-style: normal;
 }
 
-a, a:link, a:visited, a:focus, a:hover, a:active {
-	text-decoration: none;
-    /* font-weight: bold; */
+.white-box {
+	padding: 20px;
+	margin: 0 0 10px 0;
+	background-color: #FFF;
 }
 
-strong, b {
-	font-family: "DroidSans-Bold", Helvetica, Verdana, Arial, sans-serif;
+.white-box p {
+	line-height: 24px;
 }
 
-li {
+.white-box-center {
+	text-align: center;
+}
+
+
+/* LOGIN */
+
+#login {
+
+}
+
+#login h2 {
 	padding: 0 0 10px 0;
-	list-style-type: square;
+	margin: 0;
+	font-size: 16px;
+	font-weight: bold;
 }
 
-p {
-	line-height: 20px;
+#login_field_username {
+	padding: 10px;
+	font-size: 16px;
+	border: none;
+	background-color: #E7E7E7;
+	color: #201200;
+	min-height: 22px;
 }
+
+#login_field_password {
+	padding: 10px;
+	font-size: 16px;
+	border: none;
+	background-color: #E7E7E7;
+	color: #201200;
+	min-height: 22px;
+}
+
+#login_button_submit {
+	padding: 10px;
+	font-size: 16px;
+	font-weight: bold;
+	background-color: #201200;
+	border: none;
+	color: #FFF;
+	min-width: 100px;
+}
+
+
+/* Layout */
 
 #wrapper {
 	padding: 0;
 	margin: 0 auto;
-	width: 800px;
+	width: 660px;
 }
+
+
+/* HEADER */
 
 #header {
 	padding: 10px;
 	margin: 0;
 	color: #FFF;
+	background-image: url('../images/coffee.png');
+	background-repeat: no-repeat;
+	background-position: right center;
 }
 
-	#header h1 {
-		font-family: "Harabara";
-		font-size: 48px;
-        margin-bottom: 1px;
-	}
+#header h1 {
+	font-family: "Harabara";
+	font-size: 48px;
+    margin-bottom: 1px;
+}
 
 #sidebar {
 	padding: 0;

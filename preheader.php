@@ -5,15 +5,13 @@
 <meta name="author" content="F. Baumann, H. Winter" />
 <meta name="description" content="CoffeeStats | All about coffee" />
 <title>CoffeeStats</title>
-<link rel="stylesheet" type="text/css" href="./../css/precaffeine.css" />
+<link rel="stylesheet" type="text/css" href="../css/caffeine.css" />
 </head>
 <body>
 
 <div id="wrapper">
 
 	<div id="header">
-        <center><h1><img src="../images/coffee.png">coffeestats.org</h1>
-        You drink, we count!</center>
+        <h1>CoffeeStats</h1>
+        	<p>You drink it, we count!</p>
 	</div>
-	
-	<div id="content"> <!-- end of header.php -->
