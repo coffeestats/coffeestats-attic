@@ -46,11 +46,11 @@ include("auth/config.php");
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Day');
+        data.addColumn('string', 'Month');
         data.addColumn('number', 'Coffees');
         data.addRows([
 <?php
-                for ( $counter = 1; $counter <= 31; $counter += 1) {
+                for ( $counter = 1; $counter <= 30; $counter += 1) {
                   $sql="select '".$counter."' as day, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') and ( DATE_FORMAT(cdate,'%d') = '".$counter."' or DATE_FORMAT(cdate,'%d') = '0".$counter."') and cuid = '".$_SESSION['login_id']."'; ";
                   $result=mysql_query($sql);
                   $row=mysql_fetch_array($result);
@@ -75,9 +75,46 @@ include("auth/config.php");
       }
     </script>
 
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Day');
+        data.addColumn('number', 'Coffees');
+        data.addRows([
+<?php
+                for ( $counter = 1; $counter <= 11; $counter += 1) {
+                  $sql="select '".$counter."' as year, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') and ( DATE_FORMAT(cdate,'%m') = '".$counter."' or DATE_FORMAT(cdate,'%m') = '0".$counter."') and cuid = '".$_SESSION['login_id']."'; ";
+                  $result=mysql_query($sql);
+                  $row=mysql_fetch_array($result);
+                  echo ("\t\t['".$row['year']."', ".$row['coffees']."],\n");
+                }
+                  $sql="select '12' as year, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') and ( DATE_FORMAT(cdate,'%m') = '12' or DATE_FORMAT(cdate,'%m') = '12') and cuid = '".$_SESSION['login_id']."'; ";
+                  $result=mysql_query($sql);
+                  $row=mysql_fetch_array($result);
+                  echo ("\t\t['".$row['year']."', ".$row['coffees']."]");
+?>
+
+        ]);
+
+        var options = {
+          width: 550, height: 240,
+          title: 'Your coffees this month',
+          hAxis: {title: 'Year'}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('coffee_year'));
+        chart.draw(data, options);
+      }
+    </script>
+
+
 
 <div id="coffee_today"></div><br/>
-<div id="coffee_month"></div>
+<div id="coffee_month"></div><br/>
+<div id="coffee_year"></div>
 <?php
 include("footer.php");
 ?>
