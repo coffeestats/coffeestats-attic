@@ -5,7 +5,6 @@
 
 		<div class="white-box">
 			<h2>About coffeestats.org</h2>
-				<p>This project is written by two former classmates. Holger and Florian.</p>
 
 				<p>We wanna thank all the awesome OpenSource software and pieces of arts under 
 				the <a href="http://creativecommons.org">CreativeCommons</a> license:</p>

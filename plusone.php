@@ -8,7 +8,7 @@ include("header.php");
 				<p>We know, you can't get your fingers away from coffee. Update your consume by +1!</p>
 				
 				<form action="" method="post">
-					<input class="imadecoffee" type="submit" value="Right! And It tastes f*cking awesome |_|3" id="coffee_plus_one" /><br />
+					<input class="imadecoffee" type="submit" value="Right! And It tastes f*cking awesome" id="coffee_plus_one" /><br />
 				</form>
 				
 				<?php 

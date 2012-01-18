@@ -12,18 +12,23 @@ $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
 $count=mysql_num_rows($result);
 $profileid=$row['uid'];
-
-if ($count==0) {
-  $profileid=$_SESSION['login_id'];
-  
-  echo ("<b>Your Profile</b><br/><br/>");
-  echo("Error finding User. Showing your Graphs instead.<br/><br/>");
+?>
+<div class="white-box">
+<?php
+if ($count==1) {
+  if ($profileid==$_SESSION['login_id']) {
+    echo ("<h2>Your Profile</h2>");
+  } else {
+    echo ("<h2>".$profileuser."'s Profile</h2>"); 
+  }
 } else {
- echo ("<b>".$profileuser."'s Profile</b><br/><br/>"); 
+  $profileid=$_SESSION['login_id'];
+  echo ("<h2>Your Profile</h2>");
+  echo("Error finding User. Showing your Graphs instead.");
 }
 ?>
-<b></b><br/><br/>
-		<div class="white-box">
+</div>
+<b></b>
 
 			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
     			<script type="text/javascript">
@@ -138,7 +143,15 @@ if ($count==0) {
       }
     </script>
 
-		</div> <!-- end of white-box -->
+		<div class="white-box">
+          <div id="coffee_today"></div>
+		</div>
+		<div class="white-box">
+          <div id="coffee_month"></div>
+		</div>
+		<div class="white-box">
+          <div id="coffee_year"></div>
+		</div>
 
 <?php
 	include("footer.php");
