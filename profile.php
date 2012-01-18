@@ -7,7 +7,8 @@ $profileuser=htmlspecialchars($_GET["u"]);
 $sql="SELECT uid FROM cs_users WHERE ulogin='$profileuser'";
 $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
-$profileid=$row['uid'];
+$profileid=mysql_real_escape_string(addslashes($row['uid']));
+echo $profileid;
 ?>
 <b>Statistic</b><br/>
 <br/>
