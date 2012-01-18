@@ -7,6 +7,7 @@ An epic idea is born.
 ° Register-Link wieder auf die Login-Seite einbauen
 ° #footer !!!!1111einseinself
 * Boxen groesser machen fuer #content
+* 1 column layout fuer index uws
 
 ### FLO ######################################
 
