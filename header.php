@@ -25,11 +25,11 @@
 		<div class="white-box">
 			<div id="navigation">
 				<ul id="navigation">
-					<li><a href="#">Home</a></li>
-					<li><a href="#">Update</a></li>
-					<li><a href="#">Statistics</a></li>
-					<li><a href="#">Profile</a></li>
-					<li><a href="#">About</a></li>
+					<li><a href="index.php">Home</a></li>
+					<li><a href="plusone.php">Update</a></li>
+					<li><a href="statistic.php">Statistics</a></li>
+					<li><a href="profile.php">Profile</a></li>
+					<li><a href="about.php">About</a></li>
 					<li><a href="auth/logout.php">Logout</a></li>
 				</ul>
 			</div>

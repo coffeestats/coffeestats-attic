@@ -157,9 +157,15 @@ strong {
 }
 
 #navigation ul li {
-	padding: 0;
+	padding: 10px;
 	margin: 0;
 	display: inline;
+	background-color: #000;
+}
+
+#navigation ul li a {
+	font-weight: normal;
+	color: #FFF;
 }
 
 
@@ -175,4 +181,13 @@ strong {
 	margin: 0;
 	font-size: 16px;
 	font-weight: bold;
+}
+
+#coffee_plus_one {
+	padding: 10px;
+	font-size: 16px;
+	background-color: #201200;
+	border: none;
+	color: #FFF;
+	min-width: 100px;
 }
