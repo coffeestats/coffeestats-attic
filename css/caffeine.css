@@ -148,11 +148,31 @@ strong {
 }
 
 
+/* NAVIGATION */
+
+#navigation ul {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+
+#navigation ul li {
+	padding: 0;
+	margin: 0;
+	display: inline;
+}
+
+
 /* CONTENT */
 			
 #content {
-	padding: 10px;
-	margin: 0 0 0 220px;
-    background-color: #FFF;
-    min-height: 75px;
+	padding: 0;
+	margin: 0;
+}
+
+#content h2 {
+	padding: 0 0 10px 0;
+	margin: 0;
+	font-size: 16px;
+	font-weight: bold;
 }

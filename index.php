@@ -1,11 +1,16 @@
 <?php
-include('auth/lock.php');
+	include('auth/lock.php');
 ?>
 
-<?php include("header.php"); ?>
+<?php 
+	include("header.php"); 
+?>
 
-<b>Home</b><br/>
-<br/>
-	What would you like to do?
+		<div class="white-box">
+			<h2>Your charts</h2>
+				<p>Here's your todays statistic</p>
+		</div>
 
-<?php include("footer.php"); ?>
+<?php 
+	include("footer.php"); 
+?>
