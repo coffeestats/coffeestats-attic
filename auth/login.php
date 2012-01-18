@@ -23,8 +23,7 @@
   		}
   
   		else {
-    		$error="Your username or password seems to be invalid :(";
-    		echo("$error");
+    		$error="<br/><br/><center>Your username or password seems to be invalid :(</center>";
   		}
 	}
 
@@ -41,12 +40,11 @@
 	
 		<div class="white-box">
 			<h2>Login</h2>
-			<p>Oh, don't have an account? Simply <a href="register.php">register</a> yourself.</p>
 				<form action="" method="post">
 					<input type="text" name="username" placeholder="Username" id="login_field_username" />
 					<input type="password" name="password" placeholder="Password" id="login_field_password" />
 					<input type="submit" name="submit" value="Login" id="login_button_submit" />
-		
+			        <p>Oh, don't have an account? Simply <a href="register.php">register</a> yourself.</p>
 					<?php
 						if (isset($error)) {
 							echo("$error");
