@@ -10,18 +10,18 @@ include("header.php");
 				<form action="" method="post">
 					<input class="imadecoffee" type="submit" value="Right! And It tastes f*cking awesome |_|3" id="coffee_plus_one" /><br />
 				</form>
+				
+				<?php 
+					if($_SERVER["REQUEST_METHOD"] == "POST") {
+						include('auth/config.php');
+						
+						$sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', NOW() ); ";
+						$result=mysql_query($sql);
+						
+						echo("<p>Your coffee has been registered!</p>");
+					}
+				?>
 		</div>
-
-<?php 
-	if($_SERVER["REQUEST_METHOD"] == "POST") {
-		include('auth/config.php');
-		
-		$sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', NOW() ); ";
-		$result=mysql_query($sql);
-		
-		echo("<br/><center>Your coffee was registered</center>");
-	}
-?>
 
 <?php
 	include('footer.php');

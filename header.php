@@ -16,10 +16,10 @@
         	<p>You drink it, we count!</p>
 	</div>
 	
-	<div id="content"> <!-- end of header.php -->
+	<div id="content">
 	
 		<div class="white-box">
-			Welcome, <strong><?php echo $_SESSION['login_user']; ?></strong>!
+			<p>Greetings, <strong><?php echo $_SESSION['login_user']; ?></strong>!</p>
 		</div>
 		
 		<div class="white-box">
