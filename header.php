@@ -22,7 +22,7 @@
 				<ul>
 				<li><a href="index.php">Home</a></li>
 				<li><a href="plusone.php">I made Coffee!</a></li>
-				<li><a href="statistic.php">Statistic</a></li>
+                <li><a href="profile.php?u=<?php echo $_SESSION['login_user']; ?>">Statistic</a></li>
 				<li><a href="overallstatistic.php">Overall Statistic</a></li>
 				<li><a href="settings.php">Settings</a></li>
 				<li><a href="about.php">About</a></li>

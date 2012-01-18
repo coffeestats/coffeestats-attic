@@ -32,3 +32,5 @@ für daily, monthly, yearly.
 * Anti XSS Framework einbinden für POST Parameter handling.
 
 * Settings Page bauen. 
+
+* Suche bauen

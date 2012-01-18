@@ -5,8 +5,8 @@
 
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
 		// username and password sent from Form
-		$myusername=addslashes($_POST['username']);
-		$mypassword=md5(md5(addslashes($_POST['password'])));
+		$myusername=mysql_real_escape_string($_POST['username']);
+		$mypassword=md5(md5(mysql_real_escape_string($_POST['password'])));
 		$sql="SELECT uid FROM cs_users WHERE ulogin='$myusername' and ucryptsum='$mypassword'";
 		$result=mysql_query($sql);
 		$row=mysql_fetch_array($result);
@@ -23,7 +23,7 @@
   		}
   
   		else {
-    		$error="<br/><br/><center>Your username or password seems to be invalid :(</center>";
+    		$error="<center>Your username or password seems to be invalid :(</center>";
   		}
 	}
 

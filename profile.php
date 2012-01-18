@@ -2,17 +2,27 @@
 include("auth/lock.php");
 include("auth/config.php");
 include("header.php");
+include("lib/antixss.php");
 
-$profileuser=htmlspecialchars($_GET["u"]);
+// Parse user
+$profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
+$profileuser=mysql_real_escape_string($profileuser);
 $sql="SELECT uid FROM cs_users WHERE ulogin='$profileuser'";
 $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
-$profileid=mysql_real_escape_string(addslashes($row['uid']));
-echo $profileid;
-?>
-<b>Statistic</b><br/>
-<br/>
+$count=mysql_num_rows($result);
+$profileid=$row['uid'];
 
+if ($count==0) {
+  $profileid=$_SESSION['login_id'];
+  
+  echo ("<b>Your Profile</b><br/><br/>");
+  echo("Error finding User. Showing your Graphs instead.<br/><br/>");
+} else {
+ echo ("<b>".$profileuser."'s Profile</b><br/><br/>"); 
+}
+?>
+<b></b><br/><br/>
 
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
