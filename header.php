@@ -16,23 +16,21 @@
         	<p>You drink it, we count!</p>
 	</div>
 	
-	<div id="sidebar">
-		<div class="section">
-        <p>Welcome <strong><?php echo $_SESSION['login_user']; ?></strong>.</p>
-				<ul>
-				<li><a href="index.php">Home</a></li>
-				<li><a href="plusone.php">I made Coffee!</a></li>
-                <li><a href="profile.php?u=<?php echo $_SESSION['login_user']; ?>">Statistic</a></li>
-				<li><a href="overallstatistic.php">Overall Statistic</a></li>
-				<li><a href="settings.php">Settings</a></li>
-				<li><a href="about.php">About</a></li>
-				<li><a href="auth/logout.php">Logout</a></li>
-				</ul>
+	<div id="content">
+	
+		<div class="white-box">
+			<p>Greetings, <strong><?php echo $_SESSION['login_user']; ?></strong>!</p>
 		</div>
 		
-		<div class="section">
-            <p class="center">coffeestats.org is a project, written with &hearts; by Florian Baumann and Holger Winter. Get in touch <a href="about.php">&rarr;</a></p>
+		<div class="white-box">
+			<div id="navigation">
+				<ul id="navigation">
+					<li><a href="index.php">Home</a></li>
+					<li><a href="plusone.php">Update</a></li>
+					<li><a href="statistic.php">Statistics</a></li>
+					<li><a href="profile.php">Profile</a></li>
+					<li><a href="about.php">About</a></li>
+					<li><a href="auth/logout.php">Logout</a></li>
+				</ul>
+			</div>
 		</div>
-	</div>
-	
-	<div id="content"> <!-- end of header.php -->
