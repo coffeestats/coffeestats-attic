@@ -148,48 +148,6 @@ strong {
 }
 
 
-/* SIDEBAR */
-
-#sidebar {
-	padding: 0;
-	margin: 0;
-	width: 200px;
-	float: left;
-}
-
-#sidebar .section {
-	padding: 10px;
-	background-color: #FFF;
-	color: #000;
-	border-top: 1px solid #000;
-}
-
-	#sidebar .section .center {
-		text-align: center;
-	}
-
-#sidebar ul {
-	padding: 0;
-	margin: 0;
-	list-style-type: none;
-}
-
-#sidebar ul li {
-	padding: 0 0 10px 0;
-	margin: 0;
-	list-style-type: none;
-}
-	
-#sidebar ul li a, #sidebar ul li a:link {
-	color: #333;
-	font-family: "DroidSans-Bold", Helvetica, Verdana, Arial, sans-serif;
-}
-
-#sidebar ul li a:hover {
-	text-decoration: underline;
-}
-
-
 /* CONTENT */
 			
 #content {

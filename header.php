@@ -5,7 +5,7 @@
 <meta name="author" content="F. Baumann, H. Winter" />
 <meta name="description" content="CoffeeStats | All about coffee" />
 <title>CoffeeStats</title>
-<link rel="stylesheet" type="text/css" href="./css/caffeine.css" />
+<link rel="stylesheet" type="text/css" href="../css/caffeine.css" />
 </head>
 <body>
 
@@ -13,7 +13,7 @@
 
 	<div id="header">
         <h1>coffeestats.org</h1>
-         You drink, we count!
+        	<p>You drink it, we count!</p>
 	</div>
 	
 	<div id="sidebar">
