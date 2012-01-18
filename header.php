@@ -27,8 +27,7 @@
 				<ul id="navigation">
 					<li><a href="index.php">Home</a></li>
 					<li><a href="plusone.php">Update</a></li>
-					<li><a href="statistic.php">Statistics</a></li>
-					<li><a href="profile.php">Profile</a></li>
+                    <li><a href="profile.php?u=<?php echo $_SESSION['login_user']; ?>">Profile</a></li>
 					<li><a href="about.php">About</a></li>
 					<li><a href="auth/logout.php">Logout</a></li>
 				</ul>
