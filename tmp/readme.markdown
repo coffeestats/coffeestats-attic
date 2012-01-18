@@ -25,3 +25,9 @@ else
 für daily, monthly, yearly. 
 
 * Public User profile coffeestats.org/user/noqqe
+
+* .git/ im Apache deny einstellen
+
+* Anti XSS Framework einbinden für POST Parameter handling.
+
+* Settings Page bauen. 
