@@ -14,7 +14,7 @@ include("header.php");
 				<?php 
 					if($_SERVER["REQUEST_METHOD"] == "POST") {
 						include('auth/config.php');
-						
+                                                
 						$sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', NOW() ); ";
 						$result=mysql_query($sql);
 						
