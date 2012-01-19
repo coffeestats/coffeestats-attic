@@ -14,7 +14,12 @@ include("header.php");
 				<?php 
 					if($_SERVER["REQUEST_METHOD"] == "POST") {
 						include('auth/config.php');
-                                                
+
+                        $sql="SELECT COUNT(cid) 
+                          FROM cs_coffees
+                          WHERE TIMEDIFF(CURRENT_TIME(), DATE_FORMAT(cdate,'%H:%m') > '00:15:00';";
+						$result=mysql_query($sql);
+
 						$sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', NOW() ); ";
 						$result=mysql_query($sql);
 						

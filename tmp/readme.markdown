@@ -35,9 +35,11 @@ für daily, monthly, yearly.
 * plusone.php check ob timestamp schon 15 min alt
  SELECT user_id from mw_user where TIMEDIFF(CURRENT_TIME(), '10:50') >
  '00:15:00' order by user_id limit 1;
+ select cid from cs_coffees WHERE TIMEDIFF(CURRENT_TIME(),
+ DATE_FORMAT(cdate,'%i')) < '15' order by cid DESC limit 1;
+
 * Pure Stats 
 SELECT DATEDIFF(CURRENT_DATE(), '2011-01-19');
-$sql="select count(cid) as coffees, from cs_coffees where cuid = '".$profileid."'; ";
 
 * Besseres Password encrypting
 $hash = crypt('rasmuslerdorf', '$2a$07$usesomesillystringforsalt$');

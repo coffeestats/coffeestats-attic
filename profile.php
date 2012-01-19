@@ -26,7 +26,16 @@ if ($count==1) {
   echo ("<h2>Your Profile</h2>");
   echo("Error finding User. Showing your Graphs instead.");
 }
+
+$sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
+$result=mysql_query($sql);
+$row=mysql_fetch_array($result);
+
+$sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
+$result=mysql_query($sql);
+$row=mysql_fetch_array($result);
 ?>
+  Coffees total: <?php echo $row['total']; ?>
 </div>
 <b></b>
 
