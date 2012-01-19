@@ -38,3 +38,6 @@ für daily, monthly, yearly.
 * Pure Stats 
 SELECT DATEDIFF(CURRENT_DATE(), '2011-01-19');
 $sql="select count(cid) as coffees, from cs_coffees where cuid = '".$profileid."'; ";
+
+* Besseres Password encrypting
+$hash = crypt('rasmuslerdorf', '$2a$07$usesomesillystringforsalt$');
