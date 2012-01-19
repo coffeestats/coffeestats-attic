@@ -4,6 +4,7 @@
 ?>
 
 		<div class="white-box">
+            <h2>Register</h2>
 			<p>Fill these fields with your data, write down what reCAPTCHA says u and click Register!</p>
 			
 			<form action="" method="post">
@@ -29,15 +30,24 @@
         $_POST["recaptcha_response_field"]);
 
         if ($resp->is_valid) {
-              $sql="SELECT uid FROM cs_users WHERE ulogin='".$_POST['Login']."'";
+              $login=mysql_real_escape_string($_POST['Login']);
+              $email=mysql_real_escape_string($_POST['Email']);
+              $forename=mysql_real_escape_string($_POST['Forename']);
+              $name=mysql_real_escape_string($_POST['Name']);
+              $password=mysql_real_escape_string(md5(md5($_POST['Password'])));
+              $location=mysql_real_escape_string($_POST['Location']);
+
+              echo("$login $email $forename $name $password $location");
+              $sql="SELECT uid FROM cs_users WHERE ulogin='".$login."'";
               $result=mysql_query($sql);
               $row=mysql_fetch_array($result);
               $count=mysql_num_rows($result);
 
+
               if ($count == 0) { 
-                echo "<br/><b>You got it! Click <a href=\"../index.php\">here</a></b><br/><br/>";
+                echo "<br/><b>You got it! Click <a href=\"../index.php\">here</a></b><br/>";
                 echo "<i>Yes. We hate CAPTCHAs too.</i><br/><br/><br/>";
-                $sql="INSERT INTO cs_users VALUES ('', '".$_POST['Login']."', '', '', '".md5(md5($_POST['Password']))."', NOW(), '".$_POST['Location']."'); ";
+                $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '$forename', '$name', '".$password."', NOW(), '".$location."'); ";
                 $result = mysql_query($sql) OR die(mysql_error());
               } 
               
@@ -52,10 +62,14 @@
         }
 	}
 ?>
-
+            <b>General</b><br/>
 			<input type="text" name="Login" maxlength="20" placeholder="Username" id="register_field_standard" />
 			<input type="password" name="Password" maxlength="20" placeholder="Password" id="register_field_standard" />
-			<input type="text" name="Email" maxlength="20" placeholder="E-Mail" id="register_field_standard" />
+			<input type="text" name="Email" maxlength="30" placeholder="E-Mail" id="register_field_standard" />
+
+            <br/><br/><b>Additional</b><br/>
+			<input type="text" name="Forename" maxlength="20" placeholder="Forename" id="register_field_standard" />
+			<input type="text" name="Name" maxlength="20" placeholder="Name" id="register_field_standard" />
 			<input type="text" name="Location" maxlength="20" placeholder="Location" id="register_field_standard" />
 		</div> <!-- end of white-box -->
 		
@@ -71,5 +85,5 @@
 </form>
 
 <?php 
-	include('footer.php'); 
+	include('../footer.php'); 
 ?>
