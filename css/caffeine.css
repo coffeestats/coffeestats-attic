@@ -191,3 +191,26 @@ strong {
 	color: #FFF;
 	min-width: 100px;
 }
+
+
+/* REGISTER */
+
+#register_field_standard {
+	padding: 5px;
+	margin: 0 0 5px 0;
+	display: block;
+	font-size: 12px;
+	border: none;
+	background-color: #E7E7E7;
+	color: #201200;
+	min-height: 22px;	
+}
+
+#register_button_standard {
+	padding: 5px;
+	font-size: 14px;
+	background-color: #2A2A2A;
+	border: none;
+	color: #FFF;
+	min-width: 100px;
+}
