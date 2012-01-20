@@ -53,14 +53,22 @@ $row=mysql_fetch_array($result);
 							<?php
 	                			for ( $counter = 0; $counter <= 23; $counter += 1) {
 	                  			
-	                  			$sql="select '".$counter."' as hour, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') and ( DATE_FORMAT(cdate,'%H') = '".$counter."' or DATE_FORMAT(cdate,'%H') = '0".$counter."') and cuid = '".$profileid."'; ";
+                                  $sql="select '".$counter."' as hour, count(cid) as coffees 
+                                    from cs_coffees 
+                                    where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') 
+                                    and ( DATE_FORMAT(cdate,'%H') = '".$counter."' or DATE_FORMAT(cdate,'%H') = '0".$counter."') 
+                                    and cuid = '".$profileid."'; ";
 	                  			$result=mysql_query($sql);
 	                  			$row=mysql_fetch_array($result);
 	                  
 	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."],\n");
 	                			}
 	                			
-	                  			$sql="select '24' as hour, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') and ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24') and cuid = '".$profileid."'; ";
+                                  $sql="select '24' as hour, count(cid) as coffees 
+                                        from cs_coffees 
+                                        where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') 
+                                        and ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24') 
+                                        and cuid = '".$profileid."'; ";
 	                  			$result=mysql_query($sql);
 	                  			$row=mysql_fetch_array($result);
 	                  	

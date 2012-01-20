@@ -24,6 +24,10 @@ else
 
 * Uservergleich "compare" angabe Useraccount in POST und dropdown menü 
 für daily, monthly, yearly. 
+select '7' as hour, count(cid) as coffees, cuid  from cs_coffees where
+DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') and
+cuid = 1 or cuid = 17 and (DATE_FORMAT(cdate,'%H') = '07' OR
+DATE_FORMAT(cdate,'%H') = '07')  group by cuid;
 
 * Public User profile coffeestats.org/user/noqqe rewrite einrichten
 
