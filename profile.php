@@ -7,11 +7,15 @@ include("lib/antixss.php");
 // Parse user
 $profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
 $profileuser=mysql_real_escape_string($profileuser);
-$sql="SELECT uid FROM cs_users WHERE ulogin='$profileuser'";
+$sql="SELECT uid, ufname, uname, ulocation FROM cs_users WHERE ulogin='$profileuser';";
 $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
 $count=mysql_num_rows($result);
 $profileid=$row['uid'];
+$profilename=$row['uname'];
+$profileforename=$row['ufname'];
+$profilelocation=$row['ulocation'];
+
 ?>
 <div class="white-box">
 <?php
@@ -30,12 +34,9 @@ if ($count==1) {
 $sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
 $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
-
-$sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
-$result=mysql_query($sql);
-$row=mysql_fetch_array($result);
+echo("This is $profileforename $profilename from $profilelocation <br/><br/>");
+echo("Coffees total: ".$row['total']."");
 ?>
-  Coffees total: <?php echo $row['total']; ?>
 </div>
 <b></b>
 
