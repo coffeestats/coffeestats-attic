@@ -17,7 +17,10 @@ include("header.php");
           }
         } else {
           $coffeedate=mysql_real_escape_string($_POST['timestamp']);
-          $sql="select cid, cdate from cs_coffees WHERE cdate > (NOW() - INTERVAL '15:00' MINUTE_SECOND) and cuid = '".$_SESSION['login_id']."' ;";
+          $sql="SELECT cid, cdate 
+                FROM cs_coffees 
+                WHERE cdate > (NOW() - INTERVAL '15:00' MINUTE_SECOND)  
+                AND cuid = '".$_SESSION['login_id']."' ;";
 	      $result=mysql_query($sql);
           $count=mysql_num_rows($result);
           if($count==0) {
