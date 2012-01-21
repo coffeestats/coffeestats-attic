@@ -3,7 +3,7 @@ include('auth/lock.php');
 include("header.php"); 
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
       echo("<div class=\"white-box\">");
-      $coffeestamp=date('Y-m-d i:s', time());
+      $coffeestamp=date('Y-m-d H:i:s', time());
 		include('auth/config.php');
         if($_POST['timestamp']) {
           $coffeedate=date('Y-m-d', time()) . " " .mysql_real_escape_string($_POST['timestamp']);
@@ -20,6 +20,7 @@ include("header.php");
           $sql="SELECT cid, cdate 
                 FROM cs_coffees 
                 WHERE cdate > (NOW() - INTERVAL '15:00' MINUTE_SECOND)  
+                AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
                 AND cuid = '".$_SESSION['login_id']."' ;";
 	      $result=mysql_query($sql);
           $count=mysql_num_rows($result);
@@ -28,7 +29,7 @@ include("header.php");
 		      $result=mysql_query($sql);
 		      echo("<p>Your coffee at ".$coffeestamp." was been registered!</p>");
           } else {
-		      echo("<p>Error: Your last coffee was at least not 15 ago. O_o</p>");
+		      echo("<p>Error: Your last coffee was at least not 15 minutes ago. O_o</p>");
           }
 		}
       echo("</div>");

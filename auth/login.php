@@ -6,8 +6,8 @@
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
 		// username and password sent from Form
 		$myusername=mysql_real_escape_string($_POST['username']);
-		$mypassword=md5(md5(mysql_real_escape_string($_POST['password'])));
-		$sql="SELECT uid FROM cs_users WHERE ulogin='$myusername' and ucryptsum='$mypassword'";
+		$mypassword=crypt(mysql_real_escape_string($_POST['password']), '$2a$07$thisissomefuckingassholesaltforcoffeestats$');
+		$sql="SELECT uid FROM cs_users WHERE ulogin='".$myusername."' and ucryptsum='".$mypassword."'";
 		$result=mysql_query($sql);
 		$row=mysql_fetch_array($result);
 		$count=mysql_num_rows($result);

@@ -6,7 +6,7 @@ include("header.php");
 <div class="white-box">
 <h2>Explore!</h2>
 <?php
-$sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users; ";
+$sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users ORDER BY RAND() LIMIT 15; ";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
       printf("<p><a href=\"profile.php?u=%s\">%s</a> (%s %s) from %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);  

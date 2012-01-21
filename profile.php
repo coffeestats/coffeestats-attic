@@ -21,7 +21,7 @@ $profilelocation=$row['ulocation'];
 <?php
 if ($count==1) {
   if ($profileid==$_SESSION['login_id']) {
-    echo ("<h2>Your Profile</h2>");
+    echo ("<h2>Your Profile <a href=\"public.php?u=".$_SESSION['login_user']."\">(public url)</a></h2>");
   } else {
     echo ("<h2>".$profileuser."'s Profile</h2>"); 
   }

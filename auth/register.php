@@ -22,7 +22,10 @@
         $_POST["recaptcha_response_field"]);
 
         if ($resp->is_valid) {
-              if (ctype_alnum($_POST['Login'])) {
+              if (!isset($_POST['Login'])) {
+                $cerr=2;
+              } 
+              if (!ctype_alnum($_POST['Login'])) {
                 $cerr=2;
               } 
               if (!isset($_POST['Email'])) {
@@ -35,17 +38,17 @@
               $email=mysql_real_escape_string($_POST['Email']);
               $forename=mysql_real_escape_string($_POST['Forename']);
               $name=mysql_real_escape_string($_POST['Name']);
-              $password=mysql_real_escape_string(md5(md5($_POST['Password'])));
+              $password=crypt(mysql_real_escape_string($_POST['Password']), '$2a$07$thisissomefuckingassholesaltforcoffeestats$');
               $location=mysql_real_escape_string($_POST['Location']);
               $sql="SELECT uid FROM cs_users WHERE ulogin='".$login."'; ";
               $result=mysql_query($sql);
               $row=mysql_fetch_array($result);
-              $count=+mysql_num_rows($result);
+              $count=mysql_num_rows($result);
                if (($count == 0) && ($cerr == 0)) { 
                 echo "<div class=\"white-box\"><h2>You got it! Click <a href=\"../index.php\">here</a></h2>";
                 echo "Yes. We hate CAPTCHAs too.</div>";
-                $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '$forename', '$name', '".$password."', NOW(), '".$location."'); ";
-                $result = mysql_query($sql) OR die(mysql_error());
+                $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '".$forename."', '".$name."', '".$password."', NOW(), '".$location."', 'yes'); ";
+                $result = mysql_query($sql); 
               } 
               
               else {
@@ -84,5 +87,6 @@
 		    </div>    
           </form>
 <?php
+    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/caffeine.css\" />";
 	include('../footer.php'); 
 ?>
