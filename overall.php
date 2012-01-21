@@ -6,7 +6,7 @@ include("lib/antixss.php");
 
 ?>
 <div class="white-box">
-  Overall Statistics
+  <h2>Overall Statistics</h2
 </div>
 
 			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
