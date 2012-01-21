@@ -28,7 +28,8 @@
 					<li><a href="index.php">Home</a></li>
 					<li><a href="plusone.php">Update</a></li>
                     <li><a href="profile.php?u=<?php echo $_SESSION['login_user']; ?>">Profile</a></li>
-					<li><a href="search.php">Search</a></li>
+					<li><a href="explore.php">Explore</a></li>
+					<li><a href="overall.php">Overall Stats</a></li>
 					<li><a href="about.php">About</a></li>
 					<li><a href="auth/logout.php">Logout</a></li>
 				</ul>
