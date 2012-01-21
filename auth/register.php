@@ -45,7 +45,7 @@
               $row=mysql_fetch_array($result);
               $count=mysql_num_rows($result);
                if (($count == 0) && ($cerr == 0)) { 
-                echo "<div class=\"white-box\"><h2>You got it! Click <a href=\"../index.php\">here</a></h2>";
+                echo "<div class=\"white-box\"><h2>You got it! Click <a href=\"../index\">here</a></h2>";
                 echo "Yes. We hate CAPTCHAs too.</div>";
                 $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '".$forename."', '".$name."', '".$password."', NOW(), '".$location."', 'yes'); ";
                 $result = mysql_query($sql); 

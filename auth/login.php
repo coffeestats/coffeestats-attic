@@ -18,7 +18,7 @@
     		session_register("myusername");
     		$_SESSION['login_user']=$myusername;
     		$_SESSION['login_id']=$row['uid'];
-    		header("location: ../index.php");
+    		header("location: ../index");
   		}
   
   		else {
@@ -43,7 +43,7 @@
 					<input type="text" name="username" placeholder="Username" id="login_field_username" />
 					<input type="password" name="password" placeholder="Password" id="login_field_password" />
 					<input type="submit" name="submit" value="Login" id="login_button_submit" />
-			        <p>Oh, don't have an account? Simply <a href="register.php">register</a> yourself.</p>
+			        <p>Oh, don't have an account? Simply <a href="register">register</a> yourself.</p>
 					<?php
 						if (isset($error)) {
 							echo("$error");
