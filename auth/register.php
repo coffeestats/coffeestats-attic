@@ -22,20 +22,26 @@
         $_POST["recaptcha_response_field"]);
 
         if ($resp->is_valid) {
-              $login=mysql_real_escape_string($_POST['Login']);
+              if (ctype_alnum($_POST['Login'])) {
+                $cerr=2;
+              } 
+              if (!isset($_POST['Email'])) {
+                $cerr=2;
+              }
+              if (!isset($_POST['Password'])) {
+                $cerr=2;
+              }
+            $login=mysql_real_escape_string($_POST['Login']);
               $email=mysql_real_escape_string($_POST['Email']);
               $forename=mysql_real_escape_string($_POST['Forename']);
               $name=mysql_real_escape_string($_POST['Name']);
               $password=mysql_real_escape_string(md5(md5($_POST['Password'])));
               $location=mysql_real_escape_string($_POST['Location']);
-
               $sql="SELECT uid FROM cs_users WHERE ulogin='".$login."'; ";
               $result=mysql_query($sql);
               $row=mysql_fetch_array($result);
-              $count=mysql_num_rows($result);
-
-
-              if ($count == 0) { 
+              $count=+mysql_num_rows($result);
+               if (($count == 0) && ($cerr == 0)) { 
                 echo "<div class=\"white-box\"><h2>You got it! Click <a href=\"../index.php\">here</a></h2>";
                 echo "Yes. We hate CAPTCHAs too.</div>";
                 $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '$forename', '$name', '".$password."', NOW(), '".$location."'); ";
@@ -43,7 +49,7 @@
               } 
               
               else {
-                echo("Sorry. Username already taken");
+                echo("<div class=\"white-box\">Error: Sorry. Username already taken, invalid or you forgot something in General section.</div>");
               }
         } 
         

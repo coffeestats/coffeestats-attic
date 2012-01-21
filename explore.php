@@ -4,7 +4,7 @@ include("auth/config.php");
 include("header.php");
 ?>
 <div class="white-box">
-<h2>Explore new Users</h2>
+<h2>Explore!</h2>
 <?php
 $sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users; ";
 $result=mysql_query($sql);

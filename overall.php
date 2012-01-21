@@ -46,7 +46,7 @@ include("lib/antixss.php");
 
         				var options = {
           					width: 550, height: 240,
-          					title: 'Your coffees today',
+          					title: 'Overall coffees today',
           					hAxis: {title: 'Hour'}
         				};
 
@@ -89,7 +89,7 @@ include("lib/antixss.php");
 
         var options = {
           width: 550, height: 240,
-          title: 'Your coffees this month',
+          title: 'Overall coffees this month',
           hAxis: {title: 'Day'}
         };
 
@@ -128,8 +128,9 @@ include("lib/antixss.php");
         ]);
 
         var options = {
+          chco: '#000000',
           width: 550, height: 240,
-          title: 'Your coffees this year',
+          title: 'Overall coffees this year',
           hAxis: {title: 'Year'}
         };
 
