@@ -3,6 +3,7 @@
 	include('config.php');
 	include('../preheader.php');
     require_once('../lib/recaptchalib.php');
+    include('../lib/antixss.php');
 
 	// Get a key from https://www.google.com/recaptcha/admin/create
 	$publickey = "6LdnPswSAAAAAFSYLEH9f_b0JcPQ2G1VsOHDmJZY";
@@ -34,12 +35,12 @@
               if (!isset($_POST['Password'])) {
                 $cerr=2;
               }
-            $login=mysql_real_escape_string($_POST['Login']);
-              $email=mysql_real_escape_string($_POST['Email']);
-              $forename=mysql_real_escape_string($_POST['Forename']);
-              $name=mysql_real_escape_string($_POST['Name']);
+              $login=AntiXSS::setFilter(mysql_real_escape_string($_POST['Login']), "whitelist", "string");
+              $email=AntiXSS::setFilter(mysql_real_escape_string($_POST['Email']), "whitelist", "string");
               $password=crypt(mysql_real_escape_string($_POST['Password']), '$2a$07$thisissomefuckingassholesaltforcoffeestats$');
-              $location=mysql_real_escape_string($_POST['Location']);
+              $forename=AntiXSS::setFilter(mysql_real_escape_string($_POST['Forename']), "whitelist", "string");
+              $name=AntiXSS::setFilter(mysql_real_escape_string($_POST['Name']), "whitelist", "string");
+              $location=AntiXSS::setFilter(mysql_real_escape_string($_POST['Location']), "whitelist", "string");
               $sql="SELECT uid FROM cs_users WHERE ulogin='".$login."'; ";
               $result=mysql_query($sql);
               $row=mysql_fetch_array($result);
