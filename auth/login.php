@@ -13,14 +13,14 @@
 		$count=mysql_num_rows($result);
 
 		// if result matched $myusername and $mypassword, table row must be 1 row
-	
+
 		if($count==1) {
     		session_register("myusername");
     		$_SESSION['login_user']=$myusername;
     		$_SESSION['login_id']=$row['uid'];
     		header("location: ../index.php");
   		}
-  
+
   		else {
     		$error="<center>Your username or password seems to be invalid :(</center>";
   		}
@@ -33,18 +33,18 @@
 	<div id="login">
 		<div class="white-box">
 			<h2>What is coffeestats.org?</h2>
-                    <p>It's dead-simple: You enjoy your fix amount of coffee as usual and we keep track of it -- 
-                    enabling us to present you with awesome statistics about your general coffee consumption. 
+                    <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep track of it --
+                    enabling us to present you with awesome statistics about your general coffee consumption.
                     Why? Just because, of course!</p>
 		</div>
-	
+
 		<div class="white-box">
 			<h2>Login</h2>
 				<form action="" method="post">
 					<input type="text" name="username" placeholder="Username" id="login_field_username" />
 					<input type="password" name="password" placeholder="Password" id="login_field_password" />
 					<input type="submit" name="submit" value="Login" id="login_button_submit" />
-			        <p>Oh, don't have an account? Simply <a href="register.php">register</a>.</p>
+			        <p>Oh, you don't have an account yet? Simply register one <a href="register.php">here</a>.</p>
 					<?php
 						if (isset($error)) {
 							echo("$error");
@@ -52,8 +52,8 @@
 					?>
 				</form>
 		</div>
-		
-		
+
+
 		<div class="white-box">
 			<h2>Charts!</h2>
     			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -61,10 +61,10 @@
    				<script type="text/javascript">
       				google.load("visualization", "1", {packages:["corechart"]});
       				google.setOnLoadCallback(drawChart);
-      
+
       				function drawChart() {
         				var data = new google.visualization.DataTable();
-        
+
         				data.addColumn('string', 'Hour');
         				data.addColumn('number', 'noqqe');
         				data.addColumn('number', 'dreary');
@@ -95,8 +95,8 @@
             			chart.draw(data, options);
               		}
       			</script>
-        
-        	<div id="coffeeexample"> <!-- example chart --> </div>    
+
+        	<div id="coffeeexample"> <!-- example chart --> </div>
 
 		</div>
 	</div>
