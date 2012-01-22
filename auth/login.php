@@ -33,8 +33,9 @@
 	<div id="login">
 		<div class="white-box">
 			<h2>What is coffeestats.org?</h2>
-					<p>If you like coffee and graphs, you're on the right way. You drink this awesome 
-					tasting black hot stuff, we count it!</p>
+                    <p>It's dead-simple: You enjoy your fix amount of coffee as usual and we keep track of it -- 
+                    enabling us to present you with awesome statistics about your general coffee consumption. 
+                    Why? Just because, of course!</p>
 		</div>
 	
 		<div class="white-box">
@@ -54,7 +55,7 @@
 		
 		
 		<div class="white-box">
-			<h2>Chart Example</h2>
+			<h2>Charts!</h2>
     			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
    				<script type="text/javascript">

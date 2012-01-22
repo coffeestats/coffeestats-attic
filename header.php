@@ -13,7 +13,7 @@
 
 	<div id="header">
         <h1>coffeestats.org</h1>
-        	<p>You drink it, we count!</p>
+        	<p>You drink, we count!</p>
 	</div>
 	
 	<div id="content">

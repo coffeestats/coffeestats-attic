@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="author" content="F. Baumann, H. Winter" />
-<meta name="description" content="CoffeeStats | All about coffee" />
-<title>CoffeeStats</title>
+<meta name="description" content="coffeestats.org | All about coffee" />
+<title>coffeestats.org</title>
 <link rel="stylesheet" type="text/css" href="../css/caffeine.css" />
 </head>
 <body>
@@ -13,5 +13,5 @@
 
 	<div id="header">
         <h1>coffeestats.org</h1>
-        	<p>You drink it, we count!</p>
+        	<p>You drink, we count!</p>
 	</div>
