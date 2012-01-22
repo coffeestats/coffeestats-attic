@@ -1,15 +1,15 @@
 <?php
 	include('auth/lock.php');
-	include("header.php"); 
+	include("header.php");
 ?>
 
 		<div class="white-box">
-			<h2>Whats up, dude?</h2>
-				<p>I heard you like coffee, graphs and nerdy statistics?</p>
-				<p>If you had a coffee today simply go to <a href="update.php">Update</a> say when. Or perhaps you got one right now?</p>
-                <p>Clicking <a href="explore">Explore</a> will show you some statistics of other users in here!</p>
+			<h2>Whats up?</h2>
+				<p>You like coffee, graphs and nerdy statistics? Well, we do too!</p>
+				<p>If you had a coffee today, or are about to drink one, simply let us know <a href="update.php">here</a> and we'll keep track of it.
+                You can also <a href="explore">explore</a> a bit and check out the other user's statistics!</p>
 		</div>
 
-<?php 
-	include("footer.php"); 
+<?php
+	include("footer.php");
 ?>

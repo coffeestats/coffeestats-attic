@@ -13,15 +13,15 @@
 
 	<div id="header">
         <h1>coffeestats.org</h1>
-        	<p>You drink, we count!</p>
+        	<p>You drink it, we track it!</p>
 	</div>
-	
+
 	<div id="content">
-	
+
 		<div class="white-box">
 			<p>Greetings, <strong><?php echo $_SESSION['login_user']; ?></strong>!</p>
 		</div>
-		
+
 		<div class="white-box">
 			<div id="navigation">
 				<ul id="navigation">
