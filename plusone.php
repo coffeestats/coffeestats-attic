@@ -1,6 +1,6 @@
 <?php
 include('auth/lock.php');
-include("header.php"); 
+include("header.php");
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
       echo("<div class=\"white-box\">");
       $coffeestamp=date('Y-m-d H:i:s', time());
@@ -13,13 +13,13 @@ include("header.php");
 		    $result=mysql_query($sql);
 		    echo("<p>Your coffee at ".$coffeedate." was been registered!</p>");
           } else {
-            echo("Sorry. This looks not like a valid time"); 
+            echo("Sorry. This looks not like a valid time");
           }
         } else {
           $coffeedate=mysql_real_escape_string($_POST['timestamp']);
-          $sql="SELECT cid, cdate 
-                FROM cs_coffees 
-                WHERE cdate > (NOW() - INTERVAL '15:00' MINUTE_SECOND)  
+          $sql="SELECT cid, cdate
+                FROM cs_coffees
+                WHERE cdate > (NOW() - INTERVAL '15:00' MINUTE_SECOND)
                 AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
                 AND cuid = '".$_SESSION['login_id']."' ;";
 	      $result=mysql_query($sql);
@@ -38,17 +38,17 @@ include("header.php");
 
 		<div class="white-box">
 			<h2>Ahhh, another one, huh?</h2>
-				<p>We know, you can't get your fingers away from coffee. Update your consume by +1!</p>
-				
+				<p>We know, we can't control ourselves either; Update your consumption by +1!</p>
+
 				<form action="" method="post">
 					<input class="imadecoffee" type="submit" value="Right! And It tastes awesome" id="coffee_plus_one" /><br />
 				</form>
-				
+
 		</div>
         <div class="white-box">
-          <h2>Did you forgot a coffee today?</h2>
+          <h2>(Secretly) chugged down a cup of coffee and forgot to tell us about it?</h2>
             <form action="" method="post">
-              <input type="text" name="timestamp" placeholder="<?php echo date('H:i', time()); ?>" id="login_field_username" /> 
+              <input type="text" name="timestamp" placeholder="<?php echo date('H:i', time()); ?>" id="login_field_username" />
 			  <input class="imadecoffee" type="submit" value="was the time" id="coffee_plus_one" /><br />
             </form>
         </div>

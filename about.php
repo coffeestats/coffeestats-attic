@@ -1,13 +1,13 @@
 <?php
 	include('auth/lock.php');
-	include("header.php"); 
+	include("header.php");
 ?>
 
 		<div class="white-box">
 			<h2>About coffeestats.org</h2>
 
-                <p>Written with two Mac OS X, prowdly running on Debian.
-				We wanna thank all the awesome OpenSource software and pieces of arts under 
+                <p>Cofeestats.org was written with the help of two Mac OS X systems and is proudly running on Debian.
+				We want to thank the awesome OpenSource community for all their software and art available under
 				the <a href="http://creativecommons.org">CreativeCommons</a> license:</p>
 					<ul>
 						<li><a href="http://openclipart.org/detail/10764/coffee-cup-by-sl4yerpl-10764">Coffee Cup</a> by sl4yerPL on openclipart.org</li>
@@ -18,6 +18,6 @@
 					</ul>
 		</div>
 
-<?php 
-	include("footer.php"); 
+<?php
+	include("footer.php");
 ?>
