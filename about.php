@@ -6,7 +6,7 @@
 		<div class="white-box">
 			<h2>About coffeestats.org</h2>
 
-                <p>Cofeestats.org was written with the help of two Mac OS X systems and is proudly running on Debian.
+                <p>Coffeestats.org was written with the help of two Mac OS X systems and is proudly running on Debian.
 				We want to thank the awesome OpenSource community for all their software and art available under
 				the <a href="http://creativecommons.org">CreativeCommons</a> license:</p>
 					<ul>
