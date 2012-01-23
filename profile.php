@@ -174,6 +174,92 @@ echo("Coffees total: ".$row['total']."");
         chart.draw(data, options);
       }
     </script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Day');
+        data.addColumn('number', 'Coffees');
+        data.addRows([
+<?php
+                for ( $counter = 1; $counter <= 11; $counter += 1) {
+                  $sql="SELECT '".$counter."' AS year, count(cid) AS coffees 
+                        FROM cs_coffees 
+                        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') 
+                        AND ( DATE_FORMAT(cdate,'%m') = '".$counter."' or DATE_FORMAT(cdate,'%m') = '0".$counter."') 
+                        AND cuid = '".$profileid."'; ";
+                  $result=mysql_query($sql);
+                  $row=mysql_fetch_array($result);
+                  echo ("\t\t['".$row['year']."', ".$row['coffees']."],\n");
+                }
+                  $sql="SELECT '12' AS year, count(cid) AS coffees 
+                        FROM cs_coffees 
+                        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') 
+                        AND ( DATE_FORMAT(cdate,'%m') = '12' or DATE_FORMAT(cdate,'%m') = '12') 
+                        AND cuid = '".$profileid."'; ";
+                  $result=mysql_query($sql);
+                  $row=mysql_fetch_array($result);
+                  echo ("\t\t['".$row['year']."', ".$row['coffees']."]");
+?>
+
+        ]);
+
+        var options = {
+          width: 550, height: 240,
+          title: 'Your coffees this year',
+          hAxis: {title: 'Year'}
+        };
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('coffee_year'));
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Hour');
+        data.addColumn('number', 'Coffees');
+        data.addRows([
+							<?php
+	                			for ( $counter = 0; $counter <= 23; $counter += 1) {
+	                  			
+                                  $sql="SELECT '".$counter."' as hour, count(cid) as coffees 
+                                    FROM cs_coffees 
+                                    WHERE ( DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."') 
+                                    AND cuid = '".$profileid."'; ";
+	                  			$result=mysql_query($sql);
+	                  			$row=mysql_fetch_array($result);
+	                  
+	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."],\n");
+	                			}
+	                			
+                                  $sql="SELECT '24' as hour, count(cid) as coffees 
+                                        FROM  cs_coffees 
+                                        WHERE ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24') 
+                                        AND cuid = '".$profileid."'; ";
+	                  			$result=mysql_query($sql);
+	                  			$row=mysql_fetch_array($result);
+	                  	
+	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."]");
+							?>
+
+        ]);
+
+        var options = {
+          width: 550, height: 240,
+          title: 'Your most Coffee by hour (alltime)',
+          hAxis: {title: 'Hour'} 
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('coffee_hour'));
+        chart.draw(data, options);
+      }
+    </script>
+
 
 		<div class="white-box">
           <div id="coffee_today"></div>
@@ -184,7 +270,9 @@ echo("Coffees total: ".$row['total']."");
 		<div class="white-box">
           <div id="coffee_year"></div>
 		</div>
-
+		<div class="white-box">
+          <div id="coffee_hour"></div>
+		</div>
 <?php
 	include("footer.php");
 ?>
