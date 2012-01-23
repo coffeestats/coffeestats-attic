@@ -7,6 +7,6 @@ $row=mysql_fetch_assoc($ses_sql);
 $login_session=$row['ulogin'];
 if(!isset($login_session))
 {
-  header("Location: auth/login.php");
+  header("Location: auth/login");
 }
 ?>
