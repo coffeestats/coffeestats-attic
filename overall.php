@@ -6,7 +6,7 @@ include("lib/antixss.php");
 
 ?>
 <div class="white-box">
-  <h2>Overall Statistics</h2
+  <h2>Overall Statistics</h2>
 </div>
 
 			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -139,6 +139,49 @@ include("lib/antixss.php");
       }
     </script>
 
+
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Hour');
+        data.addColumn('number', 'Coffees');
+        data.addRows([
+							<?php
+	                			for ( $counter = 0; $counter <= 23; $counter += 1) {
+	                  			
+                                  $sql="SELECT '".$counter."' as hour, count(cid) as coffees 
+                                    FROM cs_coffees 
+                                    WHERE ( DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."');  ";
+	                  			$result=mysql_query($sql);
+	                  			$row=mysql_fetch_array($result);
+	                  
+	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."],\n");
+	                			}
+	                			
+                                  $sql="SELECT '24' as hour, count(cid) as coffees 
+                                        FROM  cs_coffees 
+                                        WHERE ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24'); ";
+	                  			$result=mysql_query($sql);
+	                  			$row=mysql_fetch_array($result);
+	                  	
+	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."]");
+							?>
+
+        ]);
+
+        var options = {
+          width: 550, height: 240,
+          title: 'Most Coffee by hour (alltime)',
+          hAxis: {title: 'Hour'} 
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('coffee_hour'));
+        chart.draw(data, options);
+      }
+    </script>
+
 		<div class="white-box">
           <div id="coffee_today"></div>
 		</div>
@@ -147,6 +190,9 @@ include("lib/antixss.php");
 		</div>
 		<div class="white-box">
           <div id="coffee_year"></div>
+		</div>
+		<div class="white-box">
+          <div id="coffee_hour"></div>
 		</div>
 
 <?php
