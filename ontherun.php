@@ -23,7 +23,7 @@ include("preheader.php");
 	      $result=mysql_query($sql);
           $count=mysql_num_rows($result);
           if($count==0) {
-		      $sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', NOW() ); ";
+		      $sql="INSERT INTO cs_coffees VALUES ('','".$profileid."', NOW() ); ";
 		      $result=mysql_query($sql);
 		      echo("<p>Your coffee at ".$coffeestamp." was been registered!</p>");
           } else {

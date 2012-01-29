@@ -10,7 +10,7 @@
                 You can also <a href="explore">explore</a> a bit and check out the other user's statistics!</p>
 
                 <p>New: You're not always on a Workstation? Register a coffee <a href="ontherun">on-the-run</a>! Get your on-the-run url on your profile page.
-                   Simply bookmark the url on your mobile device.</p>
+                   Simply bookmark the url on your mobile device and you will never forget a coffee =)</p>
 		</div>
 
 <?php
