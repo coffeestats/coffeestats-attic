@@ -35,9 +35,14 @@
               if (!isset($_POST['Password'])) {
                 $cerr=2;
               }
+              if (!isset($cerr)) {
+                $cerr=0;
+              }
+              $salt='$2a$07$thisissomefuckingassholesaltforcoffeestats$';
               $login=AntiXSS::setFilter(mysql_real_escape_string($_POST['Login']), "whitelist", "string");
               $email=AntiXSS::setFilter(mysql_real_escape_string($_POST['Email']), "whitelist", "string");
               $password=crypt(mysql_real_escape_string($_POST['Password']), '$2a$07$thisissomefuckingassholesaltforcoffeestats$');
+              $otrtoken=md5($password.$login.$salt);
               $forename=AntiXSS::setFilter(mysql_real_escape_string($_POST['Forename']), "whitelist", "string");
               $name=AntiXSS::setFilter(mysql_real_escape_string($_POST['Name']), "whitelist", "string");
               $location=AntiXSS::setFilter(mysql_real_escape_string($_POST['Location']), "whitelist", "string");
@@ -48,7 +53,7 @@
                if (($count == 0) && ($cerr == 0)) { 
                 echo "<div class=\"white-box\"><h2>You got it! Click <a href=\"../index.php\">here</a></h2>";
                 echo "Yes. We hate CAPTCHAs too.</div>";
-                $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '".$forename."', '".$name."', '".$password."', NOW(), '".$location."', 'yes'); ";
+                $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '".$forename."', '".$name."', '".$password."', NOW(), '".$location."', 'yes', '".$otrtoken."'); ";
                 $result = mysql_query($sql); 
               } 
               

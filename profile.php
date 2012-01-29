@@ -21,7 +21,10 @@ $profilelocation=$row['ulocation'];
 <?php
 if ($count==1) {
   if ($profileid==$_SESSION['login_id']) {
-    echo ("<h2>Your Profile <a href=\"http://www.facebook.com/sharer.php?u=http://coffeestats.org/public?u=".$_SESSION['login_user']."&t=My%20coffee%20statistic\"><img src=\"images/facebook-share-icon.gif\"></a></h2>");
+    echo ("<h2>Your Profile </h2>");
+    echo("Your public url: <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">http://coffeestats.org/public?u=".$_SESSION['login_user']."</a></br>");
+    echo("Your mobile url: <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">http://coffeestats.org/public?u=".$_SESSION['login_user']."</a></br><br/>");
+    echo("Facebook: <a href=\"http://www.facebook.com/sharer.php?u=http://coffeestats.org/public?u=".$_SESSION['login_user']."&t=My%20coffee%20statistic\"><img src=\"images/facebook-share-icon.gif\"></a><br/><br/>");
   } else {
     echo ("<h2>".$profileuser."'s Profile</h2>"); 
   }
@@ -34,7 +37,8 @@ if ($count==1) {
 $sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
 $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
-echo("This is $profileforename $profilename from $profilelocation <br/><br/>");
+echo("Name: $profileforename $profilename <br/>");
+echo("Location: $profilelocation <br/><br/>");
 echo("Coffees total: ".$row['total']."");
 ?>
 </div>
@@ -141,7 +145,7 @@ echo("Coffees total: ".$row['total']."");
         data.addColumn('string', 'Day');
         data.addColumn('number', 'Coffees');
         data.addRows([
-<?php
+            <?php
                 for ( $counter = 1; $counter <= 11; $counter += 1) {
                   $sql="SELECT '".$counter."' AS year, count(cid) AS coffees 
                         FROM cs_coffees 
@@ -160,7 +164,7 @@ echo("Coffees total: ".$row['total']."");
                   $result=mysql_query($sql);
                   $row=mysql_fetch_array($result);
                   echo ("\t\t['".$row['year']."', ".$row['coffees']."]");
-?>
+              ?>
 
         ]);
 
