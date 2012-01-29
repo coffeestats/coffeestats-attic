@@ -7,7 +7,7 @@ include("lib/antixss.php");
 // Parse user
 $profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
 $profileuser=mysql_real_escape_string($profileuser);
-$sql="SELECT uid, ufname, uname, ulocation FROM cs_users WHERE ulogin='$profileuser';";
+$sql="SELECT uid, ufname, uname, ulocation, utoken FROM cs_users WHERE ulogin='$profileuser';";
 $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
 $count=mysql_num_rows($result);
@@ -15,6 +15,7 @@ $profileid=$row['uid'];
 $profilename=$row['uname'];
 $profileforename=$row['ufname'];
 $profilelocation=$row['ulocation'];
+$profiletoken=$row['utoken'];
 
 ?>
 <div class="white-box">
@@ -23,7 +24,7 @@ if ($count==1) {
   if ($profileid==$_SESSION['login_id']) {
     echo ("<h2>Your Profile </h2>");
     echo("Your public url: <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">http://coffeestats.org/public?u=".$_SESSION['login_user']."</a></br>");
-    echo("Your mobile url: <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">http://coffeestats.org/public?u=".$_SESSION['login_user']."</a></br><br/>");
+    echo("Your on-the-run  url: <a href=\"http://coffeestats.org/ontherun?u=".$_SESSION['login_user']."&t=".$profiletoken."\">http://coffeestats.org/public?u=".$_SESSION['login_user']."&t=".$profiletoken."</a></br>");
     echo("Facebook: <a href=\"http://www.facebook.com/sharer.php?u=http://coffeestats.org/public?u=".$_SESSION['login_user']."&t=My%20coffee%20statistic\"><img src=\"images/facebook-share-icon.gif\"></a><br/><br/>");
   } else {
     echo ("<h2>".$profileuser."'s Profile</h2>"); 

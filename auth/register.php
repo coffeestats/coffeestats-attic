@@ -92,9 +92,6 @@
 			  <input type="submit" value="Register!" id="register_button_standard" />
 		    </div>    
           </form>
-        
-        <div class="white-box">
-		    <p><a href="#">coffeestats.org</a> is a project by <a href="http://noqqe.de">Florian Baumann</a> & <a href="http://savier.n0q.org">Holger Winter</a>. If you like you can follow us on <a href="http://www.facebook.com/pages/coffeestatsorg/135455386573798?sk=info">Facebook</a>. We wouldn't be sad if you click "i like", either!</p>
-		</div>
-</body>
-</html>
+<?php
+include('../footer.php');
+?>        
