@@ -229,11 +229,6 @@ echo("Coffees total: ".$row['total']."");
 		<div class="white-box">
           <div id="coffee_hour"></div>
 		</div>
-
-
-		<div class="white-box">
-		    <p><a href="#">coffeestats.org</a> is a project by <a href="http://noqqe.de">Florian Baumann</a> & <a href="http://savier.n0q.org">Holger Winter</a>. If you like you can follow us on <a href="#">Facebook</a>. We wouldn't be sad if you click "i like", either!</p>
-		</div>
 <!-- Piwik -->
                   <script type="text/javascript">
                   var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.n0q.org/" : "http://piwik.n0q.org/");
@@ -246,5 +241,6 @@ echo("Coffees total: ".$row['total']."");
   } catch( err ) {}
     </script><noscript><p><img src="http://piwik.n0q.org/piwik.php?idsite=6" style="border:0" alt="" /></p></noscript>
 <!-- End Piwik Tracking Code -->
-</body>
-</html>
+<?php
+include('footer.php');
+?>
