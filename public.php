@@ -216,6 +216,38 @@ echo("Coffees total: ".$row['total']."");
       }
     </script>
 
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Day');
+        data.addColumn('number', 'Coffees');
+        data.addRows([
+			<?php
+             $sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees 
+                   FROM cs_coffees 
+                   WHERE cuid = '".$profileid."'
+                   GROUP BY day; ";
+            $result=mysql_query($sql);
+            while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+	        echo ("\t\t['".$row[0]."', ".$row[1]."],\n");
+            }
+		    ?>
+
+        ]);
+
+        var options = {
+          width: 550, height: 240,
+          title: 'Your most Coffee by Day (alltime)',
+          hAxis: {title: 'Hour'} 
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('coffee_mostday'));
+        chart.draw(data, options);
+      }
+    </script>
+
 
 		<div class="white-box">
           <div id="coffee_today"></div>
@@ -229,6 +261,10 @@ echo("Coffees total: ".$row['total']."");
 		<div class="white-box">
           <div id="coffee_hour"></div>
 		</div>
+		<div class="white-box">
+          <div id="coffee_mostday"></div>
+		</div>
+
 <!-- Piwik -->
                   <script type="text/javascript">
                   var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.n0q.org/" : "http://piwik.n0q.org/");
