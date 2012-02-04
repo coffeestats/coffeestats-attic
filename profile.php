@@ -277,7 +277,8 @@ echo("Coffees total: ".$row['total']."");
              $sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees 
                    FROM cs_coffees 
                    WHERE cuid = '".$profileid."'
-                   GROUP BY day; ";
+                   GROUP BY day
+                   ORDER BY DATE_FORMAT(cdate, '%w'); ";
             $result=mysql_query($sql);
             while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 	        echo ("\t\t['".$row[0]."', ".$row[1]."],\n");
