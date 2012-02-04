@@ -182,6 +182,36 @@ include("lib/antixss.php");
       }
     </script>
 
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Day');
+        data.addColumn('number', 'Coffees');
+        data.addRows([
+			<?php
+             $sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees 
+                   FROM cs_coffees 
+                   GROUP BY day; ";
+            $result=mysql_query($sql);
+            while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+	        echo ("\t\t['".$row[0]."', ".$row[1]."],\n");
+            }
+		    ?>
+
+        ]);
+
+        var options = {
+          width: 550, height: 240,
+          title: 'Most Coffee by day (alltime)',
+          hAxis: {title: 'Hour'} 
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('coffee_mostday'));
+        chart.draw(data, options);
+      }
+    </script>
 		<div class="white-box">
           <div id="coffee_today"></div>
 		</div>
@@ -193,6 +223,9 @@ include("lib/antixss.php");
 		</div>
 		<div class="white-box">
           <div id="coffee_hour"></div>
+		</div>
+		<div class="white-box">
+          <div id="coffee_mostday"></div>
 		</div>
 
 <?php
