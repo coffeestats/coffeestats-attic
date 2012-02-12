@@ -212,7 +212,40 @@ include("lib/antixss.php");
         var chart = new google.visualization.AreaChart(document.getElementById('coffee_mostday'));
         chart.draw(data, options);
       }
+
     </script>
+    <script type="text/javascript">
+      google.load('visualization', '1.0', {'packages':['corechart']});
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Coffees');
+        data.addColumn('number', 'User');
+        data.addRows([
+			<?php
+             $sql="SELECT cs_users.ulogin, COUNT(cs_coffees.cid) 
+                    FROM  cs_coffees, cs_users
+                    WHERE cs_users.uid = cs_coffees.cuid 
+                    GROUP BY cs_coffees.cuid; ";
+            $result=mysql_query($sql);
+            while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+	        echo ("\t\t['".$row[0]."', ".$row[1]."],\n");
+            }
+		    ?>
+        ]);
+
+        // Set chart options
+        var options = {'title':'Coffees by user on coffeestats.org',
+                       'width':600,
+                       'height':240};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('coffees_by_user'));
+        chart.draw(data, options);
+      }
+    </script>
+
 		<div class="white-box">
           <div id="coffee_today"></div>
 		</div>
@@ -227,6 +260,9 @@ include("lib/antixss.php");
 		</div>
 		<div class="white-box">
           <div id="coffee_mostday"></div>
+		</div>
+		<div class="white-box">
+          <div id="coffees_by_user"></div>
 		</div>
 
 <?php
