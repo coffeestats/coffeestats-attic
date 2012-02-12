@@ -33,6 +33,7 @@
 	<div id="login">
 		<div class="white-box">
 			<h2>What is coffeestats.org?</h2>
+				    <p>You like coffee, graphs and nerdy statistics? Well, we do too!</p>
                     <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep track of it --
                     enabling us to present you with awesome statistics about your general coffee consumption.
                     Why? Just because, of course!</p>
