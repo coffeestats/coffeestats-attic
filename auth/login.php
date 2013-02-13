@@ -115,6 +115,6 @@ document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/ja
     </script><noscript><p><img src="http://piwik.n0q.org/piwik.php?idsite=6" style="border:0" alt="" /></p></noscript>
 <!-- End Piwik Tracking Code -->
 
-<?
+<?php
 include('../footer.php');
 ?>

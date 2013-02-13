@@ -19,10 +19,6 @@
 	<div id="content">
 
 		<div class="white-box">
-			<p>Greetings, <strong><?php echo $_SESSION['login_user']; ?></strong>!</p>
-		</div>
-
-		<div class="white-box">
 			<div id="navigation">
 				<ul id="navigation">
 					<li><a href="index"><img src="../images/home.png"> Home</a></li>
