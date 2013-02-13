@@ -45,7 +45,7 @@
 					<input type="text" name="username" placeholder="Username" id="login_field_username" />
 					<input type="password" name="password" placeholder="Password" id="login_field_password" />
 					<input type="submit" name="submit" value="Login" id="login_button_submit" />
-			        <p>Oh, you don't have an account yet? Simply register one <a href="register">here</a>.</p>
+			        <p>Oh, you don't have an account yet? <br/>Simply register one <a href="register">here</a>.</p>
 					<?php
 						if (isset($error)) {
 							echo("$error");
