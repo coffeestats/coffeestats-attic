@@ -7,6 +7,9 @@ include("lib/antixss.php");
 ?>
 <div class="white-box">
   <h2>Overall Statistics</h2>
+
+  <p>We love stats. On overall statistics we started making awesome graphs examining the daily coffee
+     consumption of anyone using coffeestats.org. There are different approaches to visualize this. At least a few of them are listed below.</p>
 </div>
 
 			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
