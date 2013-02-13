@@ -14,6 +14,15 @@
 						<li><a href="http://subtlepatterns.com/?p=750">Woven</a> by Max Rudberg on subtlepatterns.com </li>
 						<li><a href="http://code.google.com/intl/de/apis/chart/interactive/docs/index.html">The Google Charts Project</a></li>
 						<li><a href="http://www.dafont.com/harabara.font">Harabara</a> by André Harabara on dafont.com</li>
+						<li><a href="http://adamwhitcroft.com/batch/">Batch Iconset</a> by Adam Whitcroft</li>
+					</ul>
+
+			<h2>Changelog</h2>
+					<ul>
+						<li>2013-02-13 Added some awesome icons to navigation</li>
+						<li>2012-11-06 Migrated from Debian Squeeze to OpenBSD</li>
+						<li>2012-02-11 Added on-the-run Mode</li>
+						<li>2012-01-23 Added Overall Stats</li>
 					</ul>
 		</div>
 

@@ -25,13 +25,13 @@
 		<div class="white-box">
 			<div id="navigation">
 				<ul id="navigation">
-					<li><a href="index">Home</a></li>
-					<li><a href="plusone">Update</a></li>
-                    <li><a href="profile?u=<?php echo $_SESSION['login_user']; ?>">Profile</a></li>
-					<li><a href="explore">Explore</a></li>
-					<li><a href="overall">Overall Stats</a></li>
-					<li><a href="about">About</a></li>
-					<li><a href="auth/logout">Logout</a></li>
+					<li><a href="index"><img src="../images/home.png"> Home</a></li>
+					<li><a href="plusone"><img src="../images/tag.png"> Update</a></li>
+                    <li><a href="profile?u=<?php echo $_SESSION['login_user']; ?>"><img src="../images/profile.png"> Profile</a></li>
+					<li><a href="explore"><img src="../images/list.png"> Explore</a></li>
+					<li><a href="overall"><img src="../images/flask.png"> Overall Stats</a></li>
+					<li><a href="about"><img src="../images/user-4.png"> About</a></li>
+					<li><a href="auth/logout"><img src="../images/out.png"> Logout</a></li>
 				</ul>
 			</div>
 		</div>

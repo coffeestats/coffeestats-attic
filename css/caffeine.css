@@ -157,15 +157,15 @@ strong {
 }
 
 #navigation ul li {
-	padding: 10px;
+	padding: 8px;
 	margin: 0;
 	display: inline;
-	background-color: #000;
+	background-color: #FFF;
 }
 
 #navigation ul li a {
 	font-weight: normal;
-	color: #FFF;
+	color: #000;
 }
 
 
