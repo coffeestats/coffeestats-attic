@@ -23,11 +23,28 @@ $profiletoken=$row['utoken'];
 if ($count==1) {
   if ($profileid==$_SESSION['login_id']) {
     echo ("<h2>Your Profile </h2>");
-    echo("Public profile: <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">http://coffeestats.org/public?u=".$_SESSION['login_user']."</a></br><br/>");
-    echo("On-the-run: <a href=\"http://coffeestats.org/ontherun?u=".$_SESSION['login_user']."&t=".$profiletoken."\">http://coffeestats.org/ontherun?u=".$_SESSION['login_user']."&t=".$profiletoken."</a><br/></br>");
-    echo("Facebook: <a href=\"http://www.facebook.com/sharer.php?u=http://coffeestats.org/public?u=".$_SESSION['login_user']."&t=My%20coffee%20statistic\"><img src=\"images/facebook-share-icon.gif\"></a><br/><br/>");
+    echo ("<ul>");
+    echo("<li>Name: $profileforename $profilename </li>");
+    echo("<li>Location: $profilelocation </li>");
+    $sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    echo("<li>Your Coffees total: ".$row['total']."</li>");
+    echo("<li>Your <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">public profile page</a></li>");
+    echo("<li>Your <a href=\"http://coffeestats.org/ontherun?u=".$_SESSION['login_user']."&t=".$profiletoken."\">on-the-run</a> URL</li>");
+    echo ("</ul>");
+    echo("Share your profile on Facebook! <br> 
+      <br/><a href=\"http://www.facebook.com/sharer.php?u=http://coffeestats.org/public?u=".$_SESSION['login_user']."&t=My%20coffee%20statistic\"><img src=\"images/facebook-share-icon.gif\"></a></li>");
   } else {
     echo ("<h2>".$profileuser."'s Profile</h2>"); 
+    echo ("<ul>");
+    echo("<li>Name: $profileforename $profilename </li>");
+    echo("<li>Location: $profilelocation </li>");
+    $sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    echo("<li>Coffees total: ".$row['total']."</li>");
+    echo ("</ul>");
   }
 } else {
   $profileid=$_SESSION['login_id'];
@@ -35,12 +52,6 @@ if ($count==1) {
   echo("Error finding User. Showing your Graphs instead.");
 }
 
-$sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
-$result=mysql_query($sql);
-$row=mysql_fetch_array($result);
-echo("Name: $profileforename $profilename <br/>");
-echo("Location: $profilelocation <br/><br/>");
-echo("Coffees total: ".$row['total']."");
 ?>
 </div>
 <b></b>

@@ -5,8 +5,10 @@ include("header.php");
 ?>
 <div class="white-box">
 <h2>Explore!</h2>
+
+<p>You're not the only human at this site! Great, isn't it? Lets see the stats of some other guys.</p>
 <?php
-$sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users ORDER BY RAND() LIMIT 15; ";
+$sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users ORDER BY RAND() LIMIT 5; ";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
       printf("<p><a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);  

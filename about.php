@@ -19,7 +19,8 @@
 
 			<h2>Changelog</h2>
 					<ul>
-						<li>2013-02-13 Added some awesome icons to navigation</li>
+						<li>2013-02-13 Added some awesome icons to navigation and cleaned up interface</li>
+                        <li>2012-02-11 Added SSL <a href="https://coffeestats.org">https://coffeestats.org</a></li>
 						<li>2012-11-06 Migrated from Debian Squeeze to OpenBSD</li>
 						<li>2012-02-11 Added on-the-run Mode</li>
 						<li>2012-01-23 Added Overall Stats</li>
