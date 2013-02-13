@@ -118,7 +118,7 @@ echo("Coffees total: ".$row['total']."");
                                 $sql="SELECT '31' AS day, count(cid) AS coffees 
                                       FROM cs_coffees 
                                       WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') 
-                                      AND ( DATE_FORMAT(cdate,'%d') = '12' or DATE_FORMAT(cdate,'%d') = '12') 
+                                      AND ( DATE_FORMAT(cdate,'%d') = '31' or DATE_FORMAT(cdate,'%d') = '31') 
                                       AND cuid = '".$profileid."'; ";
 	                  		$result=mysql_query($sql);
 	                  		$row=mysql_fetch_array($result);
