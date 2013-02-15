@@ -74,7 +74,7 @@
             <b>General</b><br/>
 			<input type="text" name="Login" maxlength="20" placeholder="Username" id="register_field_standard" />
 			<input type="password" name="Password" maxlength="20" placeholder="Password" id="register_field_standard" />
-			<input type="text" name="Email" maxlength="30" placeholder="E-Mail" id="register_field_standard" />
+			<input type="text" name="Email" maxlength="50" placeholder="E-Mail" id="register_field_standard" />
 
             <br/><br/><b>Additional</b><br/>
 			<input type="text" name="Forename" maxlength="20" placeholder="Forename" id="register_field_standard" />
