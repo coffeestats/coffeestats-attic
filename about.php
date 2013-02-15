@@ -19,6 +19,8 @@
 
 			<h2>Changelog</h2>
 					<ul>
+						<li>2013-02-15 Max email length resized up to 50 chars</li>
+						<li>2013-02-15 Made time for coffee +1 with js not servertime. Better feeling for users who not live in GMT+1</li> 
 						<li>2013-02-13 Added some awesome icons to navigation and cleaned up interface</li>
                         <li>2012-02-11 Added SSL <a href="https://coffeestats.org">https://coffeestats.org</a></li>
 						<li>2012-11-06 Migrated from Debian Squeeze to OpenBSD</li>
