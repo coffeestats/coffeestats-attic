@@ -11,33 +11,55 @@ if( (!isset($token)) && (!isset($user)) ) {
     header("Location: auth/login.php");
 }
 include("preheader.php");
-	if($_SERVER["REQUEST_METHOD"] == "POST") {
+	if($_POST['coffeetime']) {
       include('auth/config.php');
+      include('lib/antixss.php');
       echo("<div class=\"white-box\">");
-      $coffeestamp=date('Y-m-d H:i:s', time());
+          $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
+          $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
           $sql="SELECT cid, cdate
                 FROM cs_coffees
-                WHERE cdate > (NOW() - INTERVAL '15:00' MINUTE_SECOND)
+                WHERE cdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
                 AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
                 AND cuid = '".$profileid."' ;";
 	      $result=mysql_query($sql);
           $count=mysql_num_rows($result);
           if($count==0) {
-		      $sql="INSERT INTO cs_coffees VALUES ('','".$profileid."', NOW() ); ";
+		      $sql="INSERT INTO cs_coffees VALUES ('','".$profileid."', '".$coffeedate."' ); ";
 		      $result=mysql_query($sql);
-		      echo("<p>Your coffee at ".$coffeestamp." was been registered!</p>");
+		      echo("Your coffee at ".$coffeetime." was been registered!");
           } else {
-		      echo("<p>Error: Your last coffee was at least not 15 minutes ago. O_o</p>");
-          }
-		}
+		      echo("Error: Your last coffee was at least not 5 minutes ago. O_o");
+          } 
+        } 
       echo("</div>");
 ?>
+
+    <script type="text/javascript">
+    function coffeetime(d){
+      function pad(n){return n<10 ? '0'+n : n}
+      return d.getFullYear()+'-'
+        + pad(d.getMonth()+1)+'-'
+        + pad(d.getDate())+' '
+        + pad(d.getHours())+':'
+        + pad(d.getMinutes())+':'
+        + pad(d.getSeconds())}
+        
+    var d = new Date();
+
+    function AddPostData() {
+      document.getElementById('coffeetime').value = coffeetime(d);
+      document.getElementById("coffeeform").submit();
+    }
+    </script>
+
 
 		<div class="white-box">
 			<h2>On the run?</h2>
                 <center>
-				<form action="" method="post">
-					<input class="imadecoffee" type="submit" value="Yes! And i got a coffee" id="coffee_plus_one" /><br />
+				<form action="" method="post" id="coffeeform" >
+					<input class="imadecoffee" type="submit" value="Yes! And i got a coffee" id="coffee_plus_one" onclick="AddPostData();" /><br />
+                    <input type='hidden' id='coffeetime' name='coffeetime' value='' />
 				</form>
                 </center> 
 

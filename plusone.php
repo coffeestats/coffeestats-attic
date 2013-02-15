@@ -17,22 +17,25 @@ include('lib/antixss.php');
             echo("Sorry. This looks not like a valid time");
           }
         } else {
-          $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
-          $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
-          $sql="SELECT cid, cdate
+          if($_POST['coffeetime']) {
+            $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
+            $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
+            $sql="SELECT cid, cdate
                 FROM cs_coffees
                 WHERE cdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
                 AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
                 AND cuid = '".$_SESSION['login_id']."' ;";
-	      $result=mysql_query($sql);
-          $count=mysql_num_rows($result);
-          if($count==0) {
+	        $result=mysql_query($sql);
+            $count=mysql_num_rows($result);
+            if($count==0) {
 		      $sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', '".$coffeedate."' ); ";
 		      $result=mysql_query($sql);
-		      echo("<p>Your coffee at ".$coffeedate." was been registered!</p>");
-          } else {
-		      echo("<p>Error: Your last coffee was at least not 5 minutes ago. O_o</p>");
-          }
+		      echo("Your coffee at ".$coffeedate." was been registered!");
+            } else {
+		      echo("Error: Your last coffee was at least not 5 minutes ago. O_o");
+            }
+          } else
+		      echo("Error: Are you sure you inserted the data we need?");
 		}
       echo("</div>");
     }
@@ -71,7 +74,6 @@ include('lib/antixss.php');
             <form action="" method="post" id="coffeewasform">
               <input type="text" name="timestamp" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" id="login_field_username" />
 			  <input class="imadecoffee" type="submit" value="was the time" id="coffee_plus_one" /><br />
-              <input type='hidden' id='coffeewas' name='coffeewas' value='' />
             </form>
         </div>
 
