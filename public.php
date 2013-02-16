@@ -27,12 +27,14 @@ if ($count==1) {
   include("footer.php");
   exit; 
 }
-
-$sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
-$result=mysql_query($sql);
-$row=mysql_fetch_array($result);
-echo("This is $profileforename $profilename from $profilelocation <br/><br/>");
-echo("Coffees total: ".$row['total']."");
+    echo ("<ul>");
+    echo("<li>Name: $profileforename $profilename </li>");
+    echo("<li>Location: $profilelocation </li>");
+    $sql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$profileid."';";
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    echo("<li>Coffees total: ".$row['total']."</li>");
+    echo ("</ul>");
 ?>
 </div>
 <b></b>
