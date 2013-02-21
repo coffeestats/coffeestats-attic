@@ -19,7 +19,7 @@ include("preheader.php");
           $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
           $sql="SELECT cid, cdate
                 FROM cs_coffees
-                WHERE cdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
+                WHERE cdate > (NOW() - INTERVAL '1:00' MINUTE_SECOND)
                 AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
                 AND cuid = '".$profileid."' ;";
 	      $result=mysql_query($sql);
@@ -36,18 +36,17 @@ include("preheader.php");
 ?>
 
     <script type="text/javascript">
-    function coffeetime(d){
-      function pad(n){return n<10 ? '0'+n : n}
-      return d.getFullYear()+'-'
+    function AddPostData() {
+      function coffeetime(d){
+        function pad(n){return n<10 ? '0'+n : n}
+        return d.getFullYear()+'-'
         + pad(d.getMonth()+1)+'-'
         + pad(d.getDate())+' '
         + pad(d.getHours())+':'
         + pad(d.getMinutes())+':'
-        + pad(d.getSeconds())}
-        
-    var d = new Date();
-
-    function AddPostData() {
+        + pad(d.getSeconds())
+      }
+      var d = new Date();
       document.getElementById('coffeetime').value = coffeetime(d);
       document.getElementById("coffeeform").submit();
     }
