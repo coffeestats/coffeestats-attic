@@ -19,7 +19,7 @@ include("preheader.php");
           $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
           $sql="SELECT cid, cdate
                 FROM cs_coffees
-                WHERE cdate > (NOW() - INTERVAL '1:00' MINUTE_SECOND)
+                WHERE cdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
                 AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
                 AND cuid = '".$profileid."' ;";
 	      $result=mysql_query($sql);
