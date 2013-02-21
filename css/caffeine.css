@@ -13,20 +13,20 @@
 	font-family: 'Droid Sans';
 	font-style: normal;
 	font-weight: normal;
-	src: url("../fonts/DroidSans.ttf");
+	src: url("/fonts/DroidSans.ttf");
 }
 
 @font-face {
 	font-family: 'Droid Sans';
 	font-style: normal;
 	font-weight: bold;
-	src: url("../fonts/DroidSans-Bold.ttf");
+	src: url("/fonts/DroidSans-Bold.ttf");
 }
 
 @font-face {
 	font-family: "Harabara";
 	font-style: normal;
-	src: url('../fonts/Harabara.ttf');
+	src: url('/fonts/Harabara.ttf');
 }
 
 
@@ -120,15 +120,12 @@ strong {
 	min-width: 100px;
 }
 
-
 /* WRAPPER */
-
 #wrapper {
 	padding: 0;
 	margin: 0 auto;
-	width: 660px;
+    width: 660px;
 }
-
 
 /* HEADER */
 
@@ -136,7 +133,7 @@ strong {
 	padding: 10px 10px 10px 100px;
 	margin: 0;
 	color: #FFF;
-	background-image: url('../images/coffee.png');
+	background-image: url('/images/coffee.png');
 	background-repeat: no-repeat;
 	background-position: left center;
 }
@@ -213,4 +210,15 @@ strong {
 	border: none;
 	color: #FFF;
 	min-width: 100px;
+}
+
+/* Responsive */
+
+
+@media screen and (max-width: 480px) {
+    /* iPhone, Android rules here */
+  #wrapper {
+    padding: 0px;
+	width: 310px;
+  }
 }
