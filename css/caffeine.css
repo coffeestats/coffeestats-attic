@@ -215,7 +215,15 @@ strong {
 /* Responsive */
 
 
-@media screen and (max-width: 480px) or ((max-width: 480px) and (-webkit-min-device-pixel-ratio: 2)) {
+@media screen and (max-width: 480px) {
+    /* iPhone, Android rules here */
+  #wrapper {
+    padding: 0px;
+	width: 310px;
+  }
+}
+
+@media screen and (max-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
     /* iPhone, Android rules here */
   #wrapper {
     padding: 0px;
