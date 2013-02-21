@@ -42,18 +42,17 @@ include('lib/antixss.php');
 ?>
 
     <script type="text/javascript">
-    function coffeetime(d){
-      function pad(n){return n<10 ? '0'+n : n}
-      return d.getFullYear()+'-'
+    function AddPostData() {
+      function coffeetime(d){
+        function pad(n){return n<10 ? '0'+n : n}
+        return d.getFullYear()+'-'
         + pad(d.getMonth()+1)+'-'
         + pad(d.getDate())+' '
         + pad(d.getHours())+':'
         + pad(d.getMinutes())+':'
-        + pad(d.getSeconds())}
-        
-    var d = new Date();
-
-    function AddPostData() {
+        + pad(d.getSeconds())
+      }
+      var d = new Date();
       document.getElementById('coffeetime').value = coffeetime(d);
       document.getElementById("coffeeform").submit();
     }
