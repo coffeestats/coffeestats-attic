@@ -84,7 +84,7 @@
 		
 		    <div class="white-box">
             <?php
-			  echo recaptcha_get_html($publickey, $error);
+			  echo recaptcha_get_html($publickey, $error, true);
 			?>		
 		    </div>
 		
