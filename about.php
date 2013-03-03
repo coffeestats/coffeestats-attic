@@ -19,6 +19,8 @@
 
 			<h2>Changelog</h2>
 					<ul>
+						<li>2013-02-15 Added more Ranking stuff onto the explore page</li>
+						<li>2013-02-27 Some bugfixes for OTR</li>
 						<li>2013-02-15 Max email length resized up to 50 chars</li>
 						<li>2013-02-15 Made time for coffee +1 with js not servertime. Better feeling for users who not live in GMT+1</li> 
 						<li>2013-02-13 Added some awesome icons to navigation and cleaned up interface</li>
