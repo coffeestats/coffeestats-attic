@@ -27,7 +27,7 @@ include("preheader.php");
           if($count==0) {
 		      $sql="INSERT INTO cs_coffees VALUES ('','".$profileid."', '".$coffeedate."' ); ";
 		      $result=mysql_query($sql);
-		      echo("Your coffee at ".$coffeetime." was been registered!");
+		      echo("Your coffee at ".$coffeedate." was been registered!");
           } else {
 		      echo("Error: Your last coffee was at least not 5 minutes ago. O_o");
           } 
