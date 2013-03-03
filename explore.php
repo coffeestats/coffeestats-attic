@@ -85,6 +85,39 @@ while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 </div>
 
 <div class="white-box">
+<h2>Ranking</h2>
+<table  width=500 height=200>
+  <tr>
+  <td width=50%>
+    Coffees Summary
+    <ul>
+<?php
+$sql="SELECT COUNT(cid), cs_users.ulogin FROM cs_coffees,cs_users WHERE cs_coffees.cuid = cs_users.uid GROUP BY cs_users.ulogin ORDER BY COUNT(cid) DESC LIMIT 10;";
+$result=mysql_query($sql);
+while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+      printf("<li><a href=\"profile.php?u=%s\">%s</a> - %s Coffees</li>", $row[1], $row[1], $row[0]);
+}
+?>
+    </ul>
+  </td>
+<td width=50%>
+Average Coffees a day
+<ul>
+<?php
+$sql="SELECT cs_users.ulogin, ((SELECT COUNT(cid) FROM cs_coffees WHERE cuid = uid)/DATEDIFF(NOW(), (SELECT cs_coffees.cdate from cs_coffees WHERE cuid = uid ORDER BY cdate limit 1))) as Coffeesaday FROM cs_users ORDER BY Coffeesaday DESC LIMIT 10;";
+$result=mysql_query($sql);
+while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+      printf("<li><a href=\"profile.php?u=%s\">%s</a> - %s</li>", $row[0], $row[0], $row[1]);
+}
+?>
+</ul>
+</td>
+</table>
+</ul>
+</div>
+
+
+<div class="white-box">
 <h2>Recently registered</h2>
 <ul>
 <?php
