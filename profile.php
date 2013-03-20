@@ -52,280 +52,271 @@ if ($count==1) {
   echo("Error finding User. Showing your Graphs instead.");
 }
 
+  
+$ctodaystack = array(); 
+$htodaystack = array(); 
+for ( $counter = 1; $counter <= 24; $counter += 1) {
+  $sql="SELECT count(cid) as coffees, '".$counter."' as hour
+    FROM cs_coffees 
+    WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') 
+    AND ( DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."') 
+    AND cuid = '".$profileid."'; ";
+  $result=mysql_query($sql);
+  $row = mysql_fetch_array($result);
+  array_push($ctodaystack, $row['coffees']);
+  array_push($htodaystack, $row['hour']);
+}
+
+$cmonthstack = array();
+$dmonthstack = array();
+for ( $counter = 1; $counter <= 30; $counter += 1) {
+  $sql="SELECT '".$counter."' AS day, count(cid) AS coffees 
+        FROM cs_coffees 
+        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') 
+        AND ( DATE_FORMAT(cdate,'%d') = '".$counter."' or DATE_FORMAT(cdate,'%d') = '0".$counter."') 
+        AND cuid = '".$profileid."'; ";
+  $result=mysql_query($sql);
+  $row=mysql_fetch_array($result);
+  array_push($cmonthstack, $row['coffees']);
+  array_push($dmonthstack, $row['day']);
+}
+
+$cyearstack = array();
+$myearstack = array();
+for ( $counter = 1; $counter <= 12; $counter += 1) {
+  $sql="SELECT '".$counter."' AS month, count(cid) AS coffees 
+        FROM cs_coffees 
+        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') 
+        AND ( DATE_FORMAT(cdate,'%m') = '".$counter."' or DATE_FORMAT(cdate,'%m') = '0".$counter."') 
+        AND cuid = '".$profileid."'; ";
+  $result=mysql_query($sql);
+  $row=mysql_fetch_array($result);
+  array_push($cyearstack, $row['coffees']);
+  array_push($myearstack, $row['month']);
+}
+
+$cbyhourstack = array();
+$hbyhourstack = array();
+for ( $counter = 0; $counter <= 23; $counter += 1) {
+    $sql="SELECT '".$counter."' as hour, count(cid) as coffees 
+          FROM cs_coffees 
+          WHERE ( DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."') 
+          AND cuid = '".$profileid."'; ";
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+  array_push($cbyhourstack, $row['coffees']);
+  array_push($hbyhourstack, $row['hour']);
+}
+
+$cbydaystack = array();
+$hbydaystack = array();
+$sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees 
+      FROM cs_coffees 
+      WHERE cuid = '".$profileid."'
+      GROUP BY day
+      ORDER BY DATE_FORMAT(cdate, '%w'); ";
+$result=mysql_query($sql);
+while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+  array_push($cbydaystack, $row[1]);
+  array_push($hbydaystack, $row[0]);
+}
+
 ?>
 </div>
-<b></b>
-
-			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    			<script type="text/javascript">
-      				google.load("visualization", "1", {packages:["corechart"]});
-      				google.setOnLoadCallback(drawChart);
-      
-      				function drawChart() {
-				        var data = new google.visualization.DataTable();
-				        data.addColumn('string', 'Hour');
-				        data.addColumn('number', 'Coffees');
-				        data.addRows([
-
-							<?php
-	                			for ( $counter = 0; $counter <= 23; $counter += 1) {
-	                  			
-                                  $sql="SELECT '".$counter."' as hour, count(cid) as coffees 
-                                    FROM cs_coffees 
-                                    WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') 
-                                    AND ( DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."') 
-                                    AND cuid = '".$profileid."'; ";
-	                  			$result=mysql_query($sql);
-	                  			$row=mysql_fetch_array($result);
-	                  
-	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."],\n");
-	                			}
-	                			
-                                  $sql="SELECT '24' as hour, count(cid) as coffees 
-                                        FROM  cs_coffees 
-                                        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') 
-                                        AND ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24') 
-                                        AND cuid = '".$profileid."'; ";
-	                  			$result=mysql_query($sql);
-	                  			$row=mysql_fetch_array($result);
-	                  	
-	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."]");
-							?>
-        				]);
-
-        				var options = {
-          					width: 550, height: 240,
-          					title: 'Your coffees today',
-          					hAxis: {title: 'Hour'}
-        				};
-
-				        var chart = new google.visualization.ColumnChart(document.getElementById('coffee_today'));
-				        chart.draw(data, options);
-      				}
-    			</script>
-    
-    		<script type="text/javascript">
-      			google.load("visualization", "1", {packages:["corechart"]});
-      			google.setOnLoadCallback(drawChart);
-      
-      			function drawChart() {
-			        var data = new google.visualization.DataTable();
-			        data.addColumn('string', 'Month');
-			        data.addColumn('number', 'Coffees');
-			        data.addRows([
-						<?php
-	                		for ( $counter = 1; $counter <= 30; $counter += 1) {
-                                $sql="SELECT '".$counter."' AS day, count(cid) AS coffees 
-                                      FROM cs_coffees 
-                                      WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') 
-                                      AND ( DATE_FORMAT(cdate,'%d') = '".$counter."' or DATE_FORMAT(cdate,'%d') = '0".$counter."') 
-                                      AND cuid = '".$profileid."'; ";
-		                  		$result=mysql_query($sql);
-		                  		$row=mysql_fetch_array($result);
-		                  		
-		                  		echo ("\t\t['".$row['day']."', ".$row['coffees']."],\n");
-	                		}
-	                  
-                                $sql="SELECT '31' AS day, count(cid) AS coffees 
-                                      FROM cs_coffees 
-                                      WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') 
-                                      AND ( DATE_FORMAT(cdate,'%d') = '31' or DATE_FORMAT(cdate,'%d') = '31') 
-                                      AND cuid = '".$profileid."'; ";
-	                  		$result=mysql_query($sql);
-	                  		$row=mysql_fetch_array($result);
-	                  
-	                  		echo ("\t\t['".$row['day']."', ".$row['coffees']."]");
-						?>
-        			]);
-
-        var options = {
-          width: 550, height: 240,
-          title: 'Your coffees this month',
-          hAxis: {title: 'Day'}
-        };
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('coffee_month'));
-        chart.draw(data, options);
-      }
-    </script>
-
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Day');
-        data.addColumn('number', 'Coffees');
-        data.addRows([
-            <?php
-                for ( $counter = 1; $counter <= 11; $counter += 1) {
-                  $sql="SELECT '".$counter."' AS year, count(cid) AS coffees 
-                        FROM cs_coffees 
-                        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') 
-                        AND ( DATE_FORMAT(cdate,'%m') = '".$counter."' or DATE_FORMAT(cdate,'%m') = '0".$counter."') 
-                        AND cuid = '".$profileid."'; ";
-                  $result=mysql_query($sql);
-                  $row=mysql_fetch_array($result);
-                  echo ("\t\t['".$row['year']."', ".$row['coffees']."],\n");
-                }
-                  $sql="SELECT '12' AS year, count(cid) AS coffees 
-                        FROM cs_coffees 
-                        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') 
-                        AND ( DATE_FORMAT(cdate,'%m') = '12' or DATE_FORMAT(cdate,'%m') = '12') 
-                        AND cuid = '".$profileid."'; ";
-                  $result=mysql_query($sql);
-                  $row=mysql_fetch_array($result);
-                  echo ("\t\t['".$row['year']."', ".$row['coffees']."]");
-              ?>
-
-        ]);
-
-        var options = {
-          width: 550, height: 240,
-          title: 'Your coffees this year',
-          hAxis: {title: 'Year'}
-        };
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('coffee_year'));
-        chart.draw(data, options);
-      }
-    </script>
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Day');
-        data.addColumn('number', 'Coffees');
-        data.addRows([
-<?php
-                for ( $counter = 1; $counter <= 11; $counter += 1) {
-                  $sql="SELECT '".$counter."' AS year, count(cid) AS coffees 
-                        FROM cs_coffees 
-                        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') 
-                        AND ( DATE_FORMAT(cdate,'%m') = '".$counter."' or DATE_FORMAT(cdate,'%m') = '0".$counter."') 
-                        AND cuid = '".$profileid."'; ";
-                  $result=mysql_query($sql);
-                  $row=mysql_fetch_array($result);
-                  echo ("\t\t['".$row['year']."', ".$row['coffees']."],\n");
-                }
-                  $sql="SELECT '12' AS year, count(cid) AS coffees 
-                        FROM cs_coffees 
-                        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') 
-                        AND ( DATE_FORMAT(cdate,'%m') = '12' or DATE_FORMAT(cdate,'%m') = '12') 
-                        AND cuid = '".$profileid."'; ";
-                  $result=mysql_query($sql);
-                  $row=mysql_fetch_array($result);
-                  echo ("\t\t['".$row['year']."', ".$row['coffees']."]");
-?>
-
-        ]);
-
-        var options = {
-          width: 550, height: 240,
-          title: 'Your coffees this year',
-          hAxis: {title: 'Year'}
-        };
-
-        var chart = new google.visualization.ColumnChart(document.getElementById('coffee_year'));
-        chart.draw(data, options);
-      }
-    </script>
-
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Hour');
-        data.addColumn('number', 'Coffees');
-        data.addRows([
-							<?php
-	                			for ( $counter = 0; $counter <= 23; $counter += 1) {
-	                  			
-                                  $sql="SELECT '".$counter."' as hour, count(cid) as coffees 
-                                    FROM cs_coffees 
-                                    WHERE ( DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."') 
-                                    AND cuid = '".$profileid."'; ";
-	                  			$result=mysql_query($sql);
-	                  			$row=mysql_fetch_array($result);
-	                  
-	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."],\n");
-	                			}
-	                			
-                                  $sql="SELECT '24' as hour, count(cid) as coffees 
-                                        FROM  cs_coffees 
-                                        WHERE ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24') 
-                                        AND cuid = '".$profileid."'; ";
-	                  			$result=mysql_query($sql);
-	                  			$row=mysql_fetch_array($result);
-	                  	
-	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."]");
-							?>
-
-        ]);
-
-        var options = {
-          width: 550, height: 240,
-          title: 'Your most Coffee by hour (alltime)',
-          hAxis: {title: 'Hour'} 
-        };
-
-        var chart = new google.visualization.AreaChart(document.getElementById('coffee_hour'));
-        chart.draw(data, options);
-      }
-    </script>
-
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Day');
-        data.addColumn('number', 'Coffees');
-        data.addRows([
-			<?php
-             $sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees 
-                   FROM cs_coffees 
-                   WHERE cuid = '".$profileid."'
-                   GROUP BY day
-                   ORDER BY DATE_FORMAT(cdate, '%w'); ";
-            $result=mysql_query($sql);
-            while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-	        echo ("\t\t['".$row[0]."', ".$row[1]."],\n");
-            }
-		    ?>
-
-        ]);
-
-        var options = {
-          width: 550, height: 240,
-          title: 'Your most Coffee by Day (alltime)',
-          hAxis: {title: 'Hour'} 
-        };
-
-        var chart = new google.visualization.AreaChart(document.getElementById('coffee_mostday'));
-        chart.draw(data, options);
-      }
-    </script>
-
-
 
 		<div class="white-box">
-          <div id="coffee_today"></div>
+          <h2>Coffees today</h2>
+          <canvas id="coffeetoday" width="590" height="240" ></canvas>
 		</div>
 		<div class="white-box">
-          <div id="coffee_month"></div>
+          <h2>Coffees this month</h2>
+          <canvas id="coffeemonth" width="590" height="240" ></canvas>
 		</div>
 		<div class="white-box">
-          <div id="coffee_year"></div>
+          <h2>Coffees this year</h2>
+          <canvas id="coffeeyear" width="590" height="240" ></canvas>
 		</div>
 		<div class="white-box">
-          <div id="coffee_hour"></div>
+          <h2>Coffees by hour (overall)</h2>
+          <canvas id="coffeebyhour" width="590" height="240" ></canvas>
 		</div>
 		<div class="white-box">
-          <div id="coffee_mostday"></div>
+          <h2>Coffees by weekday (overall)</h2>
+          <canvas id="coffeebyweekday" width="590" height="240" ></canvas>
 		</div>
+
+  <script src="./lib/Chart.min.js"></script>
+  <script>
+  var todaycolor = "#E64545"
+  var monthcolor = "#FF9900"
+  var yearcolor = "#3399FF"
+  var hourcolor = "#FF6666"
+  var weekdaycolor = "#A3CC52"
+  </script>
+
+  <script>
+
+    var barChartData = {
+    <?php
+    echo ("labels : [");
+    foreach ($htodaystack as &$value) {
+      echo ($value.",");
+    }
+    unset($value);
+    echo ("],\n");
+    ?>
+      datasets : [
+        {
+          fillColor : todaycolor,
+          strokeColor : todaycolor,
+          <?php
+          echo ("data : [");
+          foreach ($ctodaystack as &$value) {
+            echo ($value.",");
+          }
+          unset($value);
+          echo ("]\n");
+          ?>
+        },
+      ]
+
+    }
+
+    var myLine = new Chart(document.getElementById("coffeetoday").getContext("2d")).Bar(barChartData);
+
+  </script>
+
+  <script>
+    var lineChartData = {
+          <?php
+          echo ("labels : [");
+          foreach ($dmonthstack as &$value) {
+            echo ($value.",");
+          }
+          unset($value);
+          echo ("],\n");
+          ?>
+
+      datasets : [
+        {
+          fillColor : monthcolor, 
+          strokeColor : "#FFB84D",
+          pointColor : "#FFB84D",
+          pointStrokeColor : "#fff",
+          <?php
+          echo ("data : [");
+          foreach ($cmonthstack as &$value) {
+            echo ($value.",");
+          }
+          unset($value);
+          echo ("]\n");
+          ?>
+
+        },
+      ]
+    }
+
+  var myLine = new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
+ </script>
+
+
+  <script>
+
+    var barChartData = {
+    <?php
+    echo ("labels : [");
+    foreach ($myearstack as &$value) {
+      echo ($value.",");
+    }
+    unset($value);
+    echo ("],\n");
+    ?>
+      datasets : [
+        {
+          fillColor : yearcolor,
+          strokeColor : yearcolor,
+          <?php
+          echo ("data : [");
+          foreach ($cyearstack as &$value) {
+            echo ($value.",");
+          }
+          unset($value);
+          echo ("]\n");
+          ?>
+        },
+      ]
+
+    }
+
+    var myLine = new Chart(document.getElementById("coffeeyear").getContext("2d")).Bar(barChartData);
+  </script>
+
+  <script>
+    var lineChartData = {
+          <?php
+          echo ("labels : [");
+          foreach ($hbyhourstack as &$value) {
+            echo ($value.",");
+          }
+          unset($value);
+          echo ("],\n");
+          ?>
+
+      datasets : [
+        {
+          fillColor : hourcolor, 
+          strokeColor : "#FF9999",
+          pointColor : "#FF9999",
+          pointStrokeColor : "#fff",
+          <?php
+          echo ("data : [");
+          foreach ($cbyhourstack as &$value) {
+            echo ($value.",");
+          }
+          unset($value);
+          echo ("]\n");
+          ?>
+
+        },
+      ]
+    }
+
+  var myLine = new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
+ </script>
+
+ <script>
+    var lineChartData = {
+          <?php
+          echo ("labels : [");
+          foreach ($hbydaystack as &$value) {
+            echo ('"'.$value.'",');
+          }
+          unset($value);
+          echo ("],\n");
+          ?>
+
+      datasets : [
+        {
+          fillColor : weekdaycolor, 
+          strokeColor : "#99FF99",
+          pointColor : "#99FF99",
+          pointStrokeColor : "#fff",
+          <?php
+          echo ("data : [");
+          foreach ($cbydaystack as &$value) {
+            echo ($value.",");
+          }
+          unset($value);
+          echo ("]\n");
+          ?>
+
+        },
+      ]
+    }
+
+  var myLine = new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
+ </script>
+
 <?php
 	include("footer.php");
 ?>
