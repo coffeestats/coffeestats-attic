@@ -212,6 +212,7 @@ strong {
 	min-width: 100px;
 }
 
+
 /* Responsive */
 
 
@@ -230,3 +231,9 @@ strong {
 	width: 310px;
   }
 }
+
+/* Normal mode */
+.weight-display div.edit {display:none}
+/* Editor mode */
+.weight-edit div.show {display:none}
+

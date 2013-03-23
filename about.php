@@ -12,7 +12,7 @@
 					<ul>
 						<li><a href="http://openclipart.org/detail/10764/coffee-cup-by-sl4yerpl-10764">Coffee Cup</a> by sl4yerPL on openclipart.org</li>
 						<li><a href="http://subtlepatterns.com/?p=750">Woven</a> by Max Rudberg on subtlepatterns.com </li>
-						<li><a href="http://code.google.com/intl/de/apis/chart/interactive/docs/index.html">The Google Charts Project</a></li>
+						<li><a href="http://chartjs.org">Chart.js</a></li>
 						<li><a href="http://www.dafont.com/harabara.font">Harabara</a> by André Harabara on dafont.com</li>
 						<li><a href="http://adamwhitcroft.com/batch/">Batch Iconset</a> by Adam Whitcroft</li>
 					</ul>

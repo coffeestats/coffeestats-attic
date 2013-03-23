@@ -13,7 +13,18 @@ include('lib/antixss.php');
           {
 		    $sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', '".$coffeedate."' ); ";
 		    $result=mysql_query($sql);
-		    echo("<p>Your coffee at ".$coffeedate." was been registered!</p>");
+		    echo("Your coffee at ".$coffeedate." was been registered!");
+          } else {
+            echo("Sorry. This looks not like a valid time");
+          }
+        } elseif($_POST['matetimestamp']) {
+          $matedate=mysql_real_escape_string($_POST['matetimestamp']);
+          $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
+          if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $matedate))
+          {
+		    $sql="INSERT INTO cs_mate VALUES ('','".$_SESSION['login_id']."', '".$matedate."' ); ";
+		    $result=mysql_query($sql);
+		    echo("Your coffee at ".$matedate." was been registered!");
           } else {
             echo("Sorry. This looks not like a valid time");
           }
@@ -56,9 +67,8 @@ include('lib/antixss.php');
 		      echo("Error: Your last mate was at least not 5 minutes ago. O_o");
             }
           }
-
-          echo("</div>");
       }
+          echo("</div>");
     }
 ?>
 
@@ -91,31 +101,44 @@ include('lib/antixss.php');
       document.getElementById('matetime').value = coffeetime(d);
       document.getElementById("mateform").submit();
     }
+
+    function toggle(control){
+        var elem = document.getElementById(control);
+    
+        if(elem.style.display == "none"){
+            elem.style.display = "inline";
+        }else{
+            elem.style.display = "none";
+        }
+    }
     </script>
 
 		<div class="white-box">
-			<h2>Ahhh, another one, huh?</h2>
-				<p>We know, we can't control ourselves either...</p>
-
+			<h2>Coffee?</h2>
 				<form action="" method="post" id="coffeeform">
-					<input class="imadecoffee" type="submit" value="Coffee!" id="coffee_plus_one" onclick="AddPostDataCoffee();" /><br />
+                    <a href="javascript:toggle('specdate')"><img src="./images/revert.png"></a>
+					<input class="imadecoffee" type="submit" value="Coffee!" id="coffee_plus_one" onclick="AddPostDataCoffee();" />
+                    <div id="specdate" style="display: none">
+                        <input type="text" name="timestamp" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" id="login_field_username" />
+                    </div>
                     <input type='hidden' id='coffeetime' name='coffeetime' value='' />
 				</form>
-
-				<form action="" method="post" id="mateform">
-					<input class="imademate" type="submit" value="Mate!" id="coffee_plus_one" onclick="AddPostDataMate();" /><br />
-                    <input type='hidden' id='matetime' name='matetime' value='' />
-				</form>
+                </div>
 
 
 		</div>
         <div class="white-box">
-          <h2>(Secretly) chugged down a cup of coffee and forgot to tell us about it?</h2>
-            <form action="" method="post" id="coffeewasform">
-              <input type="text" name="timestamp" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" id="login_field_username" />
-			  <input class="imadecoffee" type="submit" value="was the time" id="coffee_plus_one" /><br />
-            </form>
+          <h2>Mate?</h2>
+			<form action="" method="post" id="mateform">
+                <a href="javascript:toggle('specdatem')"><img src="./images/revert.png"></a>
+				<input class="imademate" type="submit" value="Mate!" id="coffee_plus_one" onclick="AddPostDataMate();" />
+                    <div id="specdatem" style="display: none">
+                        <input type="text" name="matetimestamp" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" id="login_field_username" />
+                    </div>
+                <input type='hidden' id='matetime' name='matetime' value='' />
+				</form>
         </div>
+
 
 <?php
 	include('footer.php');

@@ -9,6 +9,7 @@
                 <li> We're now using <a href="http://www.chartjs.org/">Chart.js</a>. This saves your privacy a lot more instead of using Google Charts. Web2.0-hyper-HTML5-power and stuff!</li>
                 <li> You can now register <a href="http://www.clubmate.de/">Club-Mate</a> (or any other type of mate) as well!</li>
                 <li> New combined graphs for mate and coffee</li> 
+                <li> New userfriendly <a href="plusone">update</a> page </li>
                 <li> Refactored code for performance reasons</li>
                 </ul>
 		</div>
