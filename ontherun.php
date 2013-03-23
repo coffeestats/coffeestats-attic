@@ -11,9 +11,9 @@ if( (!isset($token)) && (!isset($user)) ) {
     header("Location: auth/login.php");
 }
 include("preheader.php");
+include('auth/config.php');
+include('lib/antixss.php');
 	if($_POST['coffeetime']) {
-      include('auth/config.php');
-      include('lib/antixss.php');
       echo("<div class=\"white-box\">");
           $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
           $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
@@ -31,12 +31,30 @@ include("preheader.php");
           } else {
 		      echo("Error: Your last coffee was at least not 5 minutes ago. O_o");
           } 
-        } 
+    } elseif($_POST['matetime']) {  
+      echo("<div class=\"white-box\">");
+          $matedate=mysql_real_escape_string($_POST['matetime']);
+          $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
+          $sql="SELECT mid, mdate
+                FROM cs_mate
+                WHERE mdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
+                AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (mdate + INTERVAL '45' MINUTE_SECOND)
+                AND cuid = '".$profileid."' ;";
+          $result=mysql_query($sql);
+          $count=mysql_num_rows($result);
+          if($count==0) {
+              $sql="INSERT INTO cs_mate VALUES ('','".$profileid."', '".$matedate."' ); ";
+              $result=mysql_query($sql);
+              echo("Your mate at ".$matedate." was been registered!");
+          } else {
+              echo("Error: Your last mate was at least not 5 minutes ago. O_o");
+          } 
+    }
       echo("</div>");
 ?>
 
     <script type="text/javascript">
-    function AddPostData() {
+    function AddPostDataCoffee() {
       function coffeetime(d){
         function pad(n){return n<10 ? '0'+n : n}
         return d.getFullYear()+'-'
@@ -50,6 +68,20 @@ include("preheader.php");
       document.getElementById('coffeetime').value = coffeetime(d);
       document.getElementById("coffeeform").submit();
     }
+    function AddPostDataMate() {
+      function coffeetime(d){
+        function pad(n){return n<10 ? '0'+n : n}
+        return d.getFullYear()+'-'
+        + pad(d.getMonth()+1)+'-'
+        + pad(d.getDate())+' '
+        + pad(d.getHours())+':'
+        + pad(d.getMinutes())+':'
+        + pad(d.getSeconds())
+      }
+      var d = new Date();
+      document.getElementById('matetime').value = coffeetime(d);
+      document.getElementById("mateform").submit();
+    }
     </script>
 
 
@@ -57,8 +89,12 @@ include("preheader.php");
 			<h2>On the run?</h2>
                 <center>
 				<form action="" method="post" id="coffeeform" >
-					<input class="imadecoffee" type="submit" value="Yes! And i got a coffee" id="coffee_plus_one" onclick="AddPostData();" /><br />
+					<input class="imadecoffee" type="submit" value="Coffee!" id="coffee_plus_one" onclick="AddPostDataCoffee();" /><br />
                     <input type='hidden' id='coffeetime' name='coffeetime' value='' />
+				</form>
+				<form action="" method="post" id="mateform" >
+					<input class="imademate" type="submit" value="Mate!" id="coffee_plus_one" onclick="AddPostDataMate();" /><br />
+                    <input type='hidden' id='matetime' name='matetime' value='' />
 				</form>
                 </center> 
 
