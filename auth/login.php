@@ -33,7 +33,7 @@
 	<div id="login">
 		<div class="white-box">
 			<h2>What is coffeestats.org?</h2>
-				    <p>You like coffee, graphs and nerdy statistics? Well, we do too!</p>
+				    <p>You like coffee, mate, graphs and nerdy statistics? Well, we do too!</p>
                     <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep track of it --
                     enabling us to present you with awesome statistics about your general coffee consumption.
                     Why? Just because, of course!</p>
@@ -56,49 +56,36 @@
 
 
 		<div class="white-box">
-			<h2>Charts!</h2>
-    			<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+			<h2>Graphs!</h2>
 
-   				<script type="text/javascript">
-      				google.load("visualization", "1", {packages:["corechart"]});
-      				google.setOnLoadCallback(drawChart);
+            Overall Coffee vs. Mate consumption<br><br>
+            <canvas id="coffeeexample" width="590" height="240" ></canvas>
+            <script src="../lib/Chart.min.js"></script>
+            <script>
+            var lineChartData = {
+              labels : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
+              datasets : [
+              {
+                fillColor : "#FF9900", 
+                strokeColor : "#FFB84D",
+                pointColor : "#FFB84D",
+                pointStrokeColor : "#fff",
+                data : [40,26,180,72,102,60,30,14,]
 
-      				function drawChart() {
-        				var data = new google.visualization.DataTable();
+              },
+              {
+                fillColor :  "#E64545", 
+                strokeColor : "#FF9999",
+                pointColor : "#FF9999",
+                pointStrokeColor : "#fff",
+                data : [101,3,87,32,12,80,17,14,]
 
-        				data.addColumn('string', 'Hour');
-        				data.addColumn('number', 'noqqe');
-        				data.addColumn('number', 'dreary');
-        				data.addRows([
-        				['6', 0, 1],
-        				['7', 0, 1],
-				        ['8', 2, 0],
-				        ['9', 1, 0],
-				        ['10', 0, 1],
-				        ['11', 0, 1],
-				        ['12', 3, 1],
-				        ['13', 0, 0],
-				        ['14', 0, 0],
-				        ['15', 0, 2],
-				        ['16', 0, 1],
-				        ['17', 2, 0],
-				        ['18', 0, 1],
-				        ]);
+              },
+              ]
+           }
 
-            			var options = {
-                    		width: 550, height: 240,
-                            title: 'Coffees of dreary and noqqe (compared)',
-                            hAxis: {
-                            	title: 'Hour'}
-                            };
-
-            			var chart = new google.visualization.ColumnChart(document.getElementById('coffeeexample'));
-            			chart.draw(data, options);
-              		}
-      			</script>
-
-        	<div id="coffeeexample"> <!-- example chart --> </div>
-
+           var myLine = new Chart(document.getElementById("coffeeexample").getContext("2d")).Line(lineChartData);
+          </script>
 		</div>
 	</div>
 
