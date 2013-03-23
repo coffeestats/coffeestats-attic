@@ -19,6 +19,9 @@
 
 			<h2>Changelog</h2>
 					<ul>
+						<li>2013-03-23 New Update page</li>
+						<li>2013-03-23 Using Chart.js for Graphs!</li>
+						<li>2013-03-23 Added Mate to drinks</li>
 						<li>2013-02-15 Added more Ranking stuff onto the explore page</li>
 						<li>2013-02-27 Some bugfixes for OTR</li>
 						<li>2013-02-15 Max email length resized up to 50 chars</li>
