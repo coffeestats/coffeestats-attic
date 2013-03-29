@@ -183,30 +183,25 @@ array_push($mbydaystack, $row[1]);
 
   <script>
 
-    var barChartData = {
-      labels: [ "" ],
-      datasets : [
+    var doughnutData = [
         {
-          fillColor : todaycolor,
-          strokeColor : todaycolor,
           <?php
-          echo ("data : [".$wholecoffeestack."]\n" );
+          echo ("value : ".$wholecoffeestack.",\n" );
           ?>
+          color: todaycolor
         },
         {
-          fillColor : matecolor,
-          strokeColor : matelightcolor,
           <?php
-          echo ("data : [".$wholematestack."]\n" );
+          echo ("value : ".$wholematestack.",\n" );
           ?>
-        },
-      ]
+          color : matecolor
+        }
+      ];
 
-    }
-
-    var myLine = new Chart(document.getElementById("coffeevsmate").getContext("2d")).Bar(barChartData);
+  var myDoughnut = new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
 
   </script>
+
   <script>
 
     var barChartData = {

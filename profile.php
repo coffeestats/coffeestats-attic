@@ -30,6 +30,10 @@ if ($count==1) {
     $result=mysql_query($sql);
     $row=mysql_fetch_array($result);
     echo("<li>Your Coffees total: ".$row['total']."</li>");
+    $sql="SELECT count(mid) as total FROM cs_mate WHERE cuid='".$profileid."';";
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    echo("<li>Your Mate total: ".$row['total']."</li>");
     echo("<li>Your <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">public profile page</a></li>");
     echo("<li>Your <a href=\"http://coffeestats.org/ontherun?u=".$_SESSION['login_user']."&t=".$profiletoken."\">on-the-run</a> URL</li>");
     echo ("</ul>");
@@ -44,6 +48,10 @@ if ($count==1) {
     $result=mysql_query($sql);
     $row=mysql_fetch_array($result);
     echo("<li>Coffees total: ".$row['total']."</li>");
+    $sql="SELECT count(mid) as total FROM cs_mate WHERE cuid='".$profileid."';";
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    echo("<li>Mate total: ".$row['total']."</li>");
     echo ("</ul>");
   }
 } else {
@@ -149,7 +157,7 @@ for ( $counter = 1; $counter <= 12; $counter += 1) {
 $cbyhourstack = array();
 $hbyhourstack = array();
 $mbyhourstack = array();
-for ( $counter = 0; $counter <= 23; $counter += 1) {
+for ( $counter = 0; $counter <= 24; $counter += 1) {
     $sql="SELECT '".$counter."' as hour, count(cid) as coffees 
           FROM cs_coffees 
           WHERE ( DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."') 
@@ -162,11 +170,11 @@ for ( $counter = 0; $counter <= 23; $counter += 1) {
 for ( $counter = 0; $counter <= 24; $counter += 1) {
     $sql="SELECT '".$counter."' as hour, count(mid) as mate
           FROM cs_mate
-          WHERE DATE_FORMAT(mdate,'%H') = '".$counter."' OR DATE_FORMAT(mdate,'%H') = '0".$counter."'
+          WHERE ( DATE_FORMAT(mdate,'%H') = '".$counter."' OR DATE_FORMAT(mdate,'%H') = '0".$counter."' )
           AND cuid = '".$profileid."'; ";
     $result=mysql_query($sql);
     $row=mysql_fetch_array($result);
-array_push($mbyhourstack, $row['mate']);
+  array_push($mbyhourstack, $row['mate']);
 }
 
 // BY WEEKDAY
@@ -185,13 +193,13 @@ while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 }
 $sql="SELECT DATE_FORMAT(mdate, '%a') as day, count(mid) as mate 
       FROM cs_mate
+      WHERE cuid = '".$profileid."'
       GROUP BY day
       ORDER BY DATE_FORMAT(mdate, '%w'); ";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 array_push($mbydaystack, $row[1]);
 }
-
 
 ?>
 </div>
@@ -233,29 +241,24 @@ array_push($mbydaystack, $row[1]);
   var matelightcolor = "#FFE066"                                                                                                                                                                                 
   </script>  
 
-  <script>                                                                                                                                                                                                       
-                                                                                                                                                                                                                 
-    var barChartData = {
-      labels: [ "" ],
-      datasets : [
-        {
-          fillColor : todaycolor,
-          strokeColor : todaycolor,
-          <?php
-          echo ("data : [".$wholecoffeestack."]\n" );
-          ?>
-        },
-        {
-          fillColor : matecolor,
-          strokeColor : matelightcolor,
-          <?php
-          echo ("data : [".$wholematestack."]\n" );
-          ?>
-        },
-      ]
+  <script>
 
-    }
-    var myLine = new Chart(document.getElementById("coffeevsmate").getContext("2d")).Bar(barChartData);
+    var doughnutData = [
+        {
+          <?php
+          echo ("value : ".$wholecoffeestack.",\n" );
+          ?>
+          color: todaycolor
+        },
+        {
+          <?php
+          echo ("value : ".$wholematestack.",\n" );
+          ?>
+          color : matecolor
+        }
+      ];
+
+  var myDoughnut = new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
 
   </script>
 
