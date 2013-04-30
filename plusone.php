@@ -4,9 +4,9 @@ include("header.php");
 include('lib/antixss.php');
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
         echo("<div class=\"white-box\">");
-		include('auth/config.php');
+        // include('auth/config.php'); # already included in auth/lock.php
 
-        if($_POST['timestamp']) {
+        if (array_key_exists('timestamp', $_POST) && !empty($_POST['timestamp'])) {
           $coffeedate=mysql_real_escape_string($_POST['timestamp']);
           $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
           if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $coffeedate))
@@ -17,7 +17,7 @@ include('lib/antixss.php');
           } else {
             echo("Sorry. This looks not like a valid time");
           }
-        } elseif($_POST['matetimestamp']) {
+        } elseif(array_key_exists('matetimestamp', $_POST) && !empty($_POST['matetimestamp'])) {
           $matedate=mysql_real_escape_string($_POST['matetimestamp']);
           $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
           if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $matedate))
@@ -30,7 +30,7 @@ include('lib/antixss.php');
           }
         } else {
 
-          if($_POST['coffeetime']) {
+          if(array_key_exists('coffeetime', $_POST)) {
             $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
             $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
             $sql="SELECT cid, cdate
@@ -49,7 +49,7 @@ include('lib/antixss.php');
             }
           }
 
-          if($_POST['matetime']) {
+          if(array_key_exists('matetime', $_POST)) {
             $matedate=mysql_real_escape_string($_POST['matetime']);
             $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
             $sql="SELECT mid, mdate
