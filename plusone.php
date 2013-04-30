@@ -11,7 +11,9 @@ include('lib/antixss.php');
           $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
           if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $coffeedate))
           {
-		    $sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', '".$coffeedate."' ); ";
+              $sql=sprintf(
+                  "INSERT INTO cs_coffees (cuid, cdate) VALUES (%d, '%s')",
+                  $_SESSION['login_id'], $coffeedate);
 		    $result=mysql_query($sql);
 		    echo("Your coffee at ".$coffeedate." was been registered!");
           } else {
@@ -22,7 +24,9 @@ include('lib/antixss.php');
           $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
           if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $matedate))
           {
-		    $sql="INSERT INTO cs_mate VALUES ('','".$_SESSION['login_id']."', '".$matedate."' ); ";
+              $sql=sprintf(
+                  "INSERT INTO cs_mate (cuid, cdate) VALUES (%d, '%s')",
+                  $_SESSION['login_id'], $matedate);
 		    $result=mysql_query($sql);
 		    echo("Your coffee at ".$matedate." was been registered!");
           } else {
@@ -33,15 +37,19 @@ include('lib/antixss.php');
           if(array_key_exists('coffeetime', $_POST)) {
             $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
             $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
-            $sql="SELECT cid, cdate
-                FROM cs_coffees
-                WHERE cdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
-                AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
-                AND cuid = '".$_SESSION['login_id']."' ;";
+            $sql=sprintf(
+                "SELECT cid, cdate
+                 FROM cs_coffees
+                 WHERE cdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
+                 AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
+                 AND cuid = %d",
+                $_SESSION['login_id']);
 	        $result=mysql_query($sql);
             $count=mysql_num_rows($result);
             if($count==0) {
-		      $sql="INSERT INTO cs_coffees VALUES ('','".$_SESSION['login_id']."', '".$coffeedate."' ); ";
+                $sql=sprintf(
+                    "INSERT INTO cs_coffees (cuid, cdate) VALUES (%d,'%s')",
+                    $_SESSION['login_id'], $coffeedate);
 		      $result=mysql_query($sql);
 		      echo("Your coffee at ".$coffeedate." was been registered!");
             } else {
@@ -52,15 +60,19 @@ include('lib/antixss.php');
           if(array_key_exists('matetime', $_POST)) {
             $matedate=mysql_real_escape_string($_POST['matetime']);
             $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
-            $sql="SELECT mid, mdate
-                FROM cs_mate
-                WHERE mdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
-                AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (mdate + INTERVAL '45' MINUTE_SECOND)
-                AND cuid = '".$_SESSION['login_id']."' ;";
+            $sql=sprintf(
+                "SELECT mid, mdate
+                 FROM cs_mate
+                 WHERE mdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
+                 AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (mdate + INTERVAL '45' MINUTE_SECOND)
+                 AND cuid = %d",
+                $_SESSION['login_id']);
 	        $result=mysql_query($sql);
             $count=mysql_num_rows($result);
             if($count==0) {
-		      $sql="INSERT INTO cs_mate VALUES ('','".$_SESSION['login_id']."', '".$matedate."' ); ";
+                $sql=sprintf(
+                    "INSERT INTO cs_mate (cuid, mdate) VALUES (%d, '%s')",
+                    $_SESSION['login_id'], $matedate);
 		      $result=mysql_query($sql);
 		      echo("Your mate at ".$matedate." was been registered!");
             } else {

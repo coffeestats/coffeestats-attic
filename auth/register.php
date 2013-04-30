@@ -46,15 +46,22 @@
               $forename=AntiXSS::setFilter(mysql_real_escape_string($_POST['Forename']), "whitelist", "string");
               $name=AntiXSS::setFilter(mysql_real_escape_string($_POST['Name']), "whitelist", "string");
               $location=AntiXSS::setFilter(mysql_real_escape_string($_POST['Location']), "whitelist", "string");
-              $sql="SELECT uid FROM cs_users WHERE ulogin='".$login."'; ";
+              $sql=sprintf("SELECT uid FROM cs_users WHERE ulogin='%s'", $login);
               $result=mysql_query($sql);
               $row=mysql_fetch_array($result);
               $count=mysql_num_rows($result);
               if (($count == 0) && ($cerr == 0)) {
                 echo "<div class=\"white-box\"><h2>You got it! Click <a href=\"../index\">here</a></h2>";
                 echo "Yes. We hate CAPTCHAs too.</div>";
-                $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '".$forename."', '".$name."', '".$password."', NOW(), '".$location."', 'yes', '".$otrtoken."'); ";
-                $result = mysql_query($sql);
+                $sql=sprintf(
+                    "INSERT INTO cs_users (
+                        ulogin, uemail, ufname, uname, ucryptsum, ucreated,
+                        ulocation, upublic, utoken) VALUES (
+                        '%s', '%s', '%s', '%s', '%s', NOW(),
+                        '%s', 'yes', '%s')",
+                    $login, $email, $forename, $name, $password,
+                    $location, $otrtoken);
+                $result = mysql_query($sql); 
               }
               else {
                 echo("<div class=\"white-box\">Error: Sorry. Username already taken, invalid or you forgot something in General section.</div>");

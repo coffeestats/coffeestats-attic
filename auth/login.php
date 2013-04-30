@@ -7,7 +7,9 @@
 		// username and password sent from Form
 		$myusername=mysql_real_escape_string($_POST['username']);
 		$mypassword=crypt(mysql_real_escape_string($_POST['password']), '$2a$07$thisissomefuckingassholesaltforcoffeestats$');
-		$sql="SELECT uid FROM cs_users WHERE ulogin='".$myusername."' and ucryptsum='".$mypassword."'";
+        $sql=sprintf(
+            "SELECT uid FROM cs_users WHERE ulogin='%s' AND ucryptsum='%s'",
+            $myusername, $mypassword);
 		$result=mysql_query($sql);
 		$row=mysql_fetch_array($result);
 		$count=mysql_num_rows($result);

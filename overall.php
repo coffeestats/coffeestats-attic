@@ -1,43 +1,44 @@
 <?php
 include("auth/lock.php");
-include("auth/config.php");
+// include("auth/config.php"); # already included in auth/lock.php
 include("header.php");
 include("lib/antixss.php");
 
 
 // COFFEE VS MATE CHART
-$sql="SELECT count(cs_coffees.cid) as coffees
-    FROM cs_coffees ; ";
+$sql="SELECT count(cs_coffees.cid) as coffees FROM cs_coffees";
 $result=mysql_query($sql);
 $row = mysql_fetch_array($result);
 $wholecoffeestack = $row['coffees'];
 
-$sql="SELECT count(cs_mate.mid) as mate
-    FROM cs_mate ; ";
+$sql="SELECT count(cs_mate.mid) as mate FROM cs_mate";
 $result=mysql_query($sql);
 $row = mysql_fetch_array($result);
 $wholematestack = $row['mate'];
 
 
 // TODAY CHART
-$ctodaystack = array(); 
-$mtodaystack = array(); 
-$htodaystack = array(); 
-for ( $counter = 1; $counter <= 24; $counter += 1) {
-  $sql="SELECT count(cid) as coffees, '".$counter."' as hour
-    FROM cs_coffees 
-    WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') 
-    AND ( DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."'); ";
+$ctodaystack = array();
+$mtodaystack = array();
+$htodaystack = array();
+for ( $counter = 0; $counter <= 23; $counter += 1) {
+    $sql=sprintf(
+        "SELECT count(cid) as coffees, '%d' as hour
+         FROM cs_coffees
+         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m-%%d') = DATE_FORMAT(cdate, '%%Y-%%m-%%d')
+           AND DATE_FORMAT(cdate, '%%H') = '%02d'",
+           $counter, $counter);
   $result=mysql_query($sql);
   $row = mysql_fetch_array($result);
   array_push($ctodaystack, $row['coffees']);
   array_push($htodaystack, $row['hour']);
-}
-for ( $counter = 1; $counter <= 24; $counter += 1) {
-  $sql="SELECT count(mid) as mate, '".$counter."' as hour
-    FROM cs_mate
-    WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(mdate,'%Y-%m-%d') 
-    AND ( DATE_FORMAT(mdate,'%H') = '".$counter."' OR DATE_FORMAT(mdate,'%H') = '0".$counter."'); ";
+
+  $sql=sprintf(
+      "SELECT count(mid) as mate, '%d' as hour
+       FROM cs_mate
+       WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m-%%d') = DATE_FORMAT(mdate, '%%Y-%%m-%%d')
+         AND DATE_FORMAT(mdate, '%%H') = '%02d'",
+      $counter, $counter);
   $result=mysql_query($sql);
   $row = mysql_fetch_array($result);
   array_push($mtodaystack, $row['mate']);
@@ -48,24 +49,26 @@ $cmonthstack = array();
 $mmonthstack = array();
 $dmonthstack = array();
 for ( $counter = 1; $counter <= 30; $counter += 1) {
-  $sql="SELECT '".$counter."' AS day, count(cid) AS coffees 
-        FROM cs_coffees 
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') 
-        AND ( DATE_FORMAT(cdate,'%d') = '".$counter."' or DATE_FORMAT(cdate,'%d') = '0".$counter."'); ";
-  $result=mysql_query($sql);
-  $row=mysql_fetch_array($result);
-  array_push($cmonthstack, $row['coffees']);
-  array_push($dmonthstack, $row['day']);
-}
+    $sql=sprintf(
+        "SELECT '%d' AS day, count(cid) AS coffees
+         FROM cs_coffees
+         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m') = DATE_FORMAT(cdate, '%%Y-%%m')
+           AND DATE_FORMAT(cdate,'%%d') = '%02d'",
+        $counter, $counter);
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    array_push($cmonthstack, $row['coffees']);
+    array_push($dmonthstack, $row['day']);
 
-for ( $counter = 1; $counter <= 30; $counter += 1) {
-  $sql="SELECT '".$counter."' AS day, count(mid) AS mate
-        FROM cs_mate
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(mdate,'%Y-%m') 
-        AND ( DATE_FORMAT(mdate,'%d') = '".$counter."' or DATE_FORMAT(mdate,'%d') = '0".$counter."'); ";
-  $result=mysql_query($sql);
-  $row=mysql_fetch_array($result);
-  array_push($mmonthstack, $row['mate']);
+    $sql=sprintf(
+        "SELECT '".$counter."' AS day, count(mid) AS mate
+         FROM cs_mate
+         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m') = DATE_FORMAT(mdate, '%%Y-%%m')
+         AND DATE_FORMAT(mdate,'%%d') = '%02d'",
+        $counter, $counter);
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    array_push($mmonthstack, $row['mate']);
 }
 
 // YEAR CHART
@@ -73,45 +76,51 @@ $cyearstack = array();
 $myearstack = array();
 $mateyearstack = array();
 for ( $counter = 1; $counter <= 12; $counter += 1) {
-  $sql="SELECT '".$counter."' AS month, count(cid) AS coffees 
-        FROM cs_coffees 
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(cdate,'%Y') 
-        AND ( DATE_FORMAT(cdate,'%m') = '".$counter."' or DATE_FORMAT(cdate,'%m') = '0".$counter."'); ";
-  $result=mysql_query($sql);
-  $row=mysql_fetch_array($result);
-  array_push($cyearstack, $row['coffees']);
-  array_push($myearstack, $row['month']);
-}
-for ( $counter = 1; $counter <= 12; $counter += 1) {
-  $sql="SELECT '".$counter."' AS month, count(mid) AS mate
-        FROM cs_mate
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y') = DATE_FORMAT(mdate,'%Y') 
-        AND ( DATE_FORMAT(mdate,'%m') = '".$counter."' or DATE_FORMAT(mdate,'%m') = '0".$counter."'); ";
-  $result=mysql_query($sql);
-  $row=mysql_fetch_array($result);
-  array_push($mateyearstack, $row['mate']);
+    $sql=sprintf(
+        "SELECT '%d' AS month, count(cid) AS coffees
+         FROM cs_coffees
+         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y') = DATE_FORMAT(cdate, '%%Y')
+           AND DATE_FORMAT(cdate,'%%m') = '%02d'",
+        $counter, $counter);
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    array_push($cyearstack, $row['coffees']);
+    array_push($myearstack, $row['month']);
+
+    $sql=sprintf(
+        "SELECT '%d' AS month, count(mid) AS mate
+         FROM cs_mate
+         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y') = DATE_FORMAT(mdate, '%%Y')
+           AND DATE_FORMAT(mdate, '%%m') = '%02d'",
+        $counter, $counter);
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    array_push($mateyearstack, $row['mate']);
 }
 
 // BY HOUR 
 $cbyhourstack = array();
 $hbyhourstack = array();
 $mbyhourstack = array();
-for ( $counter = 0; $counter <= 24; $counter += 1) {
-    $sql="SELECT '".$counter."' as hour, count(cid) as coffees 
-          FROM cs_coffees 
-          WHERE DATE_FORMAT(cdate,'%H') = '".$counter."' OR DATE_FORMAT(cdate,'%H') = '0".$counter."'; ";
+for ( $counter = 0; $counter <= 23; $counter += 1) {
+    $sql=sprintf(
+        "SELECT '%d' AS hour, count(cid) AS coffees
+         FROM cs_coffees
+         WHERE DATE_FORMAT(cdate,'%%H') = '%02d'",
+        $counter, $counter);
     $result=mysql_query($sql);
     $row=mysql_fetch_array($result);
-array_push($cbyhourstack, $row['coffees']);
-array_push($hbyhourstack, $row['hour']);
-}
-for ( $counter = 0; $counter <= 24; $counter += 1) {
-    $sql="SELECT '".$counter."' as hour, count(mid) as mate
-          FROM cs_mate
-          WHERE DATE_FORMAT(mdate,'%H') = '".$counter."' OR DATE_FORMAT(mdate,'%H') = '0".$counter."'; ";
+    array_push($cbyhourstack, $row['coffees']);
+    array_push($hbyhourstack, $row['hour']);
+
+    $sql=sprintf(
+        "SELECT '%d' as hour, count(mid) as mate
+         FROM cs_mate
+         WHERE DATE_FORMAT(mdate,'%%H') = '%02d'",
+        $counter, $counter);
     $result=mysql_query($sql);
     $row=mysql_fetch_array($result);
-array_push($mbyhourstack, $row['mate']);
+    array_push($mbyhourstack, $row['mate']);
 }
 
 // BY WEEKDAY
@@ -119,18 +128,18 @@ $cbydaystack = array();
 $hbydaystack = array();
 $mbydaystack = array();
 $sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees 
-      FROM cs_coffees 
+      FROM cs_coffees
       GROUP BY day
-      ORDER BY DATE_FORMAT(cdate, '%w'); ";
+      ORDER BY DATE_FORMAT(cdate, '%w')";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 array_push($cbydaystack, $row[1]);
 array_push($hbydaystack, $row[0]);
 }
-$sql="SELECT DATE_FORMAT(mdate, '%a') as day, count(mid) as mate 
+$sql="SELECT DATE_FORMAT(mdate, '%a') as day, count(mid) as mate
       FROM cs_mate
       GROUP BY day
-      ORDER BY DATE_FORMAT(mdate, '%w'); ";
+      ORDER BY DATE_FORMAT(mdate, '%w')";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 array_push($mbydaystack, $row[1]);
