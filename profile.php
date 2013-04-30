@@ -1,21 +1,25 @@
 <?php
 include("auth/lock.php");
-include("auth/config.php");
+// include("auth/config.php"); # already included in auth/lock.php
 include("header.php");
 include("lib/antixss.php");
 
 // Parse user
-$profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
-$profileuser=mysql_real_escape_string($profileuser);
-$sql="SELECT uid, ufname, uname, ulocation, utoken FROM cs_users WHERE ulogin='$profileuser';";
-$result=mysql_query($sql);
-$row=mysql_fetch_array($result);
-$count=mysql_num_rows($result);
-$profileid=$row['uid'];
-$profilename=$row['uname'];
-$profileforename=$row['ufname'];
-$profilelocation=$row['ulocation'];
-$profiletoken=$row['utoken'];
+if (array_key_exists('u', $_GET)) {
+    $profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
+    $profileuser=mysql_real_escape_string($profileuser);
+    $sql="SELECT uid, ufname, uname, ulocation, utoken FROM cs_users WHERE ulogin='$profileuser';";
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    $count=mysql_num_rows($result);
+    $profileid=$row['uid'];
+    $profilename=$row['uname'];
+    $profileforename=$row['ufname'];
+    $profilelocation=$row['ulocation'];
+    $profiletoken=$row['utoken'];
+} else {
+    $count=0;
+}
 
 ?>
 <div class="white-box">
