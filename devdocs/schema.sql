@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS cs_users (
+    uid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    ulogin VARCHAR(128) NOT NULL UNIQUE,
+    uemail VARCHAR(128) NOT NULL UNIQUE,
+    ufname VARCHAR(128) NOT NULL,
+    uname VARCHAR(128) NOT NULL,
+    ucryptsum VARCHAR(60) NOT NULL,      -- blowfish hash
+    ucreated DATETIME NOT NULL,
+    ulocation VARCHAR(128) NOT NULL,
+    upublic VARCHAR(3) NOT NULL,         -- 'yes'
+    utoken VARCHAR(32) NOT NULL UNIQUE   -- md5 hash
+);
+
+CREATE TABLE IF NOT EXISTS cs_mate (
+    mid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    cuid INTEGER NOT NULL REFERENCES cs_users(uid),
+    mdate DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS cs_coffees (
+    cid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    cuid INTEGER NOT NULL REFERENCES cs_users(uid),
+    cdate DATETIME NOT NULL
+);
