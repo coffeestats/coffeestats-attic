@@ -104,7 +104,7 @@ include('lib/antixss.php');
 
     function toggle(control){
         var elem = document.getElementById(control);
-    
+
         if(elem.style.display == "none"){
             elem.style.display = "inline";
         }else{

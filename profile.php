@@ -41,10 +41,10 @@ if ($count==1) {
     echo("<li>Your <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">public profile page</a></li>");
     echo("<li>Your <a href=\"http://coffeestats.org/ontherun?u=".$_SESSION['login_user']."&t=".$profiletoken."\">on-the-run</a> URL</li>");
     echo ("</ul>");
-    echo("Share your profile on Facebook! <br> 
+    echo("Share your profile on Facebook! <br>
       <br/><a href=\"http://www.facebook.com/sharer.php?u=http://coffeestats.org/public?u=".$_SESSION['login_user']."&t=My%20coffee%20statistic\"><img src=\"images/facebook-share-icon.gif\"></a></li>");
   } else {
-    echo ("<h2>".$profileuser."'s Profile</h2>"); 
+    echo ("<h2>".$profileuser."'s Profile</h2>");
     echo ("<ul>");
     echo("<li>Name: $profileforename $profilename </li>");
     echo("<li>Location: $profilelocation </li>");
@@ -104,7 +104,7 @@ for ( $counter = 1; $counter <= 24; $counter += 1) {
   array_push($mtodaystack, $row['mate']);                                                                                                                                                                        
 }  
 
-// MONTH 
+// MONTH
 $cmonthstack = array();
 $dmonthstack = array();
 $mmonthstack = array();
@@ -235,15 +235,15 @@ array_push($mbydaystack, $row[1]);
 
   <script src="./lib/Chart.min.js"></script>
 
-  <script>                                                                                                                                                                                                       
-  var todaycolor = "#E64545"                                                                                                                                                                                     
-  var monthcolor = "#FF9900"                                                                                                                                                                                     
-  var yearcolor = "#3399FF"                                                                                                                                                                                      
-  var hourcolor = "#FF6666"                                                                                                                                                                                      
-  var weekdaycolor = "#A3CC52"                                                                                                                                                                                   
-  var matecolor = "#FFCC00"                                                                                                                                                                                      
-  var matelightcolor = "#FFE066"                                                                                                                                                                                 
-  </script>  
+  <script>
+  var todaycolor = "#E64545"
+  var monthcolor = "#FF9900"
+  var yearcolor = "#3399FF"
+  var hourcolor = "#FF6666"
+  var weekdaycolor = "#A3CC52"
+  var matecolor = "#FFCC00"
+  var matelightcolor = "#FFE066"
+  </script>
 
   <script>
 
@@ -323,7 +323,7 @@ array_push($mbydaystack, $row[1]);
 
       datasets : [
         {
-          fillColor : monthcolor, 
+          fillColor : monthcolor,
           strokeColor : "#FFB84D",
           pointColor : "#FFB84D",
           pointStrokeColor : "#fff",
@@ -338,7 +338,7 @@ array_push($mbydaystack, $row[1]);
 
         },
         {
-          fillColor : matecolor, 
+          fillColor : matecolor,
           strokeColor : matelightcolor,
           pointColor : matelightcolor,
           pointStrokeColor : "#fff",
@@ -414,7 +414,7 @@ array_push($mbydaystack, $row[1]);
 
       datasets : [
         {
-          fillColor : hourcolor, 
+          fillColor : hourcolor,
           strokeColor : "#FF9999",
           pointColor : "#FF9999",
           pointStrokeColor : "#fff",
@@ -427,21 +427,21 @@ array_push($mbydaystack, $row[1]);
           echo ("]\n");
           ?>
         },
-        {                                                                                                                                                                                                        
-          fillColor : matecolor,                                                                                                                                                                                 
-          strokeColor : matelightcolor,                                                                                                                                                                          
-          pointColor : matelightcolor,                                                                                                                                                                           
-          pointStrokeColor : "#fff",                                                                                                                                                                             
-          <?php                                                                                                                                                                                                  
-          echo ("data : [");                                                                                                                                                                                     
-          foreach ($mbyhourstack as &$value) {                                                                                                                                                                   
-            echo ($value.",");                                                                                                                                                                                   
-          }                                                                                                                                                                                                      
-          unset($value);                                                                                                                                                                                         
-          echo ("]\n");                                                                                                                                                                                          
-          ?>                                                                                                                                                                                                     
-                                                                                                                                                                                                                 
-        },  
+        {
+          fillColor : matecolor,
+          strokeColor : matelightcolor,
+          pointColor : matelightcolor,
+          pointStrokeColor : "#fff",
+          <?php
+          echo ("data : [");
+          foreach ($mbyhourstack as &$value) {
+            echo ($value.",");
+          }
+          unset($value);
+          echo ("]\n");
+          ?>
+
+        },
       ]
     }
 
@@ -461,7 +461,7 @@ array_push($mbydaystack, $row[1]);
 
       datasets : [
         {
-          fillColor : weekdaycolor, 
+          fillColor : weekdaycolor,
           strokeColor : "#99FF99",
           pointColor : "#99FF99",
           pointStrokeColor : "#fff",

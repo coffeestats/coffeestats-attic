@@ -19,7 +19,7 @@ if ($count==1) {
   if ($profileid==$_SESSION['login_id']) {
     echo ("<h2>Your Profile</h2>");
   } else {
-    echo ("<h2>".$profileuser."'s Profile</h2>"); 
+    echo ("<h2>".$profileuser."'s Profile</h2>");
   }
 } else {
   $profileid=$_SESSION['login_id'];
@@ -43,7 +43,7 @@ $row=mysql_fetch_array($result);
     			<script type="text/javascript">
       				google.load("visualization", "1", {packages:["corechart"]});
       				google.setOnLoadCallback(drawChart);
-      
+
       				function drawChart() {
 				        var data = new google.visualization.DataTable();
 				        data.addColumn('string', 'Hour');
@@ -52,26 +52,26 @@ $row=mysql_fetch_array($result);
 
 							<?php
 	                			for ( $counter = 0; $counter <= 23; $counter += 1) {
-	                  			
-                                  $sql="select '".$counter."' as hour, count(cid) as coffees 
-                                    from cs_coffees 
-                                    where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') 
-                                    and ( DATE_FORMAT(cdate,'%H') = '".$counter."' or DATE_FORMAT(cdate,'%H') = '0".$counter."') 
+
+                                  $sql="select '".$counter."' as hour, count(cid) as coffees
+                                    from cs_coffees
+                                    where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d')
+                                    and ( DATE_FORMAT(cdate,'%H') = '".$counter."' or DATE_FORMAT(cdate,'%H') = '0".$counter."')
                                     and cuid = '".$profileid."'; ";
 	                  			$result=mysql_query($sql);
 	                  			$row=mysql_fetch_array($result);
-	                  
+
 	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."],\n");
 	                			}
-	                			
-                                  $sql="select '24' as hour, count(cid) as coffees 
-                                        from cs_coffees 
-                                        where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d') 
-                                        and ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24') 
+
+                                  $sql="select '24' as hour, count(cid) as coffees
+                                        from cs_coffees
+                                        where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d') = DATE_FORMAT(cdate,'%Y-%m-%d')
+                                        and ( DATE_FORMAT(cdate,'%H') = '24' or DATE_FORMAT(cdate,'%H') = '24')
                                         and cuid = '".$profileid."'; ";
 	                  			$result=mysql_query($sql);
 	                  			$row=mysql_fetch_array($result);
-	                  	
+
 	                  			echo ("\t\t['".$row['hour']."', ".$row['coffees']."]");
 							?>
         				]);
@@ -86,11 +86,11 @@ $row=mysql_fetch_array($result);
 				        chart.draw(data, options);
       				}
     			</script>
-    
+
     		<script type="text/javascript">
       			google.load("visualization", "1", {packages:["corechart"]});
       			google.setOnLoadCallback(drawChart);
-      
+
       			function drawChart() {
 			        var data = new google.visualization.DataTable();
 			        data.addColumn('string', 'Month');
@@ -101,14 +101,14 @@ $row=mysql_fetch_array($result);
 		                  		$sql="select '".$counter."' as day, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') and ( DATE_FORMAT(cdate,'%d') = '".$counter."' or DATE_FORMAT(cdate,'%d') = '0".$counter."') and cuid = '".$profileid."'; ";
 		                  		$result=mysql_query($sql);
 		                  		$row=mysql_fetch_array($result);
-		                  		
+
 		                  		echo ("\t\t['".$row['day']."', ".$row['coffees']."],\n");
 	                		}
-	                  
+
 	                  		$sql="select '31' as day, count(cid) as coffees from cs_coffees where DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m') = DATE_FORMAT(cdate,'%Y-%m') and ( DATE_FORMAT(cdate,'%d') = '12' or DATE_FORMAT(cdate,'%d') = '12') and cuid = '".$profileid."'; ";
 	                  		$result=mysql_query($sql);
 	                  		$row=mysql_fetch_array($result);
-	                  
+
 	                  		echo ("\t\t['".$row['day']."', ".$row['coffees']."]");
 						?>
         			]);

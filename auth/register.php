@@ -25,10 +25,10 @@
         if ($resp->is_valid) {
               if (!isset($_POST['Login'])) {
                 $cerr=2;
-              } 
+              }
               if (!ctype_alnum($_POST['Login'])) {
                 $cerr=2;
-              } 
+              }
               if (!isset($_POST['Email'])) {
                 $cerr=2;
               }
@@ -54,7 +54,7 @@
                 echo "<div class=\"white-box\"><h2>You got it! Click <a href=\"../index\">here</a></h2>";
                 echo "Yes. We hate CAPTCHAs too.</div>";
                 $sql="INSERT INTO cs_users VALUES ('', '".$login."', '".$email."', '".$forename."', '".$name."', '".$password."', NOW(), '".$location."', 'yes', '".$otrtoken."'); ";
-                $result = mysql_query($sql); 
+                $result = mysql_query($sql);
               }
               else {
                 echo("<div class=\"white-box\">Error: Sorry. Username already taken, invalid or you forgot something in General section.</div>");
@@ -79,16 +79,16 @@
 			<input type="text" name="Name" maxlength="20" placeholder="Name" id="register_field_standard" />
 			<input type="text" name="Location" maxlength="20" placeholder="Location" id="register_field_standard" />
 		  </div> <!-- end of white-box -->
-		
+
 		    <div class="white-box">
             <?php
 			  echo recaptcha_get_html($publickey, $error, true);
-			?>		
+			?>
 		    </div>
-		
+
 		    <div class="white-box">
 			  <input type="submit" value="Register!" id="register_button_standard" />
-		    </div>    
+		    </div>
           </form>
 <?php
 include('../footer.php');

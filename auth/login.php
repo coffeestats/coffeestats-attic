@@ -65,7 +65,7 @@
               labels : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
               datasets : [
               {
-                fillColor : "#FF9900", 
+                fillColor : "#FF9900",
                 strokeColor : "#FFB84D",
                 pointColor : "#FFB84D",
                 pointStrokeColor : "#fff",
@@ -73,7 +73,7 @@
 
               },
               {
-                fillColor :  "#E64545", 
+                fillColor :  "#E64545",
                 strokeColor : "#FF9999",
                 pointColor : "#FF9999",
                 pointStrokeColor : "#fff",

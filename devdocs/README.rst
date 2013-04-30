@@ -55,7 +55,7 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
     PIDFILE=/var/run/php-fastcgi/php-fastcgi.pid
     CHILDREN=6
     PHP5=/usr/bin/php5-cgi
-    
+
     /usr/bin/spawn-fcgi -s $SOCKET -P $PIDFILE -C $CHILDREN -u $FASTCGI_USER -g $FASTCGI_GROUP -f $PHP5
 
 #. Create the virtualhost config (/etc/nginx/sites-available/coffeestats)::

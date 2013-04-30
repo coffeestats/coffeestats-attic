@@ -30,7 +30,7 @@ while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 $sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users ORDER BY RAND() LIMIT 1; ";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-      printf("<a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);  
+      printf("<a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);
       $totalsql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$row[0]."';";
       $totalresult=mysql_query($totalsql);
       $totalrow=mysql_fetch_array($totalresult);
@@ -44,7 +44,7 @@ while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 $sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users ORDER BY RAND() LIMIT 1; ";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-      printf("<a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);  
+      printf("<a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);
       $totalsql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$row[0]."';";
       $totalresult=mysql_query($totalsql);
       $totalrow=mysql_fetch_array($totalresult);
@@ -59,7 +59,7 @@ while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 $sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users ORDER BY RAND() LIMIT 1; ";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-      printf("<a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);  
+      printf("<a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);
       $totalsql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$row[0]."';";
       $totalresult=mysql_query($totalsql);
       $totalrow=mysql_fetch_array($totalresult);
@@ -72,7 +72,7 @@ while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 $sql="SELECT uid, ulogin, ufname, uname, ulocation FROM cs_users ORDER BY RAND() LIMIT 1; ";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-      printf("<a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);  
+      printf("<a href=\"profile.php?u=%s\">%s</a><br/>Name: %s %s <br/> Location:  %s</br>", $row[1], $row[1], $row[2], $row[3], $row[4]);
       $totalsql="SELECT count(cid) as total FROM cs_coffees WHERE cuid='".$row[0]."';";
       $totalresult=mysql_query($totalsql);
       $totalrow=mysql_fetch_array($totalresult);
