@@ -7,7 +7,9 @@
 		// username and password sent from Form
 		$myusername=mysql_real_escape_string($_POST['username']);
 		$mypassword=crypt(mysql_real_escape_string($_POST['password']), '$2a$07$thisissomefuckingassholesaltforcoffeestats$');
-		$sql="SELECT uid FROM cs_users WHERE ulogin='".$myusername."' and ucryptsum='".$mypassword."'";
+        $sql=sprintf(
+            "SELECT uid FROM cs_users WHERE ulogin='%s' AND ucryptsum='%s'",
+            $myusername, $mypassword);
 		$result=mysql_query($sql);
 		$row=mysql_fetch_array($result);
 		$count=mysql_num_rows($result);
@@ -15,7 +17,6 @@
 		// if result matched $myusername and $mypassword, table row must be 1 row
 
 		if($count==1) {
-    		session_register("myusername");
     		$_SESSION['login_user']=$myusername;
     		$_SESSION['login_id']=$row['uid'];
     		header("location: ../index");
@@ -66,7 +67,7 @@
               labels : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
               datasets : [
               {
-                fillColor : "#FF9900", 
+                fillColor : "#FF9900",
                 strokeColor : "#FFB84D",
                 pointColor : "#FFB84D",
                 pointStrokeColor : "#fff",
@@ -74,7 +75,7 @@
 
               },
               {
-                fillColor :  "#E64545", 
+                fillColor :  "#E64545",
                 strokeColor : "#FF9999",
                 pointColor : "#FF9999",
                 pointStrokeColor : "#fff",

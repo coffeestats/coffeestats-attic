@@ -30,8 +30,8 @@ include('lib/antixss.php');
 		      echo("Your coffee at ".$coffeedate." was been registered!");
           } else {
 		      echo("Error: Your last coffee was at least not 5 minutes ago. O_o");
-          } 
-    } elseif($_POST['matetime']) {  
+          }
+    } elseif($_POST['matetime']) {
       echo("<div class=\"white-box\">");
           $matedate=mysql_real_escape_string($_POST['matetime']);
           $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
@@ -48,7 +48,7 @@ include('lib/antixss.php');
               echo("Your mate at ".$matedate." was been registered!");
           } else {
               echo("Error: Your last mate was at least not 5 minutes ago. O_o");
-          } 
+          }
     }
       echo("</div>");
 ?>
@@ -96,7 +96,7 @@ include('lib/antixss.php');
 					<input class="imademate" type="submit" value="Mate!" id="coffee_plus_one" onclick="AddPostDataMate();" /><br />
                     <input type='hidden' id='matetime' name='matetime' value='' />
 				</form>
-                </center> 
+                </center>
 
 		</div>
 <?php
