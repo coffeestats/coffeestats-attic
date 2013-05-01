@@ -98,7 +98,7 @@ for ( $counter = 1; $counter <= 12; $counter += 1) {
     array_push($mateyearstack, $row['mate']);
 }
 
-// BY HOUR 
+// BY HOUR
 $cbyhourstack = array();
 $hbyhourstack = array();
 $mbyhourstack = array();
@@ -127,7 +127,7 @@ for ( $counter = 0; $counter <= 23; $counter += 1) {
 $cbydaystack = array();
 $hbydaystack = array();
 $mbydaystack = array();
-$sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees 
+$sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees
       FROM cs_coffees
       GROUP BY day
       ORDER BY DATE_FORMAT(cdate, '%w')";
@@ -142,7 +142,7 @@ $sql="SELECT DATE_FORMAT(mdate, '%a') as day, count(mid) as mate
       ORDER BY DATE_FORMAT(mdate, '%w')";
 $result=mysql_query($sql);
 while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-array_push($mbydaystack, $row[1]);
+    array_push($mbydaystack, $row[1]);
 }
 ?>
 <div class="white-box">
@@ -150,333 +150,170 @@ array_push($mbydaystack, $row[1]);
 
   <p>We love stats. On overall statistics we started making awesome graphs examining the daily coffee
      consumption of anyone using coffeestats.org. There are different approaches to visualize this. At least a few of them are listed below.</p>
- 
+
   <p>Hint: Yellow will always be Mate.</p>
 </div>
-		<div class="white-box">
-          <h2>Caffeine today</h2>
-          <canvas id="coffeetoday" width="590" height="240" ></canvas>
-		</div>
-		<div class="white-box">
-          <h2>Caffeine this month</h2>
-          <canvas id="coffeemonth" width="590" height="240" ></canvas>
-		</div>
-		<div class="white-box">
-          <h2>Coffees vs. Mate</h2>
-          <canvas id="coffeevsmate" width="590" height="240" ></canvas>
-		</div>
-		<div class="white-box">
-          <h2>Caffeine this year</h2>
-          <canvas id="coffeeyear" width="590" height="240" ></canvas>
-		</div>
-		<div class="white-box">
-          <h2>Caffeine by hour (overall)</h2>
-          <canvas id="coffeebyhour" width="590" height="240" ></canvas>
-		</div>
-		<div class="white-box">
-          <h2>Caffeine by weekday (overall)</h2>
-          <canvas id="coffeebyweekday" width="590" height="240" ></canvas>
-		</div>
+<div class="white-box">
+  <h2>Caffeine today</h2>
+  <canvas id="coffeetoday" width="590" height="240" ></canvas>
+</div>
+<div class="white-box">
+  <h2>Caffeine this month</h2>
+  <canvas id="coffeemonth" width="590" height="240" ></canvas>
+</div>
+<div class="white-box">
+  <h2>Coffees vs. Mate</h2>
+  <canvas id="coffeevsmate" width="590" height="240" ></canvas>
+</div>
+<div class="white-box">
+  <h2>Caffeine this year</h2>
+  <canvas id="coffeeyear" width="590" height="240" ></canvas>
+</div>
+<div class="white-box">
+  <h2>Caffeine by hour (overall)</h2>
+  <canvas id="coffeebyhour" width="590" height="240" ></canvas>
+</div>
+<div class="white-box">
+  <h2>Caffeine by weekday (overall)</h2>
+  <canvas id="coffeebyweekday" width="590" height="240" ></canvas>
+</div>
 
- <script src="./lib/Chart.min.js"></script>
+<?php
+function chartarray($variable, $format="%s,") {
+    echo("[");
+    foreach ($variable as &$value) {
+        printf($format, $value);
+    }
+    unset($value);
+    echo("],\n");
+}
+?>
+<script src="./lib/Chart.min.js"></script>
 
-  <script>
-  var todaycolor = "#E64545"
-  var monthcolor = "#FF9900"
-  var yearcolor = "#3399FF"
-  var hourcolor = "#FF6666"
-  var weekdaycolor = "#A3CC52"
-  var matecolor = "#FFCC00"
-  var matelightcolor = "#FFE066"
-  </script>
-
-  <script>
+<script>
+    var todaycolor = "#E64545"
+    var monthcolor = "#FF9900"
+    var yearcolor = "#3399FF"
+    var hourcolor = "#FF6666"
+    var weekdaycolor = "#A3CC52"
+    var matecolor = "#FFCC00"
+    var matelightcolor = "#FFE066"
 
     var doughnutData = [
         {
-          <?php
-          echo ("value : ".$wholecoffeestack.",\n" );
-          ?>
-          color: todaycolor
+            value: <?php echo($wholecoffeestack); ?>,
+            color: todaycolor
         },
         {
-          <?php
-          echo ("value : ".$wholematestack.",\n" );
-          ?>
-          color : matecolor
+            value: <?php echo($wholematestack); ?>,
+            color : matecolor
         }
-      ];
+    ];
 
-  var myDoughnut = new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
-
-  </script>
-
-  <script>
+    var myDoughnut = new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
 
     var barChartData = {
-    <?php
-    echo ("labels : [");
-    foreach ($htodaystack as &$value) {
-      echo ($value.",");
-    }
-    unset($value);
-    echo ("],\n");
-    ?>
-      datasets : [
-        {
-          fillColor : todaycolor,
-          strokeColor : todaycolor,
-          <?php
-          echo ("data : [");
-          foreach ($ctodaystack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-       },
-       {
-          fillColor : matecolor,
-          strokeColor : matecolor,
-          <?php
-          echo ("data : [");
-          foreach ($mtodaystack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-        },]
-
+        labels: <?php chartarray($htodaystack); ?>
+        datasets : [
+            {
+                fillColor : todaycolor,
+                strokeColor : todaycolor,
+                data: <?php chartarray($ctodaystack); ?>
+            },
+            {
+                fillColor : matecolor,
+                strokeColor : matecolor,
+                data: <?php chartarray($mtodaystack); ?>
+            },]
     }
 
     var myLine = new Chart(document.getElementById("coffeetoday").getContext("2d")).Bar(barChartData);
 
-  </script>
-
-  <script>
     var lineChartData = {
-          <?php
-          echo ("labels : [");
-          foreach ($dmonthstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("],\n");
-          ?>
-
-      datasets : [
-        {
-          fillColor : monthcolor, 
-          strokeColor : "#FFB84D",
-          pointColor : "#FFB84D",
-          pointStrokeColor : "#fff",
-          <?php
-          echo ("data : [");
-          foreach ($cmonthstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-
-        },
-        {
-          fillColor : matecolor, 
-          strokeColor : matelightcolor,
-          pointColor : matelightcolor,
-          pointStrokeColor : "#fff",
-          <?php
-          echo ("data : [");
-          foreach ($mmonthstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-        },
-      ]
+        labels: <?php chartarray($dmonthstack); ?>
+        datasets : [
+            {
+                fillColor : monthcolor,
+                strokeColor : "#FFB84D",
+                pointColor : "#FFB84D",
+                pointStrokeColor : "#fff",
+                data: <?php chartarray($cmonthstack); ?>
+            },
+            {
+                fillColor : matecolor,
+                strokeColor : matelightcolor,
+                pointColor : matelightcolor,
+                pointStrokeColor : "#fff",
+                data: <?php chartarray($mmonthstack); ?>
+            },
+        ]
     }
 
-  var myLine = new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
- </script>
-
-
-  <script>
+    var myLine = new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
 
     var barChartData = {
-    <?php
-    echo ("labels : [");
-    foreach ($myearstack as &$value) {
-      echo ($value.",");
-    }
-    unset($value);
-    echo ("],\n");
-    ?>
-      datasets : [
-        {
-          fillColor : yearcolor,
-          strokeColor : yearcolor,
-          <?php
-          echo ("data : [");
-          foreach ($cyearstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-        },
-        {
-          fillColor : matecolor,
-          strokeColor : matecolor,
-          <?php
-          echo ("data : [");
-          foreach ($mateyearstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-        },
-
-      ]
-
+        labels: <?php chartarray($myearstack); ?>
+        datasets : [
+            {
+                fillColor : yearcolor,
+                strokeColor : yearcolor,
+                data: <?php chartarray($cyearstack); ?>
+            },
+            {
+                fillColor : matecolor,
+                strokeColor : matecolor,
+                data: <?php chartarray($mateyearstack); ?>
+            },
+        ]
     }
 
     var myLine = new Chart(document.getElementById("coffeeyear").getContext("2d")).Bar(barChartData);
-  </script>
 
-  <script>
     var lineChartData = {
-          <?php
-          echo ("labels : [");
-          foreach ($hbyhourstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("],\n");
-          ?>
-
-      datasets : [
-        {
-          fillColor : hourcolor, 
-          strokeColor : "#FF9999",
-          pointColor : "#FF9999",
-          pointStrokeColor : "#fff",
-          <?php
-          echo ("data : [");
-          foreach ($cbyhourstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-
-        },
-      ]
+        labels: <?php chartarray($hbyhourstack); ?>
+        datasets : [
+            {
+                fillColor : hourcolor,
+                strokeColor : "#FF9999",
+                pointColor : "#FF9999",
+                pointStrokeColor : "#fff",
+                data: <?php chartarray($cbyhourstack); ?>
+            },
+            {
+                fillColor : matecolor,
+                strokeColor : matelightcolor,
+                pointColor : matelightcolor,
+                pointStrokeColor : "#fff",
+                data: <?php chartarray($mbyhourstack); ?>
+            },
+        ]
     }
 
-  var myLine = new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
- </script>
+    var myLine = new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
 
- <script>
     var lineChartData = {
-          <?php
-          echo ("labels : [");
-          foreach ($hbyhourstack as &$value) {
-            echo ('"'.$value.'",');
-          }
-          unset($value);
-          echo ("],\n");
-          ?>
-
-      datasets : [
-        {
-          fillColor : hourcolor, 
-          strokeColor : "#FF9999",
-          pointColor : "#FF9999",
-          pointStrokeColor : "#fff",
-          <?php
-          echo ("data : [");
-          foreach ($cbyhourstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-
-        },
-        {
-          fillColor : matecolor,
-          strokeColor : matelightcolor,
-          pointColor : matelightcolor,
-          pointStrokeColor : "#fff",
-          <?php
-          echo ("data : [");
-          foreach ($mbyhourstack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-
-        },
-
-      ]
+        labels: <?php chartarray($hbydaystack, "'%s',"); ?>
+        datasets: [
+            {
+                fillColor : weekdaycolor,
+                strokeColor : "#99FF99",
+                pointColor : "#99FF99",
+                pointStrokeColor : "#fff",
+                data: <?php chartarray($cbydaystack); ?>
+            },
+            {
+                fillColor : matecolor,
+                strokeColor : matelightcolor,
+                pointColor : matelightcolor,
+                pointStrokeColor : "#fff",
+                data: <?php chartarray($mbydaystack); ?>
+            },
+        ]
     }
 
-  var myLine = new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
- </script>
-
- <script>
-    var lineChartData = {
-          <?php
-          echo ("labels : [");
-          foreach ($hbydaystack as &$value) {
-            echo ('"'.$value.'",');
-          }
-          unset($value);
-          echo ("],\n");
-          ?>
-
-      datasets : [
-        {
-          fillColor : weekdaycolor, 
-          strokeColor : "#99FF99",
-          pointColor : "#99FF99",
-          pointStrokeColor : "#fff",
-          <?php
-          echo ("data : [");
-          foreach ($cbydaystack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-
-        },
-        {
-          fillColor : matecolor,
-          strokeColor : matelightcolor,
-          pointColor : matelightcolor,
-          pointStrokeColor : "#fff",
-          <?php
-          echo ("data : [");
-          foreach ($mbydaystack as &$value) {
-            echo ($value.",");
-          }
-          unset($value);
-          echo ("]\n");
-          ?>
-
-        },
-
-      ]
-    }
-
-  var myLine = new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
- </script>
+    var myLine = new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
+</script>
 
 <?php
-	include("footer.php");
+include("footer.php");
 ?>
