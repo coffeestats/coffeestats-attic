@@ -40,7 +40,7 @@ include("../preheader.php");
     </div>
     <div class="white-box">
         <h2>Login</h2>
-        <form action="" method="post">
+        <form action="<?php echo($_SERVER['REQUEST_URI']); ?>" method="post">
             <input type="text" name="username" placeholder="Username" id="login_field_username" />
             <input type="password" name="password" placeholder="Password" id="login_field_password" />
             <input type="submit" name="submit" value="Login" id="login_button_submit" />
