@@ -1,82 +1,83 @@
 /*
-	caffeine.css: Cascading Style Sheet for coffeestats.org
-	Author: Holger Winter <dreary@online.de>
-	license:
-	Date: January 17th, 2012
-	Version: 1.0
+    caffeine.css: Cascading Style Sheet for coffeestats.org
+    Author: Holger Winter <dreary@online.de>
+    Author: Jan Dittberner <jan@dittberner.info>
+    license:
+    Date: May 1st, 2013
+    Version: 1.1
 */
 
 
 /* FONTS */
 
 @font-face {
-	font-family: 'Droid Sans';
-	font-style: normal;
-	font-weight: normal;
-	src: url("/fonts/DroidSans.ttf");
+    font-family: 'Droid Sans';
+    font-style: normal;
+    font-weight: normal;
+    src: url("/fonts/DroidSans.ttf");
 }
 
 @font-face {
-	font-family: 'Droid Sans';
-	font-style: normal;
-	font-weight: bold;
-	src: url("/fonts/DroidSans-Bold.ttf");
+    font-family: 'Droid Sans';
+    font-style: normal;
+    font-weight: bold;
+    src: url("/fonts/DroidSans-Bold.ttf");
 }
 
 @font-face {
-	font-family: "Harabara";
-	font-style: normal;
-	src: url('/fonts/Harabara.ttf');
+    font-family: "Harabara";
+    font-style: normal;
+    src: url('/fonts/Harabara.ttf');
 }
 
 
 /* GENERAL */
 
 body {
-	padding: 0;
-	margin: 0;
+    padding: 0;
+    margin: 0;
     background-image: url("../images/pattern.png");
     background-repeat: repeat;
-	color: #000;
-	font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif;
-	font-size: 14px;
-	font-weight: normal;
+    color: #000;
+    font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
 }
 
 .white-box {
-	padding: 20px;
-	margin: 0 0 10px 0;
-	background-color: #FFF;
+    padding: 20px;
+    margin: 0 0 10px 0;
+    background-color: #FFF;
 }
 
 .white-box p {
-	line-height: 24px;
+    line-height: 24px;
 }
 
 .white-box-center {
-	text-align: center;
+    text-align: center;
 }
 
 .white-box form {
-	margin: 20px 0;
+    margin: 20px 0;
 }
 
 a {
-	text-decoration: none;
-	font-weight: bold;
-	color: inherit;
+    text-decoration: none;
+    font-weight: bold;
+    color: inherit;
 }
 
 a:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 a img {
-	border: none;
+    border: none;
 }
 
 strong {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 
@@ -87,106 +88,110 @@ strong {
 }
 
 #login h2 {
-	padding: 0 0 10px 0;
-	margin: 0;
-	font-size: 16px;
-	font-weight: bold;
+    padding: 0 0 10px 0;
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 #login_field_username {
-	padding: 10px;
-	font-size: 16px;
-	border: none;
-	background-color: #E7E7E7;
-	color: #201200;
-	min-height: 22px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    background-color: #E7E7E7;
+    color: #201200;
+    min-height: 22px;
 }
 
 #login_field_password {
-	padding: 10px;
-	font-size: 16px;
-	border: none;
-	background-color: #E7E7E7;
-	color: #201200;
-	min-height: 22px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    background-color: #E7E7E7;
+    color: #201200;
+    min-height: 22px;
 }
 
 #login_button_submit {
-	padding: 10px;
-	font-size: 16px;
-	background-color: #201200;
-	border: none;
-	color: #FFF;
-	min-width: 100px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #201200;
+    border: none;
+    color: #FFF;
+    min-width: 100px;
 }
 
 /* WRAPPER */
 #wrapper {
-	padding: 0;
-	margin: 0 auto;
+    padding: 0;
+    margin: 0 auto;
     width: 660px;
 }
 
 /* HEADER */
 
 #header {
-	padding: 10px 10px 10px 100px;
-	margin: 0;
-	color: #FFF;
-	background-image: url('/images/coffee.png');
-	background-repeat: no-repeat;
-	background-position: left center;
+    padding: 10px 10px 10px 100px;
+    margin: 0;
+    color: #FFF;
+    background-image: url('/images/coffee.png');
+    background-repeat: no-repeat;
+    background-position: left center;
 }
 
 #header h1 {
-	font-family: "Harabara";
-	font-size: 48px;
+    font-family: "Harabara";
+    font-size: 48px;
     margin-bottom: 1px;
 }
 
+/* FOOTER */
+.footertext {
+    font-size: small;
+}
 
 /* NAVIGATION */
 
 #navigation ul {
-	padding: 0;
-	margin: 0;
-	list-style-type: none;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
 }
 
 #navigation ul li {
-	padding: 8px;
-	margin: 0;
-	display: inline;
-	background-color: #FFF;
+    padding: 8px;
+    margin: 0;
+    display: inline;
+    background-color: #FFF;
 }
 
 #navigation ul li a {
-	font-weight: normal;
-	color: #000;
+    font-weight: normal;
+    color: #000;
 }
 
 
 /* CONTENT */
-			
+
 #content {
-	padding: 0;
-	margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 #content h2 {
-	padding: 0 0 10px 0;
-	margin: 0;
-	font-size: 16px;
-	font-weight: bold;
+    padding: 0 0 10px 0;
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 #coffee_plus_one {
-	padding: 10px;
-	font-size: 16px;
-	background-color: #201200;
-	border: none;
-	color: #FFF;
-	min-width: 100px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #201200;
+    border: none;
+    color: #FFF;
+    min-width: 100px;
 }
 
 
@@ -200,7 +205,7 @@ strong {
     border: none;
     background-color: #E7E7E7;
     color: #201200;
-    min-height: 22px;    
+    min-height: 22px;
 }
 
 .register_button_standard {
@@ -220,7 +225,7 @@ strong {
     /* iPhone, Android rules here */
   #wrapper {
     padding: 0px;
-	width: 310px;
+    width: 310px;
   }
 }
 
@@ -228,7 +233,7 @@ strong {
     /* iPhone, Android rules here */
   #wrapper {
     padding: 0px;
-	width: 310px;
+    width: 310px;
   }
 }
 
