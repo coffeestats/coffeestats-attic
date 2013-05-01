@@ -159,10 +159,12 @@ strong {
 }
 
 #navigation ul li {
-    padding: 8px;
     margin: 0;
     display: inline;
     background-color: #FFF;
+    background-position: 8px 8px;
+    background-repeat: no-repeat;
+    padding:8px 8px 8px 28px;
 }
 
 #navigation ul li a {
@@ -170,6 +172,33 @@ strong {
     color: #000;
 }
 
+#navindex {
+    background-image: url('/images/home.png');
+}
+
+#navplusone {
+    background-image: url('/images/tag.png');
+}
+
+#navprofile {
+    background-image: url('/images/profile.png');
+}
+
+#navexplore {
+    background-image: url('/images/list.png');
+}
+
+#navoverall {
+    background-image: url('/images/flask.png');
+}
+
+#navabout {
+    background-image: url('/images/user-4.png');
+}
+
+#navlogout {
+    background-image: url('/images/out.png');
+}
 
 /* CONTENT */
 
