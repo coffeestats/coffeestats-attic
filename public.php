@@ -4,16 +4,23 @@ include("preheader.php");
 include("lib/antixss.php");
 
 // Parse user
-$profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
-$profileuser=mysql_real_escape_string($profileuser);
-$sql="SELECT uid, ufname, uname, ulocation FROM cs_users WHERE ulogin='$profileuser' and upublic='yes' ;";
-$result=mysql_query($sql);
-$row=mysql_fetch_array($result);
-$count=mysql_num_rows($result);
-$profileid=$row['uid'];
-$profilename=$row['uname'];
-$profileforename=$row['ufname'];
-$profilelocation=$row['ulocation'];
+if (array_key_exists('u', $_GET)) {
+    $profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
+    $profileuser=mysql_real_escape_string($profileuser);
+    $sql=sprintf(
+        "SELECT uid, ufname, uname, ulocation
+         FROM cs_users WHERE ulogin='%s' and upublic='yes'",
+        $profileuser);
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    $count=mysql_num_rows($result);
+    $profileid=$row['uid'];
+    $profilename=$row['uname'];
+    $profileforename=$row['ufname'];
+    $profilelocation=$row['ulocation'];
+} else {
+    $count=0;
+}
 
 ?>
 <div class="white-box">
