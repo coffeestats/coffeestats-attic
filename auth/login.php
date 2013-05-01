@@ -1,106 +1,97 @@
 <?php
-	include("config.php");
+include("config.php");
 
-	session_start();
+session_start();
 
-	if($_SERVER["REQUEST_METHOD"] == "POST") {
-		// username and password sent from Form
-		$myusername=mysql_real_escape_string($_POST['username']);
-		$mypassword=crypt(mysql_real_escape_string($_POST['password']), '$2a$07$thisissomefuckingassholesaltforcoffeestats$');
-        $sql=sprintf(
-            "SELECT uid FROM cs_users WHERE ulogin='%s' AND ucryptsum='%s'",
-            $myusername, $mypassword);
-		$result=mysql_query($sql);
-		$row=mysql_fetch_array($result);
-		$count=mysql_num_rows($result);
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+    // username and password sent from Form
+    $myusername=mysql_real_escape_string($_POST['username']);
+    $mypassword=crypt(
+        mysql_real_escape_string($_POST['password']),
+        '$2a$07$thisissomefuckingassholesaltforcoffeestats$');
+    $sql=sprintf(
+        "SELECT uid FROM cs_users WHERE ulogin='%s' AND ucryptsum='%s'",
+        $myusername, $mypassword);
+    $result=mysql_query($sql);
+    $row=mysql_fetch_array($result);
+    $count=mysql_num_rows($result);
 
-		// if result matched $myusername and $mypassword, table row must be 1 row
+    // if result matched $myusername and $mypassword, table row must be 1 row
 
-		if($count==1) {
-    		$_SESSION['login_user']=$myusername;
-    		$_SESSION['login_id']=$row['uid'];
-    		header("location: ../index");
-  		}
+    if($count==1) {
+        $_SESSION['login_user']=$myusername;
+        $_SESSION['login_id']=$row['uid'];
+        header("location: ../index");
+    }
+    else {
+        $error="<center>Your username or password seems to be invalid :(</center>";
+        }
+    }
 
-  		else {
-    		$error="<center>Your username or password seems to be invalid :(</center>";
-  		}
-	}
-
-	include("../preheader.php");
+    include("../preheader.php");
 ?>
-
-
-	<div id="login">
-		<div class="white-box">
-			<h2>What is coffeestats.org?</h2>
-				    <p>You like coffee, mate, graphs and nerdy statistics? Well, we do too!</p>
-                    <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep track of it --
-                    enabling us to present you with awesome statistics about your general coffee consumption.
-                    Why? Just because, of course!</p>
-		</div>
-
-		<div class="white-box">
-			<h2>Login</h2>
-				<form action="" method="post">
-					<input type="text" name="username" placeholder="Username" id="login_field_username" />
-					<input type="password" name="password" placeholder="Password" id="login_field_password" />
-					<input type="submit" name="submit" value="Login" id="login_button_submit" />
-			        <p>Oh, you don't have an account yet? <br/>Simply register one <a href="register">here</a>.</p>
-					<?php
-						if (isset($error)) {
-							echo("$error");
-						}
-					?>
-				</form>
-		</div>
-
-
-		<div class="white-box">
-			<h2>Graphs!</h2>
-
-            Overall Coffee vs. Mate consumption<br><br>
-            <canvas id="coffeeexample" width="590" height="240" ></canvas>
-            <script src="../lib/Chart.min.js"></script>
-            <script>
+<div id="login">
+    <div class="white-box">
+        <h2>What is coffeestats.org?</h2>
+        <p>You like coffee, mate, graphs and nerdy statistics? Well, we do too!</p>
+        <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep
+        track of it -- enabling us to present you with awesome statistics about
+        your general coffee consumption. Why? Just because, of course!</p>
+    </div>
+    <div class="white-box">
+        <h2>Login</h2>
+        <form action="" method="post">
+            <input type="text" name="username" placeholder="Username" id="login_field_username" />
+            <input type="password" name="password" placeholder="Password" id="login_field_password" />
+            <input type="submit" name="submit" value="Login" id="login_button_submit" />
+            <p>Oh, you don't have an account yet?<br/>
+            Simply register one <a href="register">here</a>.</p>
+            <?php if (isset($error)) { echo("$error"); } ?>
+        </form>
+    </div>
+    <div class="white-box">
+        <h2>Graphs!</h2>
+        Overall Coffee vs. Mate consumption<br><br>
+        <canvas id="coffeeexample" width="590" height="240" ></canvas>
+        <script src="../lib/Chart.min.js"></script>
+        <script>
             var lineChartData = {
-              labels : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
-              datasets : [
-              {
-                fillColor : "#FF9900",
-                strokeColor : "#FFB84D",
-                pointColor : "#FFB84D",
-                pointStrokeColor : "#fff",
-                data : [40,26,180,72,102,60,30,14,]
+                labels: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
+                datasets: [
+                    {
+                        fillColor: "#FF9900",
+                        strokeColor: "#FFB84D",
+                        pointColor: "#FFB84D",
+                        pointStrokeColor: "#fff",
+                        data: [40,26,180,72,102,60,30,14,]
+                    },
+                    {
+                        fillColor:  "#E64545",
+                        strokeColor: "#FF9999",
+                        pointColor: "#FF9999",
+                        pointStrokeColor: "#fff",
+                        data: [101,3,87,32,12,80,17,14,]
+                    },
+                ]
+            }
 
-              },
-              {
-                fillColor :  "#E64545",
-                strokeColor : "#FF9999",
-                pointColor : "#FF9999",
-                pointStrokeColor : "#fff",
-                data : [101,3,87,32,12,80,17,14,]
-
-              },
-              ]
-           }
-
-           var myLine = new Chart(document.getElementById("coffeeexample").getContext("2d")).Line(lineChartData);
-          </script>
-		</div>
-	</div>
+            var myLine = new Chart(document.getElementById("coffeeexample").getContext("2d")).Line(lineChartData);
+        </script>
+    </div>
+</div>
 
 <!-- Piwik -->
 <script type="text/javascript">
-var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.n0q.org/" : "http://piwik.n0q.org/");
-document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script><script type="text/javascript">
-  try {
-    var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 6);
-    piwikTracker.trackPageView();
-    piwikTracker.enableLinkTracking();
-  } catch( err ) {}
-    </script><noscript><p><img src="http://piwik.n0q.org/piwik.php?idsite=6" style="border:0" alt="" /></p></noscript>
+    var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.n0q.org/" : "http://piwik.n0q.org/");
+    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+
+    try {
+        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 6);
+        piwikTracker.trackPageView();
+        piwikTracker.enableLinkTracking();
+    } catch( err ) {}
+</script>
+<noscript><p><img src="http://piwik.n0q.org/piwik.php?idsite=6" style="border:0" alt="" /></p></noscript>
 <!-- End Piwik Tracking Code -->
 
 <?php
