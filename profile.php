@@ -1,6 +1,5 @@
 <?php
 include("auth/lock.php");
-// include("auth/config.php"); # already included in auth/lock.php
 include("header.php");
 include("lib/antixss.php");
 
@@ -238,21 +237,7 @@ while ($row=mysql_fetch_array($result)) {
     $byweekdayrows[$row['wday']][1] = $row['mate'];
 }
 
-function extractlabels(&$assocarray) {
-    $labels = array();
-    foreach (array_keys($assocarray) as $key) {
-        array_push($labels, sprintf("'%s'", $key));
-    }
-    print(implode(',', $labels));
-}
-
-function extractdata(&$assocarray, $field) {
-    $data = array();
-    foreach ($assocarray as $key => $value) {
-        array_push($data, $assocarray[$key][$field]);
-    }
-    print(implode(',', $data));
-}
+include('includes/charting.php');
 ?>
 </div>
 
