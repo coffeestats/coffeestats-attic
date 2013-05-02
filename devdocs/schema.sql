@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS cs_users (
     ufname VARCHAR(128) NOT NULL,
     uname VARCHAR(128) NOT NULL,
     ucryptsum VARCHAR(60) NOT NULL,      -- blowfish hash
-    ucreated DATETIME NOT NULL,
+    ujoined DATETIME NOT NULL,
     ulocation VARCHAR(128) NOT NULL,
     upublic VARCHAR(3) NOT NULL,         -- 'yes'
     utoken VARCHAR(32) NOT NULL UNIQUE   -- md5 hash
