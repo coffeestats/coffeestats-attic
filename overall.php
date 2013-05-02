@@ -127,22 +127,25 @@ for ( $counter = 0; $counter <= 23; $counter += 1) {
 $cbydaystack = array();
 $hbydaystack = array();
 $mbydaystack = array();
-$sql="SELECT DATE_FORMAT(cdate, '%a') as day, count(cid) as coffees
-      FROM cs_coffees
-      GROUP BY day
-      ORDER BY DATE_FORMAT(cdate, '%w')";
-$result=mysql_query($sql);
-while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-array_push($cbydaystack, $row[1]);
-array_push($hbydaystack, $row[0]);
-}
-$sql="SELECT DATE_FORMAT(mdate, '%a') as day, count(mid) as mate
-      FROM cs_mate
-      GROUP BY day
-      ORDER BY DATE_FORMAT(mdate, '%w')";
-$result=mysql_query($sql);
-while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
-    array_push($mbydaystack, $row[1]);
+for ( $counter = 0; $counter <= 6; $counter += 1) {
+  $sql=sprintf(
+      "SELECT DATE_FORMAT(cdate, '%%a') AS day, count(cid) AS coffees
+       FROM cs_coffees
+       WHERE DATE_FORMAT(cdate, '%%w') = '%d'",
+      $counter);
+  $result=mysql_query($sql);
+  $row=mysql_fetch_array($result);
+  array_push($cbydaystack, $row['coffees']);
+  array_push($hbydaystack, $row['day']);
+
+  $sql=sprintf(
+      "SELECT DATE_FORMAT(mdate, '%%a') AS day, count(mid) AS mate
+       FROM cs_mate
+       WHERE DATE_FORMAT(mdate, '%%w') = '%d'",
+      $counter);
+  $result=mysql_query($sql);
+  $row=mysql_fetch_array($result);
+  array_push($mbydaystack, $row['mate']);
 }
 ?>
 <div class="white-box">
