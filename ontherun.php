@@ -1,6 +1,6 @@
 <?php
 include('auth/config.php');
-if (array_key_exists('t', $_GET) && array_key_exists('u', $_GET)) {
+if (isset($_GET['t']) && isset($_GET['u'])) {
     $token=mysql_real_escape_string($_GET['t']);
     $user=mysql_real_escape_string($_GET['u']);
     $sql=sprintf(
@@ -24,7 +24,7 @@ if (!isset($token) || !isset($user)) {
 include("preheader.php");
 include('lib/antixss.php');
 
-if (array_key_exists('coffeetime', $_POST) && !empty($_POST['coffeetime'])) {
+if (isset($_POST['coffeetime']) && !empty($_POST['coffeetime'])) {
     echo('<div class="white-box">');
     $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
     $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
@@ -49,7 +49,7 @@ if (array_key_exists('coffeetime', $_POST) && !empty($_POST['coffeetime'])) {
         echo("Error: Your last coffee was at least not 5 minutes ago. O_o");
     }
 }
-elseif (array_key_exists('matetime', $_POST) && !empty($_POST['matetime'])) {
+elseif (isset($_POST['matetime']) && !empty($_POST['matetime'])) {
     echo('<div class="white-box">');
     $matedate=mysql_real_escape_string($_POST['matetime']);
     $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");

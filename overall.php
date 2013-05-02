@@ -1,6 +1,5 @@
 <?php
 include("auth/lock.php");
-// include("auth/config.php"); # already included in auth/lock.php
 include("header.php");
 include("lib/antixss.php");
 
@@ -18,135 +17,125 @@ $wholematestack = $row['mate'];
 
 
 // TODAY CHART
-$ctodaystack = array();
-$mtodaystack = array();
-$htodaystack = array();
-for ( $counter = 0; $counter <= 23; $counter += 1) {
-    $sql=sprintf(
-        "SELECT count(cid) as coffees, '%d' as hour
-         FROM cs_coffees
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m-%%d') = DATE_FORMAT(cdate, '%%Y-%%m-%%d')
-           AND DATE_FORMAT(cdate, '%%H') = '%02d'",
-           $counter, $counter);
-  $result=mysql_query($sql);
-  $row = mysql_fetch_array($result);
-  array_push($ctodaystack, $row['coffees']);
-  array_push($htodaystack, $row['hour']);
+$todayrows = array();
+for ($counter = 0; $counter <= 23; $counter++) {
+    $todayrows[$counter] = array(0, 0);
+}
 
-  $sql=sprintf(
-      "SELECT count(mid) as mate, '%d' as hour
-       FROM cs_mate
-       WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m-%%d') = DATE_FORMAT(mdate, '%%Y-%%m-%%d')
-         AND DATE_FORMAT(mdate, '%%H') = '%02d'",
-      $counter, $counter);
-  $result=mysql_query($sql);
-  $row = mysql_fetch_array($result);
-  array_push($mtodaystack, $row['mate']);
+$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%H') AS hour
+        FROM cs_coffees
+        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(cdate, '%Y-%m-%d')
+        GROUP BY hour";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $todayrows[intval($row['hour'])][0] = $row['coffees'];
+}
+
+$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%H') AS hour
+        FROM cs_mate
+        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(mdate, '%Y-%m-%d')
+        GROUP BY hour";
+$result=mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $todayrows[intval($row['hour'])][1] = $row['mate'];
 }
 
 // MONTH CHART
-$cmonthstack = array();
-$mmonthstack = array();
-$dmonthstack = array();
-for ( $counter = 1; $counter <= 30; $counter += 1) {
-    $sql=sprintf(
-        "SELECT '%d' AS day, count(cid) AS coffees
-         FROM cs_coffees
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m') = DATE_FORMAT(cdate, '%%Y-%%m')
-           AND DATE_FORMAT(cdate,'%%d') = '%02d'",
-        $counter, $counter);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    array_push($cmonthstack, $row['coffees']);
-    array_push($dmonthstack, $row['day']);
+$monthrows = array();
+$now = getdate();
+$maxdays = cal_days_in_month(CAL_GREGORIAN, $now['mon'], $now['year']);
+for ($counter = 1; $counter <= $maxdays; $counter++) {
+    $monthrows[$counter] = array(0, 0);
+}
 
-    $sql=sprintf(
-        "SELECT '".$counter."' AS day, count(mid) AS mate
-         FROM cs_mate
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m') = DATE_FORMAT(mdate, '%%Y-%%m')
-         AND DATE_FORMAT(mdate,'%%d') = '%02d'",
-        $counter, $counter);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    array_push($mmonthstack, $row['mate']);
+$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%d') AS day
+        FROM cs_coffees
+        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(cdate, '%Y-%m')
+        GROUP BY day";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $monthrows[intval($row['day'])][0] = $row['coffees'];
+}
+
+$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%d') AS day
+        FROM cs_mate
+        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(mdate, '%Y-%m')
+        GROUP BY day";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $monthrows[intval($row['day'])][1] = $row['mate'];
 }
 
 // YEAR CHART
-$cyearstack = array();
-$myearstack = array();
-$mateyearstack = array();
-for ( $counter = 1; $counter <= 12; $counter += 1) {
-    $sql=sprintf(
-        "SELECT '%d' AS month, count(cid) AS coffees
-         FROM cs_coffees
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y') = DATE_FORMAT(cdate, '%%Y')
-           AND DATE_FORMAT(cdate,'%%m') = '%02d'",
-        $counter, $counter);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    array_push($cyearstack, $row['coffees']);
-    array_push($myearstack, $row['month']);
+$yearrows = array();
+for ($counter = 1; $counter <= 12; $counter++) {
+    $yearrows[$counter] = array(0, 0);
+}
 
-    $sql=sprintf(
-        "SELECT '%d' AS month, count(mid) AS mate
-         FROM cs_mate
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y') = DATE_FORMAT(mdate, '%%Y')
-           AND DATE_FORMAT(mdate, '%%m') = '%02d'",
-        $counter, $counter);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    array_push($mateyearstack, $row['mate']);
+$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate,'%m') AS month
+        FROM cs_coffees
+        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(cdate, '%Y')
+        GROUP BY month";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $yearrows[intval($row['month'])][0] = $row['coffees'];
+}
+
+$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%m') AS month
+        FROM cs_mate
+        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(mdate, '%Y')
+        GROUP BY month";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $yearrows[intval($row['month'])][1] = $row['mate'];
 }
 
 // BY HOUR
-$cbyhourstack = array();
-$hbyhourstack = array();
-$mbyhourstack = array();
-for ( $counter = 0; $counter <= 23; $counter += 1) {
-    $sql=sprintf(
-        "SELECT '%d' AS hour, count(cid) AS coffees
-         FROM cs_coffees
-         WHERE DATE_FORMAT(cdate,'%%H') = '%02d'",
-        $counter, $counter);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    array_push($cbyhourstack, $row['coffees']);
-    array_push($hbyhourstack, $row['hour']);
+$byhourrows = array();
+for ($counter = 0; $counter <= 23; $counter++) {
+    $byhourrows[$counter] = array(0, 0);
+}
 
-    $sql=sprintf(
-        "SELECT '%d' as hour, count(mid) as mate
-         FROM cs_mate
-         WHERE DATE_FORMAT(mdate,'%%H') = '%02d'",
-        $counter, $counter);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    array_push($mbyhourstack, $row['mate']);
+$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%H') AS hour
+        FROM cs_coffees
+        GROUP BY hour";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $byhourrows[intval($row['hour'])][0] = $row['coffees'];
+}
+
+$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%H') AS hour
+        FROM cs_mate
+        GROUP BY hour";
+$result = mysql_query($sql);
+while ($row=mysql_fetch_array($result)) {
+    $byhourrows[intval($row['hour'])][1] = $row['mate'];
 }
 
 // BY WEEKDAY
-$cbydaystack = array();
-$hbydaystack = array();
-$mbydaystack = array();
-for ( $counter = 0; $counter <= 6; $counter += 1) {
-  $sql=sprintf(
-      "SELECT DATE_FORMAT(cdate, '%%a') AS day, count(cid) AS coffees
-       FROM cs_coffees
-       WHERE DATE_FORMAT(cdate, '%%w') = '%d'",
-      $counter);
-  $result=mysql_query($sql);
-  $row=mysql_fetch_array($result);
-  array_push($cbydaystack, $row['coffees']);
-  array_push($hbydaystack, $row['day']);
-
-  $sql=sprintf(
-      "SELECT DATE_FORMAT(mdate, '%%a') AS day, count(mid) AS mate
-       FROM cs_mate
-       WHERE DATE_FORMAT(mdate, '%%w') = '%d'",
-      $counter);
-  $result=mysql_query($sql);
-  $row=mysql_fetch_array($result);
-  array_push($mbydaystack, $row['mate']);
+$byweekdayrows = array();
+$weekdays = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
+for ($counter = 0; $counter < count($weekdays); $counter++) {
+    $byweekdayrows[$weekdays[$counter]] = array(0, 0);
 }
+
+$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%a') AS wday
+        FROM cs_coffees
+        GROUP BY wday";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $byweekdayrows[$row['wday']][0] = $row['coffees'];
+}
+
+$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%a') AS wday
+        FROM cs_mate
+        GROUP BY wday";
+$result = mysql_query($sql);
+while ($row = mysql_fetch_array($result)) {
+    $byweekdayrows[$row['wday']][1] = $row['mate'];
+}
+
+include('includes/charting.php');
 ?>
 <div class="white-box">
   <h2>Overall Statistics</h2>
@@ -181,16 +170,6 @@ for ( $counter = 0; $counter <= 6; $counter += 1) {
   <canvas id="coffeebyweekday" width="590" height="240" ></canvas>
 </div>
 
-<?php
-function chartarray($variable, $format="%s,") {
-    echo("[");
-    foreach ($variable as &$value) {
-        printf($format, $value);
-    }
-    unset($value);
-    echo("],\n");
-}
-?>
 <script src="./lib/Chart.min.js"></script>
 
 <script>
@@ -201,6 +180,8 @@ function chartarray($variable, $format="%s,") {
     var weekdaycolor = "#A3CC52"
     var matecolor = "#FFCC00"
     var matelightcolor = "#FFE066"
+    var barChartData;
+    var lineChartData;
 
     var doughnutData = [
         {
@@ -212,109 +193,104 @@ function chartarray($variable, $format="%s,") {
             color : matecolor
         }
     ];
+    new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
 
-    var myDoughnut = new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
-
-    var barChartData = {
-        labels: <?php chartarray($htodaystack); ?>
+    barChartData = {
+        labels: [<?php extractlabels($todayrows); ?>],
         datasets : [
             {
-                fillColor : todaycolor,
-                strokeColor : todaycolor,
-                data: <?php chartarray($ctodaystack); ?>
+                fillColor: todaycolor,
+                strokeColor: todaycolor,
+                data: [<?php extractdata($todayrows, 0); ?>],
             },
             {
-                fillColor : matecolor,
-                strokeColor : matecolor,
-                data: <?php chartarray($mtodaystack); ?>
-            },]
-    }
-
-    var myLine = new Chart(document.getElementById("coffeetoday").getContext("2d")).Bar(barChartData);
-
-    var lineChartData = {
-        labels: <?php chartarray($dmonthstack); ?>
-        datasets : [
-            {
-                fillColor : monthcolor,
-                strokeColor : "#FFB84D",
-                pointColor : "#FFB84D",
-                pointStrokeColor : "#fff",
-                data: <?php chartarray($cmonthstack); ?>
-            },
-            {
-                fillColor : matecolor,
-                strokeColor : matelightcolor,
-                pointColor : matelightcolor,
-                pointStrokeColor : "#fff",
-                data: <?php chartarray($mmonthstack); ?>
+                fillColor: matecolor,
+                strokeColor: matecolor,
+                data: [<?php extractdata($todayrows, 1); ?>],
             },
         ]
     }
+    new Chart(document.getElementById("coffeetoday").getContext("2d")).Bar(barChartData);
 
-    var myLine = new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
-
-    var barChartData = {
-        labels: <?php chartarray($myearstack); ?>
+    lineChartData = {
+        labels: [<?php extractlabels($monthrows); ?>],
         datasets : [
             {
-                fillColor : yearcolor,
-                strokeColor : yearcolor,
-                data: <?php chartarray($cyearstack); ?>
+                fillColor: monthcolor,
+                strokeColor: "#FFB84D",
+                pointColor: "#FFB84D",
+                pointStrokeColor: "#fff",
+                data: [<?php extractdata($monthrows, 0); ?>],
             },
             {
-                fillColor : matecolor,
-                strokeColor : matecolor,
-                data: <?php chartarray($mateyearstack); ?>
+                fillColor: matecolor,
+                strokeColor: matelightcolor,
+                pointColor: matelightcolor,
+                pointStrokeColor: "#fff",
+                data: [<?php extractdata($monthrows, 1); ?>],
             },
         ]
     }
+    new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
 
-    var myLine = new Chart(document.getElementById("coffeeyear").getContext("2d")).Bar(barChartData);
-
-    var lineChartData = {
-        labels: <?php chartarray($hbyhourstack); ?>
+    barChartData = {
+        labels: [<?php extractlabels($yearrows); ?>],
         datasets : [
             {
-                fillColor : hourcolor,
-                strokeColor : "#FF9999",
-                pointColor : "#FF9999",
-                pointStrokeColor : "#fff",
-                data: <?php chartarray($cbyhourstack); ?>
+                fillColor: yearcolor,
+                strokeColor: yearcolor,
+                data: [<?php extractdata($yearrows, 0); ?>],
             },
             {
-                fillColor : matecolor,
-                strokeColor : matelightcolor,
-                pointColor : matelightcolor,
-                pointStrokeColor : "#fff",
-                data: <?php chartarray($mbyhourstack); ?>
+                fillColor: matecolor,
+                strokeColor: matecolor,
+                data: [<?php extractdata($yearrows, 1); ?>],
             },
         ]
     }
+    new Chart(document.getElementById("coffeeyear").getContext("2d")).Bar(barChartData);
 
-    var myLine = new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
+    lineChartData = {
+        labels: [<?php extractlabels($byhourrows); ?>],
+        datasets : [
+            {
+                fillColor: hourcolor,
+                strokeColor: "#FF9999",
+                pointColor: "#FF9999",
+                pointStrokeColor: "#fff",
+                data: [<?php extractdata($byhourrows, 0); ?>],
+            },
+            {
+                fillColor: matecolor,
+                strokeColor: matelightcolor,
+                pointColor: matelightcolor,
+                pointStrokeColor: "#fff",
+                data: [<?php extractdata($byhourrows, 1); ?>],
+            },
+        ]
+    }
+    new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
 
-    var lineChartData = {
-        labels: <?php chartarray($hbydaystack, "'%s',"); ?>
+    lineChartData = {
+        labels: [<?php extractlabels($byweekdayrows); ?>],
         datasets: [
             {
-                fillColor : weekdaycolor,
-                strokeColor : "#99FF99",
-                pointColor : "#99FF99",
-                pointStrokeColor : "#fff",
-                data: <?php chartarray($cbydaystack); ?>
+                fillColor: weekdaycolor,
+                strokeColor: "#99FF99",
+                pointColor: "#99FF99",
+                pointStrokeColor: "#fff",
+                data: [<?php extractdata($byweekdayrows, 0); ?>],
             },
             {
-                fillColor : matecolor,
-                strokeColor : matelightcolor,
-                pointColor : matelightcolor,
-                pointStrokeColor : "#fff",
-                data: <?php chartarray($mbydaystack); ?>
+                fillColor: matecolor,
+                strokeColor: matelightcolor,
+                pointColor: matelightcolor,
+                pointStrokeColor: "#fff",
+                data: [<?php extractdata($byweekdayrows, 1); ?>],
             },
         ]
     }
-
-    var myLine = new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
+    new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
 </script>
 
 <?php
