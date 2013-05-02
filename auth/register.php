@@ -65,7 +65,7 @@ if (isset($_POST['recaptcha_response_field'])) {
             echo "Yes. We hate CAPTCHAs too.</div>";
             $sql = sprintf(
                 "INSERT INTO cs_users (
-                    ulogin, uemail, ufname, uname, ucryptsum, ucreated,
+                    ulogin, uemail, ufname, uname, ucryptsum, ujoined,
                     ulocation, upublic, utoken)
                  VALUES (
                     '%s', '%s', '%s', '%s', '%s', NOW(),
