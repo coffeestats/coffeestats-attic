@@ -2,27 +2,30 @@
 include('auth/lock.php');
 include("header.php");
 include('lib/antixss.php');
-	if($_SERVER["REQUEST_METHOD"] == "POST") {
-        echo("<div class=\"white-box\">");
-        // include('auth/config.php'); # already included in auth/lock.php
 
-        if (array_key_exists('timestamp', $_POST) && !empty($_POST['timestamp'])) {
-          $coffeedate=mysql_real_escape_string($_POST['timestamp']);
-          $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
-          if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $coffeedate))
-          {
-              $sql=sprintf(
-                  "INSERT INTO cs_coffees (cuid, cdate) VALUES (%d, '%s')",
-                  $_SESSION['login_id'], $coffeedate);
-		    $result=mysql_query($sql);
-		    echo("Your coffee at ".$coffeedate." was been registered!");
-          } else {
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+    echo("<div class=\"white-box\">");
+    // include('auth/config.php'); # already included in auth/lock.php
+
+    if (isset($_POST['timestamp']) && !empty($_POST['timestamp'])) {
+        $coffeedate=mysql_real_escape_string($_POST['timestamp']);
+        $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
+        if (preg_match(
+            '/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $coffeedate)) {
+            $sql=sprintf(
+                "INSERT INTO cs_coffees (cuid, cdate) VALUES (%d, '%s')",
+                $_SESSION['login_id'], $coffeedate);
+            $result=mysql_query($sql);
+            echo("Your coffee at ".$coffeedate." was been registered!");
+        }
+        else {
             echo("Sorry. This looks not like a valid time");
-          }
-        } elseif(array_key_exists('matetimestamp', $_POST) && !empty($_POST['matetimestamp'])) {
-          $matedate=mysql_real_escape_string($_POST['matetimestamp']);
-          $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
-          if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $matedate))
+        }
+    }
+    elseif (isset($_POST['matetimestamp']) && !empty($_POST['matetimestamp'])) {
+        $matedate=mysql_real_escape_string($_POST['matetimestamp']);
+        $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
+        if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $matedate))
           {
               $sql=sprintf(
                   "INSERT INTO cs_mate (cuid, cdate) VALUES (%d, '%s')",
@@ -34,7 +37,7 @@ include('lib/antixss.php');
           }
         } else {
 
-          if(array_key_exists('coffeetime', $_POST)) {
+          if(isset($_POST['coffeetime'])) {
             $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
             $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
             $sql=sprintf(
@@ -57,7 +60,7 @@ include('lib/antixss.php');
             }
           }
 
-          if(array_key_exists('matetime', $_POST)) {
+          if(isset($_POST['matetime'])) {
             $matedate=mysql_real_escape_string($_POST['matetime']);
             $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
             $sql=sprintf(

@@ -5,7 +5,7 @@ include("header.php");
 include("lib/antixss.php");
 
 // Parse user
-if (array_key_exists('u', $_GET)) {
+if (isset($_GET['u'])) {
     $profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
     $profileuser=mysql_real_escape_string($profileuser);
     $sql=sprintf(

@@ -1,7 +1,7 @@
 <?php
 include('config.php');
 session_start();
-if (array_key_exists('login_user', $_SESSION)) {
+if (isset($_SESSION['login_user'])) {
     $user_check=$_SESSION['login_user'];
     $ses_sql=mysql_query(
         sprintf(

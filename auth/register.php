@@ -28,7 +28,7 @@ function random_chars($charset, $charcount) {
 }
 
 # was there a reCAPTCHA response?
-if (array_key_exists('recaptcha_response_field', $_POST)) {
+if (isset($_POST['recaptcha_response_field'])) {
     $resp = recaptcha_check_answer(
         $privatekey, $_SERVER["REMOTE_ADDR"],
         $_POST["recaptcha_challenge_field"],
