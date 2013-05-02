@@ -66,9 +66,12 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
       error_log /srv/www/coffeestats/logs/error.log;
       root /home/dev/projects/coffeestats;
 
-      location / {
-        index index.php;
+     location / {
+        root   /htdocs/$server_name;
+        index  index index.php;
         try_files $uri $uri/ $uri.php;
+        #auth_basic "Restricted";
+        #auth_basic_user_file  /var/www/htdocs/dev.coffeestats.org/htpasswd;
       }
 
       location ~ \.php$ {
@@ -77,7 +80,18 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_pass unix:/var/run/php-fastcgi/php-fastcgi.socket;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME /home/dev/projects/coffeestats$fastcgi_script_name;
+
       }
+
+      # for php files with GET parameters
+      location ~ (profile|public|ontherun)$ {
+        root           /htdocs/$server_name;
+        fastcgi_pass   unix:/var/run/php-fastcgi/php-fastcgi.socket;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /home/dev/projects/coffeestats$fastcgi_script_name;
+        include        fastcgi_params;
+        }
+
     }
 
 #. Enable virtualhost and restart nginx::
