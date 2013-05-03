@@ -19,7 +19,7 @@
                     <ul>
                         <li id="navindex"><a href="index">Home</a></li>
                         <li id="navplusone"><a href="plusone">Update</a></li>
-                        <li id="navprofile"><a href="profile?u=<?php echo $_SESSION['login_user']; ?>">Profile</a></li>
+                        <li id="navprofile"><a href="profile">Profile</a></li>
                         <li id="navexplore"><a href="explore">Explore</a></li>
                         <li id="navoverall"><a href="overall">Overall Stats</a></li>
                         <li id="navabout"><a href="about">About</a></li>
