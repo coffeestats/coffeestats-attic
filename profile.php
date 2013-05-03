@@ -1,76 +1,125 @@
 <?php
-include("auth/lock.php");
-include("header.php");
+session_start();
+if (isset($_SESSION['login_user'])) {
+    include("auth/lock.php");
+} else {
+    include("auth/config.php");
+}
 include("lib/antixss.php");
 
+$ownprofile = FALSE;
 // Parse user
 if (isset($_GET['u'])) {
-    $profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
-    $profileuser=mysql_real_escape_string($profileuser);
-    $sql=sprintf(
-        "SELECT uid, ufname, uname, ulocation, utoken FROM cs_users WHERE ulogin='%s'",
-        $profileuser);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    $count=mysql_num_rows($result);
-    $profileid=$row['uid'];
-    $profilename=$row['uname'];
-    $profileforename=$row['ufname'];
-    $profilelocation=$row['ulocation'];
-    $profiletoken=$row['utoken'];
-} else {
-    $count=0;
+    $profileuser = AntiXSS::setFilter($_GET['u'], "whitelist", "string");
+    $profileuser = mysql_real_escape_string($profileuser);
 }
-
+elseif (isset($_SESSION['login_user'])) {
+    $ownprofile = TRUE;
+    $profileuser = $_SESSION['login_user'];
+}
+else {
+    // not logged in and no profile user specified
+    include('preheader.php');
 ?>
 <div class="white-box">
+    <h2>Error</h2>
+    <p>Invalid request</p>
+</div>
 <?php
-if ($count==1) {
-  if ($profileid==$_SESSION['login_id']) {
-    echo ("<h2>Your Profile </h2>");
-    echo ("<ul>");
-    echo("<li>Name: $profileforename $profilename </li>");
-    echo("<li>Location: $profilelocation </li>");
-    $sql=sprintf(
-        "SELECT count(cid) as total FROM cs_coffees WHERE cuid=%d",
+    include('footer.php');
+    exit();
+}
+
+$sql = sprintf(
+    "SELECT uid, ufname, uname, ulocation, utoken FROM cs_users WHERE ulogin = '%s'",
+    $profileuser);
+$result = mysql_query($sql);
+if ($row = mysql_fetch_array($result)) {
+    $profileid = $row['uid'];
+    $profilename = $row['uname'];
+    $profileforename = $row['ufname'];
+    $profilelocation = $row['ulocation'];
+    $profiletoken = $row['utoken'];
+}
+else {
+    // no result found
+    include('preheader.php'); ?>
+<div class="white-box">
+  <h2>Error</h2>
+  <p>No profile found.</p>
+</div>
+<?php
+    include('footer.php');
+    exit();
+}
+
+function total_coffees_for_profile($profileid) {
+    $sql = sprintf(
+        "SELECT COUNT(cid) AS total FROM cs_coffees WHERE cuid = %d",
+        $profileid);
+    $result = mysql_query($sql);
+    if ($row = mysql_fetch_array($result)) {
+        return $row['total'];
+    }
+    return 'failed to fetch coffee count';
+}
+
+function total_mate_for_profile($profileid) {
+    $sql = sprintf(
+        "SELECT COUNT(mid) AS total FROM cs_mate WHERE cuid = %d",
         $profileid);
     $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    echo("<li>Your Coffees total: ".$row['total']."</li>");
-    $sql=sprintf(
-        "SELECT count(mid) as total FROM cs_mate WHERE cuid=%d",
-        $profileid);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    echo("<li>Your Mate total: ".$row['total']."</li>");
-    echo("<li>Your <a href=\"http://coffeestats.org/public?u=".$_SESSION['login_user']."\">public profile page</a></li>");
-    echo("<li>Your <a href=\"http://coffeestats.org/ontherun?u=".$_SESSION['login_user']."&t=".$profiletoken."\">on-the-run</a> URL</li>");
-    echo ("</ul>");
-    echo("Share your profile on Facebook! <br>
-      <br/><a href=\"http://www.facebook.com/sharer.php?u=http://coffeestats.org/public?u=".$_SESSION['login_user']."&t=My%20coffee%20statistic\"><img src=\"images/facebook-share-icon.gif\"></a></li>");
-  } else {
-    echo ("<h2>".$profileuser."'s Profile</h2>");
-    echo ("<ul>");
-    echo("<li>Name: $profileforename $profilename </li>");
-    echo("<li>Location: $profilelocation </li>");
-    $sql=sprintf(
-        "SELECT count(cid) as total FROM cs_coffees WHERE cuid=%d",
-        $profileid);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    echo("<li>Coffees total: ".$row['total']."</li>");
-    $sql=sprintf(
-        "SELECT count(mid) as total FROM cs_mate WHERE cuid=%d",
-        $profileid);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    echo("<li>Mate total: ".$row['total']."</li>");
-    echo ("</ul>");
-  }
-} else {
-  $profileid=$_SESSION['login_id'];
-  echo ("<h2>Your Profile</h2>");
-  echo("Error finding User. Showing your Graphs instead.");
+    if ($row = mysql_fetch_array($result)) {
+        return $row['total'];
+    }
+    return 'failed to fetch mate count';
+}
+
+function baseurl() {
+    $protocol = 'http';
+    if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) {
+        $protocol = 'https';
+    }
+    return sprintf("%s://%s", $protocol, $_SERVER['SERVER_NAME']);
+}
+
+function public_url($profileuser) {
+    return sprintf("%s/profile?u=%s", baseurl(), $profileuser);
+}
+
+function on_the_run_url($profileuser, $profiletoken) {
+    return sprintf("%s/ontherun?u=%s&t=%s", baseurl(), $profileuser, $profiletoken);
+}
+
+if ($ownprofile) {
+    $info = array(
+        'title' => 'Your Profile',
+        'data' => array(
+            'Name' => sprintf('%s %s', $profileforename, $profilename),
+            'Location' => $profilelocation,
+            'Your Coffees total' => total_coffees_for_profile($profileid),
+            'Your Mate total' => total_mate_for_profile($profileid),
+        ),
+        'extra' => array(
+            sprintf('Your <a href="%s">public profile page</a>', public_url($profileuser)),
+            sprintf('Your <a href="%s">on-the-run</a> URL', on_the_run_url($profileuser, $profiletoken)),
+        ),
+        'afterlist' => sprintf(
+            'Share your profile on Facebook!<br /><br />
+<a href="http://www.facebook.com/sharer.php?u=%s&t=My%%20coffee%%20statistic"><img src="images/facebook-share-icon.gif" alt="facebook share icon" /></a>',
+            urlencode(public_url($profileuser))),
+    );
+}
+else {
+    $info = array(
+        'title' => sprintf("%s's Profile", $profileuser),
+        'data' => array(
+            'Name' => sprintf('%s %s', $profileforename, $profilename),
+            'Location' => $profilelocation,
+            'Coffees total' => total_coffees_for_profile($profileid),
+            'Mate total' => total_mate_for_profile($profileid),
+        ),
+    );
 }
 
 // COFFEE VS MATE CHART
@@ -238,9 +287,35 @@ while ($row=mysql_fetch_array($result)) {
 }
 
 include('includes/charting.php');
+if (isset($_SESSION['login_user'])) {
+    include("header.php");
+}
+else {
+    include("preheader.php");
+}
+?>
+<div class="white-box">
+    <h2><?php echo $info['title']; ?></h2>
+    <ul>
+<?php
+foreach ($info['data'] as $key => $value) { ?>
+        <li><?php echo $key; ?>: <?php echo $value; ?></li>
+<?php
+}
+if (isset($info['extra'])) {
+    foreach ($info['extra'] as $value) { ?>
+        <li><?php echo $value; ?></li>
+<?php
+    }
+}
+?>
+    </ul>
+<?php
+if (isset($info['afterlist'])) {
+    echo $info['afterlist'];
+}
 ?>
 </div>
-
 <div class="white-box">
     <h2>Caffeine today</h2>
     <canvas id="coffeetoday" width="590" height="240" ></canvas>

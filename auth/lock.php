@@ -1,6 +1,8 @@
 <?php
 include('config.php');
-session_start();
+if (!isset($_SESSION)) {
+    session_start();
+}
 if (isset($_SESSION['login_user'])) {
     $user_check=$_SESSION['login_user'];
     $ses_sql=mysql_query(
