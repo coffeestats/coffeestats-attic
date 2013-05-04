@@ -138,7 +138,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <input type='hidden' id='coffeetime' name='coffeetime' value='' />
 				</form>
-                </div>
 
 
 		</div>
