@@ -6,22 +6,28 @@ include("lib/antixss.php");
 
 // COFFEE VS MATE CHART
 $sql = "SELECT count(cs_coffees.cid) as coffees FROM cs_coffees";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-if ($row = mysql_fetch_array($result)) {
+if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $wholecoffeestack = $row['coffees'];
 }
+else {
+    $wholecoffeestack = 0;
+}
+$result->close();
 
 $sql="SELECT count(cs_mate.mid) as mate FROM cs_mate";
-$result=mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-if ($row = mysql_fetch_array($result)) {
+if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $wholematestack = $row['mate'];
 }
+else {
+    $wholematestack = 0;
+}
+$result->close();
 
 
 // TODAY CHART
@@ -34,25 +40,25 @@ $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%H') AS hour
         FROM cs_coffees
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(cdate, '%Y-%m-%d')
         GROUP BY hour";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $todayrows[intval($row['hour'])][0] = $row['coffees'];
 }
+$result->close();
 
 $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%H') AS hour
         FROM cs_mate
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(mdate, '%Y-%m-%d')
         GROUP BY hour";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $todayrows[intval($row['hour'])][1] = $row['mate'];
 }
+$result->close();
 
 // MONTH CHART
 $monthrows = array();
@@ -66,25 +72,25 @@ $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%d') AS day
         FROM cs_coffees
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(cdate, '%Y-%m')
         GROUP BY day";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $monthrows[intval($row['day'])][0] = $row['coffees'];
 }
+$result->close();
 
 $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%d') AS day
         FROM cs_mate
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(mdate, '%Y-%m')
         GROUP BY day";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $monthrows[intval($row['day'])][1] = $row['mate'];
 }
+$result->close();
 
 // YEAR CHART
 $yearrows = array();
@@ -96,11 +102,10 @@ $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate,'%m') AS month
         FROM cs_coffees
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(cdate, '%Y')
         GROUP BY month";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $yearrows[intval($row['month'])][0] = $row['coffees'];
 }
 
@@ -108,13 +113,13 @@ $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%m') AS month
         FROM cs_mate
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(mdate, '%Y')
         GROUP BY month";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $yearrows[intval($row['month'])][1] = $row['mate'];
 }
+$result->close();
 
 // BY HOUR
 $byhourrows = array();
@@ -125,24 +130,24 @@ for ($counter = 0; $counter <= 23; $counter++) {
 $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%H') AS hour
         FROM cs_coffees
         GROUP BY hour";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $byhourrows[intval($row['hour'])][0] = $row['coffees'];
 }
+$result->close();
 
 $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%H') AS hour
         FROM cs_mate
         GROUP BY hour";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row=mysql_fetch_array($result)) {
+while ($row=$result->fetch_array(MYSQLI_ASSOC)) {
     $byhourrows[intval($row['hour'])][1] = $row['mate'];
 }
+$result->close();
 
 // BY WEEKDAY
 $byweekdayrows = array();
@@ -154,24 +159,24 @@ for ($counter = 0; $counter < count($weekdays); $counter++) {
 $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%a') AS wday
         FROM cs_coffees
         GROUP BY wday";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $byweekdayrows[$row['wday']][0] = $row['coffees'];
 }
+$result->close();
 
 $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%a') AS wday
         FROM cs_mate
         GROUP BY wday";
-$result = mysql_query($sql);
-if (mysql_errno() !== 0) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
-while ($row = mysql_fetch_array($result)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $byweekdayrows[$row['wday']][1] = $row['mate'];
 }
+$result->close();
 
 include('includes/charting.php');
 ?>
