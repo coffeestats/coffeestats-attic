@@ -11,12 +11,16 @@ if (!isset($_SESSION)) {
 }
 if (isset($_SESSION['login_user'])) {
     $user_check=$_SESSION['login_user'];
-    $ses_sql=mysql_query(
-        sprintf(
-            "SELECT ulogin FROM cs_users WHERE ulogin='%s'",
-            $user_check));
-    $row=mysql_fetch_assoc($ses_sql);
-    $login_session=$row['ulogin'];
+    $sql = sprintf(
+        "SELECT ulogin FROM cs_users WHERE ulogin='%s'",
+        $user_check);
+    $result = mysql_query($sql);
+    if ($row = mysql_fetch_array($result)) {
+        $login_session = $row['ulogin'];
+    }
+    else {
+        // TODO: handle mysql_error
+    }
 }
 
 if (!isset($login_session)) {
