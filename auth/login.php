@@ -83,21 +83,6 @@ include("../header.php");
         </script>
     </div>
 </div>
-
-<!-- Piwik -->
-<script type="text/javascript">
-    var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.n0q.org/" : "http://piwik.n0q.org/");
-    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-
-    try {
-        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 6);
-        piwikTracker.trackPageView();
-        piwikTracker.enableLinkTracking();
-    } catch( err ) {}
-</script>
-<noscript><p><img src="http://piwik.n0q.org/piwik.php?idsite=6" style="border:0" alt="" /></p></noscript>
-<!-- End Piwik Tracking Code -->
-
 <?php
 include('../footer.php');
 ?>
