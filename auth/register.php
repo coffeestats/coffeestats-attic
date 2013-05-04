@@ -69,7 +69,7 @@ if (isset($_POST['recaptcha_response_field'])) {
                     ulocation, upublic, utoken)
                  VALUES (
                     '%s', '%s', '%s', '%s', '%s', NOW(),
-                    '%s', 'yes', '%s')",
+                    '%s', '1', '%s')",
                 $login, $email, $forename, $name, $password,
                 $location, $otrtoken);
             $result = mysql_query($sql);
