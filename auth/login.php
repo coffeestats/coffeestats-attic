@@ -1,34 +1,35 @@
 <?php
-include("config.php");
-include("../includes/common.php");
+include_once("config.php");
+include_once("../includes/common.php");
 
 session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     // username and password sent from Form
-    $myusername=mysql_real_escape_string($_POST['username']);
+    // TODO: proper input validation (see https://bugs.n0q.org/view.php?id=13)
     $validpassword = FALSE;
+    $myusername=$dbconn->real_escape_string($_POST['username']);
     $sql = sprintf(
         "SELECT uid, ucryptsum FROM cs_users WHERE ulogin='%s'",
         $myusername);
-    $result = mysql_query($sql);
-    if (mysql_errno() !== 0) {
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
     }
-    if ($row = mysql_fetch_array($result)) {
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         // password check
-        if (strcmp($row['ucryptsum'], crypt(mysql_real_escape_string($_POST['password']), $row['ucryptsum'])) === 0) {
+        if (strcmp($row['ucryptsum'], crypt($dbconn->real_escape_string($_POST['password']), $row['ucryptsum'])) === 0) {
             $uid = $row['uid'];
             $validpassword = TRUE;
         }
     }
+    $result->close();
     if (($validpassword === TRUE) && isset($uid)) {
         $_SESSION['login_user'] = $myusername;
         $_SESSION['login_id'] = $uid;
         redirect_to('../index');
     }
 
-    $error = "<center>Your username or password seems to be invalid :(</center>";
+    flash("Your username or password seems to be invalid :(", FLASH_ERROR);
 }
 
 include("../header.php");
@@ -56,32 +57,32 @@ include("../header.php");
         <h2>Graphs!</h2>
         Overall Coffee vs. Mate consumption<br><br>
         <canvas id="coffeeexample" width="590" height="240" ></canvas>
-        <script src="../lib/Chart.min.js"></script>
-        <script>
-            var lineChartData = {
-                labels: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
-                datasets: [
-                    {
-                        fillColor: "#FF9900",
-                        strokeColor: "#FFB84D",
-                        pointColor: "#FFB84D",
-                        pointStrokeColor: "#fff",
-                        data: [40,26,180,72,102,60,30,14,]
-                    },
-                    {
-                        fillColor:  "#E64545",
-                        strokeColor: "#FF9999",
-                        pointColor: "#FF9999",
-                        pointStrokeColor: "#fff",
-                        data: [101,3,87,32,12,80,17,14,]
-                    },
-                ]
-            }
-
-            var myLine = new Chart(document.getElementById("coffeeexample").getContext("2d")).Line(lineChartData);
-        </script>
     </div>
 </div>
+<script type="text/javascript" src="../lib/Chart.min.js"></script>
+<script type="text/javascript">
+    var lineChartData = {
+        labels: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
+        datasets: [
+            {
+                fillColor: "#FF9900",
+                strokeColor: "#FFB84D",
+                pointColor: "#FFB84D",
+                pointStrokeColor: "#fff",
+                data: [40,26,180,72,102,60,30,14,]
+            },
+            {
+                fillColor:  "#E64545",
+                strokeColor: "#FF9999",
+                pointColor: "#FF9999",
+                pointStrokeColor: "#fff",
+                data: [101,3,87,32,12,80,17,14,]
+            },
+        ]
+    }
+
+    new Chart(document.getElementById("coffeeexample").getContext("2d")).Line(lineChartData);
+</script>
 <?php
 include('../footer.php');
 ?>
