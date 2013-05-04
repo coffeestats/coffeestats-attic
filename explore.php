@@ -1,6 +1,7 @@
 <?php
+// TODO: rework (see https://bugs.n0q.org/view.php?id=21)
+
 include("auth/lock.php");
-// include("auth/config.php"); # included by auth/lock.php
 include("header.php");
 ?>
 <div class="white-box">

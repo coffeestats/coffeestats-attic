@@ -7,13 +7,21 @@ include("lib/antixss.php");
 // COFFEE VS MATE CHART
 $sql="SELECT count(cs_coffees.cid) as coffees FROM cs_coffees";
 $result=mysql_query($sql);
-$row = mysql_fetch_array($result);
-$wholecoffeestack = $row['coffees'];
+if ($row = mysql_fetch_array($result)) {
+    $wholecoffeestack = $row['coffees'];
+}
+else {
+    // TODO: handle MySQL error
+}
 
 $sql="SELECT count(cs_mate.mid) as mate FROM cs_mate";
 $result=mysql_query($sql);
-$row = mysql_fetch_array($result);
-$wholematestack = $row['mate'];
+if ($row = mysql_fetch_array($result)) {
+    $wholematestack = $row['mate'];
+}
+else {
+    // TODO: handle MySQL error
+}
 
 
 // TODAY CHART

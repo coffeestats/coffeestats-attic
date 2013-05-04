@@ -5,6 +5,7 @@ require_once('../lib/recaptchalib.php');
 include('../lib/antixss.php');
 
 // Get a key from https://www.google.com/recaptcha/admin/create
+// TODO: move this information to a config file (see https://bugs.n0q.org/view.php?id=9)
 $publickey = "6LdnPswSAAAAAFSYLEH9f_b0JcPQ2G1VsOHDmJZY";
 $privatekey = "6LdnPswSAAAAALLCLsZt2AFTnl5VAcNH5WUDZBvf";
 
@@ -35,13 +36,15 @@ if (isset($_POST['recaptcha_response_field'])) {
         $_POST["recaptcha_response_field"]);
 
     if ($resp->is_valid) {
+        // TODO: implement better validation including client side validation (see https://bugs.n0q.org/view.php?id=13)
         if (!isset($_POST['Login']) || !ctype_alnum($_POST['Login']) || !isset($_POST['Email']) || !isset($_POST['Password'])) {
             $cerr=2;
         } else {
             $cerr=0;
 
             $saltchars = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            // blowfish salt for PHP >= 5.3.7, with 22 random characters
+            // blowfish salt for PHP >= 5.3.7, with 22 random characters, see
+            // http://www.php.net/manual/en/function.crypt.php
             $salt = sprintf('$2y$07$%s', random_chars($saltchars, 22));
 
             $login = AntiXSS::setFilter(mysql_real_escape_string($_POST['Login']), "whitelist", "string");
@@ -56,11 +59,16 @@ if (isset($_POST['recaptcha_response_field'])) {
                 "SELECT uid FROM cs_users WHERE ulogin='%s'",
                 $login);
             $result = mysql_query($sql);
-            $row = mysql_fetch_array($result);
-            $count = mysql_num_rows($result);
+            if ($row = mysql_fetch_array($result)) {
+                $userexists = TRUE;
+            }
+            else {
+                // TODO: handle mysql error
+                $userexists = FALSE;
+            }
         }
 
-        if (($cerr == 0) && isset($count) && ($count == 0)) {
+        if (($cerr == 0) && (!isset($userexists) || !$userexists)) {
             echo '<div class="white-box"><h2>You got it! Click <a href="../index">here</a></h2>';
             echo "Yes. We hate CAPTCHAs too.</div>";
             $sql = sprintf(
@@ -73,6 +81,8 @@ if (isset($_POST['recaptcha_response_field'])) {
                 $login, $email, $forename, $name, $password,
                 $location, $otrtoken);
             $result = mysql_query($sql);
+            // TODO: handle mysql error
+            // TODO: redirect after successful account creation (see https://bugs.n0q.org/view.php?id=10)
         }
         else {
             echo('<div class="white-box">Error: Sorry. Username already taken, invalid or you forgot something in General section.</div>');

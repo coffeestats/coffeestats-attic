@@ -18,6 +18,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             $validpassword = TRUE;
         }
     }
+    else {
+        // TODO: handle mysql error
+    }
     if (($validpassword === TRUE) && isset($uid)) {
         $_SESSION['login_user'] = $myusername;
         $_SESSION['login_id'] = $uid;
