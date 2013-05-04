@@ -1,4 +1,10 @@
 <?php
+if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
+    header('Status: 301 Moved Permanently');
+    header('Location: ../index');
+    exit();
+}
+
 /*
  * Utility functions for chart generation.
  */

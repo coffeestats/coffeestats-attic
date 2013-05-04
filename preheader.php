@@ -1,3 +1,10 @@
+<?php
+if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
+    header('Status: 301 Moved Permanently');
+    header('Location: index');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>

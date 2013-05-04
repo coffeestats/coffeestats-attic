@@ -4,6 +4,7 @@ if (isset($_GET['u'])) {
     header(sprintf('Location: profile?u=%s', $_GET['u']));
     exit();
 }
+
 header("Status: 400 Bad Request");
 include('preheader.php');
 ?>
