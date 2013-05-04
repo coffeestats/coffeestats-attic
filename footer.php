@@ -1,3 +1,10 @@
+<?php
+if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
+    header('Status: 301 Moved Permanently');
+    header('Location: index');
+    exit();
+}
+?>
 <!-- begin of footer.php -->
     <div class="white-box">
       <p class="footertext"><a href="#">coffeestats.org</a> is a project by <a href="http://dittberner.info">Jan Dittberner</a> &amp; <a href="http://noqqe.de">Florian Baumann</a> .<br/>

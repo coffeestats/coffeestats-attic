@@ -1,4 +1,10 @@
 <?php
+if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
+    header('Status: 301 Moved Permanently');
+    header('Location: ../index');
+    exit();
+}
+
 include('config.php');
 if (!isset($_SESSION)) {
     session_start();
