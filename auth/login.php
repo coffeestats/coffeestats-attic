@@ -45,8 +45,8 @@ include("../header.php");
     <div class="white-box">
         <h2>Login</h2>
         <form action="<?php echo($_SERVER['REQUEST_URI']); ?>" method="post">
-            <input type="text" name="username" placeholder="Username" id="login_field_username" />
-            <input type="password" name="password" placeholder="Password" id="login_field_password" />
+            <input type="text" name="username" placeholder="Username" class="default_input_field" />
+            <input type="password" name="password" placeholder="Password" class="default_input_field" />
             <input type="submit" name="submit" value="Login" id="login_button_submit" />
             <p>Oh, you don't have an account yet?<br/>
             Simply register one <a href="register">here</a>.</p>
