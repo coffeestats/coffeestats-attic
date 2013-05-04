@@ -1,16 +1,20 @@
 <?php
 include("config.php");
+include("../includes/common.php");
 
 session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     // username and password sent from Form
     $myusername=mysql_real_escape_string($_POST['username']);
+    $validpassword = FALSE;
     $sql = sprintf(
         "SELECT uid, ucryptsum FROM cs_users WHERE ulogin='%s'",
         $myusername);
     $result = mysql_query($sql);
-    $validpassword = FALSE;
+    if (mysql_errno() !== 0) {
+        handle_mysql_error();
+    }
     if ($row = mysql_fetch_array($result)) {
         // password check
         if (strcmp($row['ucryptsum'], crypt(mysql_real_escape_string($_POST['password']), $row['ucryptsum'])) === 0) {
@@ -21,14 +25,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if (($validpassword === TRUE) && isset($uid)) {
         $_SESSION['login_user'] = $myusername;
         $_SESSION['login_id'] = $uid;
-        header('Location: ../index');
-        exit();
+        redirect_to('../index');
     }
 
     $error = "<center>Your username or password seems to be invalid :(</center>";
 }
 
-include("../preheader.php");
+include("../header.php");
 ?>
 <div id="login">
     <div class="white-box">
@@ -79,21 +82,6 @@ include("../preheader.php");
         </script>
     </div>
 </div>
-
-<!-- Piwik -->
-<script type="text/javascript">
-    var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.n0q.org/" : "http://piwik.n0q.org/");
-    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-
-    try {
-        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 6);
-        piwikTracker.trackPageView();
-        piwikTracker.enableLinkTracking();
-    } catch( err ) {}
-</script>
-<noscript><p><img src="http://piwik.n0q.org/piwik.php?idsite=6" style="border:0" alt="" /></p></noscript>
-<!-- End Piwik Tracking Code -->
-
 <?php
 include('../footer.php');
 ?>

@@ -1,4 +1,6 @@
 <?php
+// TODO: do some real comparison (see https://bugs.n0q.org/view.php?id=23)
+
 include("auth/lock.php");
 include("header.php");
 include("lib/antixss.php");

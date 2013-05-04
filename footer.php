@@ -1,8 +1,7 @@
 <?php
 if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
-    header('Status: 301 Moved Permanently');
-    header('Location: index');
-    exit();
+    include('includes/common.php');
+    redirect_to('index', TRUE);
 }
 ?>
 <!-- begin of footer.php -->
@@ -12,6 +11,9 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
   </div><!-- close content -->
 </div><!-- close wrapper -->
 
+<?php
+// TODO: move piwik configuration to config file (see https://bugs.n0q.org/view.php?id=14)
+?>
 <!-- Piwik -->
 <script type="text/javascript">
     var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.n0q.org/" : "http://piwik.n0q.org/");

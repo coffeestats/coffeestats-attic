@@ -1,10 +1,11 @@
 <?php
 include('config.php');
-include('../preheader.php');
+include_once('../includes/common.php');
 require_once('../lib/recaptchalib.php');
 include('../lib/antixss.php');
 
 // Get a key from https://www.google.com/recaptcha/admin/create
+// TODO: move this information to a config file (see https://bugs.n0q.org/view.php?id=9)
 $publickey = "6LdnPswSAAAAAFSYLEH9f_b0JcPQ2G1VsOHDmJZY";
 $privatekey = "6LdnPswSAAAAALLCLsZt2AFTnl5VAcNH5WUDZBvf";
 
@@ -35,13 +36,15 @@ if (isset($_POST['recaptcha_response_field'])) {
         $_POST["recaptcha_response_field"]);
 
     if ($resp->is_valid) {
+        // TODO: implement better validation including client side validation (see https://bugs.n0q.org/view.php?id=13)
         if (!isset($_POST['Login']) || !ctype_alnum($_POST['Login']) || !isset($_POST['Email']) || !isset($_POST['Password'])) {
             $cerr=2;
         } else {
             $cerr=0;
 
             $saltchars = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            // blowfish salt for PHP >= 5.3.7, with 22 random characters
+            // blowfish salt for PHP >= 5.3.7, with 22 random characters, see
+            // http://www.php.net/manual/en/function.crypt.php
             $salt = sprintf('$2y$07$%s', random_chars($saltchars, 22));
 
             $login = AntiXSS::setFilter(mysql_real_escape_string($_POST['Login']), "whitelist", "string");
@@ -56,26 +59,38 @@ if (isset($_POST['recaptcha_response_field'])) {
                 "SELECT uid FROM cs_users WHERE ulogin='%s'",
                 $login);
             $result = mysql_query($sql);
-            $row = mysql_fetch_array($result);
-            $count = mysql_num_rows($result);
+            if (mysql_errno() !== 0) {
+                handle_mysql_error();
+            }
+            if ($row = mysql_fetch_array($result)) {
+                $userexists = TRUE;
+            }
+            else {
+                $userexists = FALSE;
+            }
         }
 
-        if (($cerr == 0) && isset($count) && ($count == 0)) {
-            echo '<div class="white-box"><h2>You got it! Click <a href="../index">here</a></h2>';
-            echo "Yes. We hate CAPTCHAs too.</div>";
+        if (($cerr == 0) && (!isset($userexists) || !$userexists)) {
             $sql = sprintf(
                 "INSERT INTO cs_users (
                     ulogin, uemail, ufname, uname, ucryptsum, ujoined,
                     ulocation, upublic, utoken)
                  VALUES (
                     '%s', '%s', '%s', '%s', '%s', NOW(),
-                    '%s', '1', '%s')",
+                    '%s', 1, '%s')",
                 $login, $email, $forename, $name, $password,
                 $location, $otrtoken);
             $result = mysql_query($sql);
+            if (mysql_errno() !== 0) {
+                handle_mysql_error();
+            }
+            flash("You got it! Yes we hate CAPTCHAs too.", FLASH_SUCCESS);
+            redirect_to("../index");
         }
         else {
-            echo('<div class="white-box">Error: Sorry. Username already taken, invalid or you forgot something in General section.</div>');
+            flash(
+                "Error: Sorry. Username already taken, invalid or you forgot something in General section.",
+                FLASH_ERROR);
         }
     }
     else {
@@ -83,6 +98,8 @@ if (isset($_POST['recaptcha_response_field'])) {
         $error = $resp->error;
     }
 }
+
+include('../header.php');
 ?>
 <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
     <div class="white-box">

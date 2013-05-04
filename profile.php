@@ -5,7 +5,8 @@ if (isset($_SESSION['login_user'])) {
 } else {
     include("auth/config.php");
 }
-include("lib/antixss.php");
+include_once("lib/antixss.php");
+include_once("includes/common.php");
 
 $ownprofile = FALSE;
 // Parse user
@@ -19,15 +20,7 @@ elseif (isset($_SESSION['login_user'])) {
 }
 else {
     // not logged in and no profile user specified
-    include('preheader.php');
-?>
-<div class="white-box">
-    <h2>Error</h2>
-    <p>Invalid request</p>
-</div>
-<?php
-    include('footer.php');
-    exit();
+    errorpage('Error', 'Invalid request', '400 Bad Request');
 }
 
 $sql = sprintf(
@@ -43,14 +36,7 @@ if ($row = mysql_fetch_array($result)) {
 }
 else {
     // no result found
-    include('preheader.php'); ?>
-<div class="white-box">
-  <h2>Error</h2>
-  <p>No profile found.</p>
-</div>
-<?php
-    include('footer.php');
-    exit();
+    errorpage('Error', 'No profile found', '404 No Profile Found');
 }
 
 function total_coffees_for_profile($profileid) {
@@ -287,12 +273,7 @@ while ($row=mysql_fetch_array($result)) {
 }
 
 include('includes/charting.php');
-if (isset($_SESSION['login_user'])) {
-    include("header.php");
-}
-else {
-    include("preheader.php");
-}
+include("header.php");
 ?>
 <div class="white-box">
     <h2><?php echo $info['title']; ?></h2>
