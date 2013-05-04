@@ -21,8 +21,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if (($validpassword === TRUE) && isset($uid)) {
         $_SESSION['login_user'] = $myusername;
         $_SESSION['login_id'] = $uid;
-        header('Location: ../index');
-        exit();
+        include('../includes/common.php');
+        redirect_to('../index');
     }
 
     $error = "<center>Your username or password seems to be invalid :(</center>";

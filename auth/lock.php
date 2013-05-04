@@ -1,11 +1,11 @@
 <?php
+include_once(sprintf('%s/../includes/common.php', dirname(__FILE__)));
+
 if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
-    header('Status: 301 Moved Permanently');
-    header('Location: ../index');
-    exit();
+    redirect_to('../index', TRUE);
 }
 
-include('config.php');
+include_once('config.php');
 if (!isset($_SESSION)) {
     session_start();
 }
@@ -19,8 +19,7 @@ if (isset($_SESSION['login_user'])) {
     $login_session=$row['ulogin'];
 }
 
-if(!isset($login_session)) {
-    header("Location: auth/login");
-    exit(); // stop execution if not logged in
+if (!isset($login_session)) {
+    redirect_to('auth/login');
 }
 ?>

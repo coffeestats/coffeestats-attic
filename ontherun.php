@@ -1,6 +1,7 @@
 <?php
 include('auth/config.php');
 include('lib/antixss.php');
+include('includes/common.php');
 
 if (isset($_GET['t']) && isset($_GET['u'])) {
     $token=AntiXSS::setFilter(mysql_real_escape_string($_GET['t']), 'whitelist', 'string');
@@ -17,14 +18,10 @@ if (isset($_GET['t']) && isset($_GET['u'])) {
 }
 
 if (!isset($token) || !isset($user)) {
-    header("Location: auth/login.php");
-    exit(); // end execution if user or token is not set or not correct
+    redirect_to('auth/login.php');
 }
 
-include("preheader.php");
-
 if (isset($_POST['coffeetime']) && !empty($_POST['coffeetime'])) {
-    echo('<div class="white-box">');
     $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
     $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
     $sql=sprintf(
@@ -34,22 +31,26 @@ if (isset($_POST['coffeetime']) && !empty($_POST['coffeetime'])) {
            AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
            AND cuid = %d",
         $profileid);
-    $result=mysql_query($sql);
-    $count=mysql_num_rows($result);
-    if ($count==0) {
+    $result = mysql_query($sql);
+    if ($row = mysql_fetch_array($result)) {
+        $message = array(
+            'warning',
+            sprintf(
+                'Error: Your last coffee was at least not 5 minutes ago at %s. O_o',
+                $row['cdate']));
+    }
+    else {
         $sql=sprintf(
             "INSERT INTO cs_coffees (cuid, cdate)
              VALUES (%d, '%s')",
             $profileid, $coffeedate);
         $result=mysql_query($sql);
-        echo("Your coffee at ".$coffeedate." was been registered!");
-    }
-    else {
-        echo("Error: Your last coffee was at least not 5 minutes ago. O_o");
+        $message = array(
+            'success',
+            sprintf('Your coffee at %s has been registered!', $coffeedate));
     }
 }
 elseif (isset($_POST['matetime']) && !empty($_POST['matetime'])) {
-    echo('<div class="white-box">');
     $matedate=mysql_real_escape_string($_POST['matetime']);
     $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
     $sql=sprintf(
@@ -59,23 +60,36 @@ elseif (isset($_POST['matetime']) && !empty($_POST['matetime'])) {
            AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (mdate + INTERVAL '45' MINUTE_SECOND)
            AND cuid = %d",
         $profileid);
-    $result=mysql_query($sql);
-    $count=mysql_num_rows($result);
-    if ($count==0) {
+    $result = mysql_query($sql);
+    if ($row = mysql_fetch_array($result)) {
+        $message = array(
+            'warning',
+            sprintf(
+                "Error: Your last mate was at least not 5 minutes ago at %s. O_o",
+                $row['mdate']));
+    }
+    else {
         $sql=sprintf(
             "INSERT INTO cs_mate (cuid, mdate)
              VALUES (%d, '%s')",
             $profileid, $matedate);
         $result=mysql_query($sql);
-        echo("Your mate at ".$matedate." was been registered!");
-    }
-    else {
-        echo("Error: Your last mate was at least not 5 minutes ago. O_o");
+        $message = array(
+            'success',
+            sprintf('Your mate at %s has been registered!', $matedate));
     }
 }
-echo("</div>");
-?>
 
+include("preheader.php");
+
+if (isset($message)) {
+?>
+<div class="white-box">
+    <p class="<?php echo $message[0]; ?>"><?php echo $message[1]; ?></p>
+</div>
+<?php
+}
+?>
 <script type="text/javascript">
     function pad(n) {
         return n<10 ? '0'+n : n;
