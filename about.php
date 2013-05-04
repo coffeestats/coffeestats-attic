@@ -12,13 +12,19 @@
 					<ul>
 						<li><a href="http://openclipart.org/detail/10764/coffee-cup-by-sl4yerpl-10764">Coffee Cup</a> by sl4yerPL on openclipart.org</li>
 						<li><a href="http://subtlepatterns.com/?p=750">Woven</a> by Max Rudberg on subtlepatterns.com </li>
-						<li><a href="http://chartjs.org">Chart.js</a></li>
+						<li><a href="http://chartjs.org">Chart.js</a> by Nick Downie</li> 
 						<li><a href="http://www.dafont.com/harabara.font">Harabara</a> by André Harabara on dafont.com</li>
 						<li><a href="http://adamwhitcroft.com/batch/">Batch Iconset</a> by Adam Whitcroft</li>
 					</ul>
 
+                <p>Follow us on <a href="https://twitter.com/coffeestats">Twitter</a> or 
+                 <a href="http://www.facebook.com/pages/coffeestatsorg/135455386573798?sk=info">Facebook</a>! 
+                 (We won't keep you from clicking "I like" either!)</p>
+
 			<h2>Changelog</h2>
 					<ul>
+                        <li>2013-05-03 Public URL has changed (update your bookmarks!)</li>
+                        <li>2013-04-28 Performance and Security improvments</li>
 						<li>2013-03-23 New Update page</li>
 						<li>2013-03-23 Using Chart.js for Graphs!</li>
 						<li>2013-03-23 Added Mate to drinks</li>
@@ -32,6 +38,14 @@
 						<li>2012-02-11 Added on-the-run Mode</li>
 						<li>2012-01-23 Added Overall Stats</li>
 					</ul>
+
+			<h2>Credits</h2>
+                <p>Some awesome guys have been involved in growing up coffeestats.org so far.</p>
+					<ul>
+                        <li>Holger Winter (page design/layout)</li>
+                        <li><a href="http://dittberner.info">Jan Dittberner</a> (massive code improvements in many cases)</li>
+                        <li><a href="http://sotiriu.de">Nikolas Sotiriu</a> (testing the site for security flaws)</li>
+                    <ul>
 		</div>
 
 <?php

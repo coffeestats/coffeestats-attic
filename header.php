@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="author" content="F. Baumann, H. Winter" />
+    <meta name="author" content="F. Baumann, H. Winter, J. Dittberner" />
     <meta name="description" content="coffeestats.org | All about coffee" />
     <title>coffeestats.org</title>
     <link rel="stylesheet" type="text/css" href="../css/caffeine.css" />
