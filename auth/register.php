@@ -47,27 +47,28 @@ if (isset($_POST['recaptcha_response_field'])) {
             // http://www.php.net/manual/en/function.crypt.php
             $salt = sprintf('$2y$07$%s', random_chars($saltchars, 22));
 
-            $login = AntiXSS::setFilter(mysql_real_escape_string($_POST['Login']), "whitelist", "string");
-            $email = AntiXSS::setFilter(mysql_real_escape_string($_POST['Email']), "whitelist", "string");
-            $password = crypt(mysql_real_escape_string($_POST['Password']), $salt);
-            $otrtoken = md5($password.$login.$salt);
-            $forename = AntiXSS::setFilter(mysql_real_escape_string($_POST['Forename']), "whitelist", "string");
-            $name = AntiXSS::setFilter(mysql_real_escape_string($_POST['Name']), "whitelist", "string");
-            $location = AntiXSS::setFilter(mysql_real_escape_string($_POST['Location']), "whitelist", "string");
+            $login = AntiXSS::setFilter($_POST['Login'], "whitelist", "string");
+            $email = AntiXSS::setFilter($_POST['Email'], "whitelist", "string");
+            $password = crypt($_POST['Password'], $salt);
+            $otrtoken = md5($password . $login . $salt);
+            $forename = AntiXSS::setFilter($_POST['Forename'], "whitelist", "string");
+            $name = AntiXSS::setFilter($_POST['Name'], "whitelist", "string");
+            $location = AntiXSS::setFilter($_POST['Location'], "whitelist", "string");
 
+            // TODO: extend query to find users with the same email address (see https://bugs.n0q.org/view.php?id=29)
             $sql = sprintf(
                 "SELECT uid FROM cs_users WHERE ulogin='%s'",
-                $login);
-            $result = mysql_query($sql);
-            if (mysql_errno() !== 0) {
+                $dbconn->real_escape_string($login));
+            if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
                 handle_mysql_error();
             }
-            if ($row = mysql_fetch_array($result)) {
+            if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
                 $userexists = TRUE;
             }
             else {
                 $userexists = FALSE;
             }
+            $result->close();
         }
 
         if (($cerr == 0) && (!isset($userexists) || !$userexists)) {
@@ -78,10 +79,14 @@ if (isset($_POST['recaptcha_response_field'])) {
                  VALUES (
                     '%s', '%s', '%s', '%s', '%s', NOW(),
                     '%s', 1, '%s')",
-                $login, $email, $forename, $name, $password,
-                $location, $otrtoken);
-            $result = mysql_query($sql);
-            if (mysql_errno() !== 0) {
+                $dbconn->real_escape_string($login),
+                $dbconn->real_escape_string($email),
+                $dbconn->real_escape_string($forename),
+                $dbconn->real_escape_string($name),
+                $dbconn->real_escape_string($password),
+                $dbconn->real_escape_string($location),
+                $dbconn->real_escape_string($otrtoken));
+            if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
                 handle_mysql_error();
             }
             flash("You got it! Yes we hate CAPTCHAs too.", FLASH_SUCCESS);
