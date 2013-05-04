@@ -15,11 +15,11 @@ if (isset($_SESSION['login_user'])) {
         "SELECT ulogin FROM cs_users WHERE ulogin='%s'",
         $user_check);
     $result = mysql_query($sql);
+    if (mysql_errno() !== 0) {
+        handle_mysql_error();
+    }
     if ($row = mysql_fetch_array($result)) {
         $login_session = $row['ulogin'];
-    }
-    else {
-        // TODO: handle mysql_error
     }
 }
 

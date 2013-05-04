@@ -5,22 +5,22 @@ include("lib/antixss.php");
 
 
 // COFFEE VS MATE CHART
-$sql="SELECT count(cs_coffees.cid) as coffees FROM cs_coffees";
-$result=mysql_query($sql);
+$sql = "SELECT count(cs_coffees.cid) as coffees FROM cs_coffees";
+$result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 if ($row = mysql_fetch_array($result)) {
     $wholecoffeestack = $row['coffees'];
-}
-else {
-    // TODO: handle MySQL error
 }
 
 $sql="SELECT count(cs_mate.mid) as mate FROM cs_mate";
 $result=mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 if ($row = mysql_fetch_array($result)) {
     $wholematestack = $row['mate'];
-}
-else {
-    // TODO: handle MySQL error
 }
 
 
@@ -35,6 +35,9 @@ $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%H') AS hour
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(cdate, '%Y-%m-%d')
         GROUP BY hour";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $todayrows[intval($row['hour'])][0] = $row['coffees'];
 }
@@ -43,7 +46,10 @@ $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%H') AS hour
         FROM cs_mate
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(mdate, '%Y-%m-%d')
         GROUP BY hour";
-$result=mysql_query($sql);
+$result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $todayrows[intval($row['hour'])][1] = $row['mate'];
 }
@@ -61,6 +67,9 @@ $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%d') AS day
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(cdate, '%Y-%m')
         GROUP BY day";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $monthrows[intval($row['day'])][0] = $row['coffees'];
 }
@@ -70,6 +79,9 @@ $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%d') AS day
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(mdate, '%Y-%m')
         GROUP BY day";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $monthrows[intval($row['day'])][1] = $row['mate'];
 }
@@ -85,6 +97,9 @@ $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate,'%m') AS month
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(cdate, '%Y')
         GROUP BY month";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $yearrows[intval($row['month'])][0] = $row['coffees'];
 }
@@ -94,6 +109,9 @@ $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%m') AS month
         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(mdate, '%Y')
         GROUP BY month";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $yearrows[intval($row['month'])][1] = $row['mate'];
 }
@@ -108,6 +126,9 @@ $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%H') AS hour
         FROM cs_coffees
         GROUP BY hour";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $byhourrows[intval($row['hour'])][0] = $row['coffees'];
 }
@@ -116,6 +137,9 @@ $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%H') AS hour
         FROM cs_mate
         GROUP BY hour";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row=mysql_fetch_array($result)) {
     $byhourrows[intval($row['hour'])][1] = $row['mate'];
 }
@@ -131,6 +155,9 @@ $sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%a') AS wday
         FROM cs_coffees
         GROUP BY wday";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $byweekdayrows[$row['wday']][0] = $row['coffees'];
 }
@@ -139,6 +166,9 @@ $sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%a') AS wday
         FROM cs_mate
         GROUP BY wday";
 $result = mysql_query($sql);
+if (mysql_errno() !== 0) {
+    handle_mysql_error();
+}
 while ($row = mysql_fetch_array($result)) {
     $byweekdayrows[$row['wday']][1] = $row['mate'];
 }
