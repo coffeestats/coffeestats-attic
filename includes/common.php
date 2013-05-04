@@ -77,4 +77,14 @@ function errorpage($title, $text, $http_status=NULL) {
     include(sprintf('%s/../footer.php', dirname(__FILE__)));
     exit();
 }
+
+/**
+ * Handle a MySQL error, log to error log and show an error page to the user.
+ */
+function handle_mysql_error() {
+    error_log(sprintf(
+        "MySQL error %d: %s",
+        mysql_errno(), mysql_error()));
+    errorpage("Error", "Sorry, we have a problem.", "500 Internal Server Error");
+}
 ?>

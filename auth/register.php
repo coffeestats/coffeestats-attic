@@ -59,7 +59,9 @@ if (isset($_POST['recaptcha_response_field'])) {
                 "SELECT uid FROM cs_users WHERE ulogin='%s'",
                 $login);
             $result = mysql_query($sql);
-            // TODO: handle mysql error
+            if (mysql_errno() !== 0) {
+                handle_mysql_error();
+            }
             if ($row = mysql_fetch_array($result)) {
                 $userexists = TRUE;
             }
@@ -79,7 +81,9 @@ if (isset($_POST['recaptcha_response_field'])) {
                 $login, $email, $forename, $name, $password,
                 $location, $otrtoken);
             $result = mysql_query($sql);
-            // TODO: handle mysql error
+            if (mysql_errno() !== 0) {
+                handle_mysql_error();
+            }
             flash("You got it! Yes we hate CAPTCHAs too.", FLASH_SUCCESS);
             redirect_to("../index");
         }
