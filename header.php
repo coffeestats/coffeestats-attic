@@ -1,6 +1,6 @@
 <?php
+include_once('includes/common.php');
 if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
-    include('includes/common.php');
     redirect_to('index', TRUE);
 }
 ?>
@@ -20,6 +20,9 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
             <p>...about what keeps you awake at night.</p>
         </div>
         <div id="content">
+<?php
+if (isset($login_session)) {
+?>
             <div class="white-box">
                 <div id="navigation">
                     <ul>
@@ -33,3 +36,20 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
                     </ul>
                 </div>
             </div>
+<?php
+}
+
+if (peek_flash()) {
+?>
+            <div class="white-box">
+<?php
+    while (($message = pop_flash()) !== NULL) {
+?>
+                <p class="flash-<?php echo $message[0]; ?>"><?php echo $message[1]; ?></p>
+<?php
+    }
+?>
+            </div>
+<?php
+}
+?>

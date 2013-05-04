@@ -1,6 +1,6 @@
 <?php
 include('config.php');
-include('../preheader.php');
+include_once('../includes/common.php');
 require_once('../lib/recaptchalib.php');
 include('../lib/antixss.php');
 
@@ -59,33 +59,34 @@ if (isset($_POST['recaptcha_response_field'])) {
                 "SELECT uid FROM cs_users WHERE ulogin='%s'",
                 $login);
             $result = mysql_query($sql);
+            // TODO: handle mysql error
             if ($row = mysql_fetch_array($result)) {
                 $userexists = TRUE;
             }
             else {
-                // TODO: handle mysql error
                 $userexists = FALSE;
             }
         }
 
         if (($cerr == 0) && (!isset($userexists) || !$userexists)) {
-            echo '<div class="white-box"><h2>You got it! Click <a href="../index">here</a></h2>';
-            echo "Yes. We hate CAPTCHAs too.</div>";
             $sql = sprintf(
                 "INSERT INTO cs_users (
                     ulogin, uemail, ufname, uname, ucryptsum, ujoined,
                     ulocation, upublic, utoken)
                  VALUES (
                     '%s', '%s', '%s', '%s', '%s', NOW(),
-                    '%s', '1', '%s')",
+                    '%s', 1, '%s')",
                 $login, $email, $forename, $name, $password,
                 $location, $otrtoken);
             $result = mysql_query($sql);
             // TODO: handle mysql error
-            // TODO: redirect after successful account creation (see https://bugs.n0q.org/view.php?id=10)
+            flash("You got it! Yes we hate CAPTCHAs too.", FLASH_SUCCESS);
+            redirect_to("../index");
         }
         else {
-            echo('<div class="white-box">Error: Sorry. Username already taken, invalid or you forgot something in General section.</div>');
+            flash(
+                "Error: Sorry. Username already taken, invalid or you forgot something in General section.",
+                FLASH_ERROR);
         }
     }
     else {
@@ -93,6 +94,8 @@ if (isset($_POST['recaptcha_response_field'])) {
         $error = $resp->error;
     }
 }
+
+include('../header.php');
 ?>
 <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
     <div class="white-box">

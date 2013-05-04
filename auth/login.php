@@ -31,7 +31,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = "<center>Your username or password seems to be invalid :(</center>";
 }
 
-include("../preheader.php");
+include("../header.php");
 ?>
 <div id="login">
     <div class="white-box">

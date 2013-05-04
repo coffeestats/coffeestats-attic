@@ -273,12 +273,7 @@ while ($row=mysql_fetch_array($result)) {
 }
 
 include('includes/charting.php');
-if (isset($_SESSION['login_user'])) {
-    include("header.php");
-}
-else {
-    include("preheader.php");
-}
+include("header.php");
 ?>
 <div class="white-box">
     <h2><?php echo $info['title']; ?></h2>

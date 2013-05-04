@@ -9,6 +9,45 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
  * Provide commonly usable code to implement DRY principle.
  */
 
+define('FLASH_INFO', "info");
+define('FLASH_SUCCESS', "success");
+define('FLASH_ERROR', "error");
+define('FLASH_WARNING', "warning");
+
+/**
+ * Store a flash message in the flash message stack.
+ */
+function flash($message, $level=FLASH_INFO) {
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+    if (!isset($_SESSION['flash'])) {
+        $_SESSION['flash'] = array();
+    }
+    array_push($_SESSION['flash'], array($level, $message));
+}
+
+/**
+ * Returns TRUE if there are messages in the flash message stack.
+ */
+function peek_flash() {
+    return (
+        isset($_SESSION) &&
+        isset($_SESSION['flash']) &&
+        (count($_SESSION['flash']) > 0));
+}
+
+/**
+ * Get the first message from the flash message stack.
+ */
+function pop_flash() {
+    $message = NULL;
+    if (peek_flash()) {
+        $message = array_shift($_SESSION['flash']);
+    }
+    return $message;
+}
+
 /**
  * Redirect to given URL.
  */
@@ -28,7 +67,7 @@ function errorpage($title, $text, $http_status=NULL) {
     if ($http_status !== NULL) {
         header(sprintf('Status: %s', $http_status));
     }
-    include(sprintf('%s/../preheader.php', dirname(__FILE__)));
+    include(sprintf('%s/../header.php', dirname(__FILE__)));
 ?>
 <div class="white-box">
     <h2><?php echo $title; ?></h2>
