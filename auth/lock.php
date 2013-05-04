@@ -14,13 +14,13 @@ if (isset($_SESSION['login_user'])) {
     $sql = sprintf(
         "SELECT ulogin FROM cs_users WHERE ulogin='%s'",
         $user_check);
-    $result = mysql_query($sql);
-    if (mysql_errno() !== 0) {
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
     }
-    if ($row = mysql_fetch_array($result)) {
+    elseif ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $login_session = $row['ulogin'];
     }
+    $result->close();
 }
 
 if (!isset($login_session)) {

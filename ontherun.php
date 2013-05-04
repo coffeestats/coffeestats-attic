@@ -1,20 +1,25 @@
 <?php
 include('auth/config.php');
 include('lib/antixss.php');
-include('includes/common.php');
+include_once('includes/common.php');
 
 if (isset($_GET['t']) && isset($_GET['u'])) {
-    $token=AntiXSS::setFilter(mysql_real_escape_string($_GET['t']), 'whitelist', 'string');
-    $user=AntiXSS::setFilter(mysql_real_escape_string($_GET['u']), 'whitelist', 'string');
-    $sql=sprintf(
+    $token = AntiXSS::setFilter($_GET['t'], 'whitelist', 'string');
+    $user = AntiXSS::setFilter($_GET['u'], 'whitelist', 'string');
+    $sql = sprintf(
         "SELECT uid, utoken, ulogin FROM cs_users
          WHERE ulogin='%s' AND utoken='%s'",
-        $user, $token);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_assoc($result);
-    $token=$row['utoken'];
-    $user=$row['ulogin'];
-    $profileid=$row['uid'];
+         $dbconn->real_escape_string($user),
+         $dbconn->real_escape_string($token));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $token = $row['utoken'];
+        $user = $row['ulogin'];
+        $profileid = $row['uid'];
+    }
+    $result->close();
 }
 
 if (!isset($token) || !isset($user)) {
@@ -22,104 +27,109 @@ if (!isset($token) || !isset($user)) {
 }
 
 if (isset($_POST['coffeetime']) && !empty($_POST['coffeetime'])) {
-    $coffeedate=mysql_real_escape_string($_POST['coffeetime']);
-    $coffeedate=AntiXSS::setFilter($coffeedate, "whitelist", "string");
-    $sql=sprintf(
+    // TODO: add proper input validation (see https://bugs.n0q.org/view.php?id=13)
+    $coffeedate = AntiXSS::setFilter($_POST['coffeetime'], "whitelist", "string");
+    // TODO: implement coffee registration in a function (see https://bugs.n0q.org/view.php?id=27)
+    $sql = sprintf(
         "SELECT cid, cdate
          FROM cs_coffees
          WHERE cdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
            AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (cdate + INTERVAL '45' MINUTE_SECOND)
            AND cuid = %d",
         $profileid);
-    $result = mysql_query($sql);
-    if ($row = mysql_fetch_array($result)) {
-        $message = array(
-            'warning',
-            sprintf(
-                'Error: Your last coffee was at least not 5 minutes ago at %s. O_o',
-                $row['cdate']));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $result->close();
+        flash(sprintf(
+            'Error: Your last coffee was at least not 5 minutes ago at %s. O_o',
+            $row['cdate']),
+            FLASH_WARNING);
     }
     else {
-        $sql=sprintf(
+        $result->close();
+        $sql = sprintf(
             "INSERT INTO cs_coffees (cuid, cdate)
              VALUES (%d, '%s')",
-            $profileid, $coffeedate);
-        $result=mysql_query($sql);
-        $message = array(
-            'success',
-            sprintf('Your coffee at %s has been registered!', $coffeedate));
+            $profileid, $dbconn->real_escape_string($coffeedate));
+        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+            handle_mysql_error();
+        }
+        flash(sprintf(
+            'Your coffee at %s has been registered!', $coffeedate),
+            FLASH_SUCCESS);
     }
 }
 elseif (isset($_POST['matetime']) && !empty($_POST['matetime'])) {
-    $matedate=mysql_real_escape_string($_POST['matetime']);
-    $matedate=AntiXSS::setFilter($matedate, "whitelist", "string");
-    $sql=sprintf(
+    // TODO: add proper input validation (see https://bugs.n0q.org/view.php?id=13)
+    $matedate = AntiXSS::setFilter($_POST['matetime'], "whitelist", "string");
+    // TODO: implement coffee registration in a function (see https://bugs.n0q.org/view.php?id=27)
+    $sql = sprintf(
         "SELECT mid, mdate
          FROM cs_mate
          WHERE mdate > (NOW() - INTERVAL '5:00' MINUTE_SECOND)
            AND (NOW() + INTERVAL '45:00' MINUTE_SECOND) > (mdate + INTERVAL '45' MINUTE_SECOND)
            AND cuid = %d",
         $profileid);
-    $result = mysql_query($sql);
-    if ($row = mysql_fetch_array($result)) {
-        $message = array(
-            'warning',
-            sprintf(
-                "Error: Your last mate was at least not 5 minutes ago at %s. O_o",
-                $row['mdate']));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $result->close();
+        flash(sprintf(
+            "Error: Your last mate was at least not 5 minutes ago at %s. O_o",
+            $row['mdate']),
+            FLASH_WARNING);
     }
     else {
+        $result->close();
         $sql=sprintf(
             "INSERT INTO cs_mate (cuid, mdate)
              VALUES (%d, '%s')",
-            $profileid, $matedate);
-        $result=mysql_query($sql);
-        $message = array(
-            'success',
-            sprintf('Your mate at %s has been registered!', $matedate));
+            $profileid, $dbconn->real_escape_string($matedate));
+        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+            handle_mysql_error();
+        }
+        flash(sprintf(
+            'Your mate at %s has been registered!', $matedate),
+            FLASH_SUCCESS);
     }
 }
 
 include("header.php");
-
-if (isset($message)) {
-?>
-<div class="white-box">
-    <p class="<?php echo $message[0]; ?>"><?php echo $message[1]; ?></p>
-</div>
-<?php
-}
+// simplify JavaScript code (see https://bugs.n0q.org/view.php?id=28)
 ?>
 <script type="text/javascript">
-    function pad(n) {
-        return n<10 ? '0'+n : n;
+function pad(n) {
+    return n<10 ? '0'+n : n;
+}
+function AddPostDataCoffee() {
+    function coffeetime(d) {
+        return d.getFullYear() + '-' +
+           pad(d.getMonth() + 1) +'-' +
+           pad(d.getDate()) + ' ' +
+           pad(d.getHours()) + ':' +
+           pad(d.getMinutes()) +':' +
+           pad(d.getSeconds());
     }
-    function AddPostDataCoffee() {
-        function coffeetime(d) {
-            return d.getFullYear() + '-' +
-               pad(d.getMonth() + 1) +'-' +
-               pad(d.getDate()) + ' ' +
-               pad(d.getHours()) + ':' +
-               pad(d.getMinutes()) +':' +
-               pad(d.getSeconds());
-        }
-        var d = new Date();
-        document.getElementById('coffeetime').value = coffeetime(d);
-        document.getElementById("coffeeform").submit();
+    var d = new Date();
+    document.getElementById('coffeetime').value = coffeetime(d);
+    document.getElementById("coffeeform").submit();
+}
+function AddPostDataMate() {
+    function coffeetime(d) {
+        return d.getFullYear() + '-' +
+            pad(d.getMonth() + 1) + '-' +
+            pad(d.getDate()) + ' ' +
+            pad(d.getHours()) + ':' +
+            pad(d.getMinutes()) + ':' +
+            pad(d.getSeconds());
     }
-    function AddPostDataMate() {
-        function coffeetime(d) {
-            return d.getFullYear() + '-' +
-                pad(d.getMonth() + 1) + '-' +
-                pad(d.getDate()) + ' ' +
-                pad(d.getHours()) + ':' +
-                pad(d.getMinutes()) + ':' +
-                pad(d.getSeconds());
-        }
-        var d = new Date();
-        document.getElementById('matetime').value = coffeetime(d);
-        document.getElementById("mateform").submit();
-    }
+    var d = new Date();
+    document.getElementById('matetime').value = coffeetime(d);
+    document.getElementById("mateform").submit();
+}
 </script>
 
 <div class="white-box">

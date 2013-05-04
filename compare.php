@@ -7,24 +7,24 @@ include("lib/antixss.php");
 
 // Parse user
 if (isset($_GET['u'])) {
-    $profileuser=AntiXSS::setFilter($_GET['u'], "whitelist", "string");
-    $profileuser=mysql_real_escape_string($profileuser);
-    $sql=sprintf(
+    $profileuser = AntiXSS::setFilter($_GET['u'], "whitelist", "string");
+    $sql = sprintf(
         "SELECT uid FROM cs_users WHERE ulogin='%s'",
-        $profileuser);
-    $result=mysql_query($sql);
-    $row=mysql_fetch_array($result);
-    $count=mysql_num_rows($result);
-    $profileid=$row['uid'];
-}
-else {
-    $count = 0;
+        $dbconn->real_escape_string($profileuser));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $profileid = $row['uid'];
+    }
+    $result->close();
 }
 ?>
 <div class="white-box">
 <?php
-if ($count==1) {
-    if ($profileid==$_SESSION['login_id']) {
+// TODO: handle similarly to profile.php
+if (isset($profileid)) {
+    if ($profileid == $_SESSION['login_id']) {
         echo("<h2>Your Profile</h2>");
     }
     else {
@@ -38,14 +38,18 @@ else {
 }
 
 // total
-$sql=sprintf(
+$sql = sprintf(
     "SELECT count(cid) AS total
      FROM cs_coffees
      WHERE cuid=%d",
      $profileid);
-$result=mysql_query($sql);
-$row=mysql_fetch_array($result);
-$totalcoffees = $row['total'];
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+    $totalcoffees = $row['total'];
+}
+$result->close();
 
 /**
  * print an associative array with a specified element count for a chart row.
@@ -84,10 +88,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY hour",
     $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $hourrows[intval($row['hour'])] = $row['coffees'];
 }
+$result->close();
 
 // month
 $now = getdate();
@@ -103,10 +110,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY day",
      $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $dayrows[intval($row['day'])] = $row['coffees'];
 }
+$result->close();
 
 // year
 $maxmonths = 12;
@@ -121,10 +131,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY month",
     $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $monthrows[intval($row['month'])] = $row['coffees'];
 }
+$result->close();
 
 ?>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
