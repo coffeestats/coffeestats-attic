@@ -1,13 +1,13 @@
 <?php
 include('auth/config.php');
+include('lib/antixss.php');
+
 if (isset($_GET['t']) && isset($_GET['u'])) {
-    $token=mysql_real_escape_string($_GET['t']);
-    $user=mysql_real_escape_string($_GET['u']);
+    $token=AntiXSS::setFilter(mysql_real_escape_string($_GET['t']), 'whitelist', 'string');
+    $user=AntiXSS::setFilter(mysql_real_escape_string($_GET['u']), 'whitelist', 'string');
     $sql=sprintf(
-        "SELECT uid, utoken, ulogin
-         FROM cs_users
-         WHERE ulogin='%s'
-           AND utoken='%s'",
+        "SELECT uid, utoken, ulogin FROM cs_users
+         WHERE ulogin='%s' AND utoken='%s'",
         $user, $token);
     $result=mysql_query($sql);
     $row=mysql_fetch_assoc($result);
@@ -22,7 +22,6 @@ if (!isset($token) || !isset($user)) {
 }
 
 include("preheader.php");
-include('lib/antixss.php');
 
 if (isset($_POST['coffeetime']) && !empty($_POST['coffeetime'])) {
     echo('<div class="white-box">');
