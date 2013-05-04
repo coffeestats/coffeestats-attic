@@ -12,7 +12,6 @@ $ownprofile = FALSE;
 // Parse user
 if (isset($_GET['u'])) {
     $profileuser = AntiXSS::setFilter($_GET['u'], "whitelist", "string");
-    $profileuser = mysql_real_escape_string($profileuser);
 }
 elseif (isset($_SESSION['login_user'])) {
     $ownprofile = TRUE;
@@ -25,9 +24,11 @@ else {
 
 $sql = sprintf(
     "SELECT uid, ufname, uname, ulocation, utoken FROM cs_users WHERE ulogin = '%s'",
-    $profileuser);
-$result = mysql_query($sql);
-if ($row = mysql_fetch_array($result)) {
+    $dbconn->real_escape_string($profileuser));
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $profileid = $row['uid'];
     $profilename = $row['uname'];
     $profileforename = $row['ufname'];
@@ -38,44 +39,58 @@ else {
     // no result found
     errorpage('Error', 'No profile found', '404 No Profile Found');
 }
+$result->close();
 
 function total_coffees_for_profile($profileid) {
+    global $dbconn;
     $sql = sprintf(
         "SELECT COUNT(cid) AS total FROM cs_coffees WHERE cuid = %d",
         $profileid);
-    $result = mysql_query($sql);
-    if ($row = mysql_fetch_array($result)) {
-        return $row['total'];
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
     }
-    return 'failed to fetch coffee count';
+    $total = 0;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $total = $row['total'];
+    }
+    $result->close();
+    return $total;
 }
 
 function total_mate_for_profile($profileid) {
+    global $dbconn;
     $sql = sprintf(
         "SELECT COUNT(mid) AS total FROM cs_mate WHERE cuid = %d",
         $profileid);
-    $result=mysql_query($sql);
-    if ($row = mysql_fetch_array($result)) {
-        return $row['total'];
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
     }
-    return 'failed to fetch mate count';
+    $total = 0;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $total = $row['total'];
+    }
+    $result->close();
+    return $total;
 }
 
 function baseurl() {
     $protocol = 'http';
-    if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) {
+    if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strcmp($_SERVER['HTTPS'], 'off') != 0)) {
         $protocol = 'https';
     }
     return sprintf("%s://%s", $protocol, $_SERVER['SERVER_NAME']);
 }
 
 function public_url($profileuser) {
-    return sprintf("%s/profile?u=%s", baseurl(), $profileuser);
+    return sprintf("%s/profile?u=%s", baseurl(), urlencode($profileuser));
 }
 
 function on_the_run_url($profileuser, $profiletoken) {
-    return sprintf("%s/ontherun?u=%s&t=%s", baseurl(), $profileuser, $profiletoken);
+    return sprintf("%s/ontherun?u=%s&t=%s", baseurl(), urlencode($profileuser), urlencode($profiletoken));
 }
+
+$wholecoffeestack = total_coffees_for_profile($profileid);
+$wholematestack = total_mate_for_profile($profileid);
 
 if ($ownprofile) {
     $info = array(
@@ -83,8 +98,8 @@ if ($ownprofile) {
         'data' => array(
             'Name' => sprintf('%s %s', $profileforename, $profilename),
             'Location' => $profilelocation,
-            'Your Coffees total' => total_coffees_for_profile($profileid),
-            'Your Mate total' => total_mate_for_profile($profileid),
+            'Your Coffees total' => $wholecoffeestack,
+            'Your Mate total' => $wholematestack,
         ),
         'extra' => array(
             sprintf('Your <a href="%s">public profile page</a>', public_url($profileuser)),
@@ -102,26 +117,12 @@ else {
         'data' => array(
             'Name' => sprintf('%s %s', $profileforename, $profilename),
             'Location' => $profilelocation,
-            'Coffees total' => total_coffees_for_profile($profileid),
-            'Mate total' => total_mate_for_profile($profileid),
+            'Coffees total' => $wholecoffeestack,
+            'Mate total' => $wholematestack,
         ),
     );
 }
 
-// COFFEE VS MATE CHART
-$sql=sprintf(
-    "SELECT count(cs_coffees.cid) as coffees FROM cs_coffees WHERE cuid=%d",
-    $profileid);
-$result=mysql_query($sql);
-$row = mysql_fetch_array($result);
-$wholecoffeestack = $row['coffees'];
-
-$sql=sprintf(
-    "SELECT count(cs_mate.mid) as mate FROM cs_mate WHERE cuid=%d",
-    $profileid);
-$result=mysql_query($sql);
-$row = mysql_fetch_array($result);
-$wholematestack = $row['mate'];
 
 // TODAY
 $todayrows = array();
@@ -136,10 +137,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY hour",
      $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $todayrows[intval($row['hour'])][0] = $row['coffees'];
 }
+$result->close();
 
 $sql = sprintf(
     "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%%H') AS hour
@@ -148,10 +152,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY hour",
     $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $todayrows[intval($row['hour'])][1] = $row['mate'];
 }
+$result->close();
 
 // MONTH
 $monthrows = array();
@@ -168,10 +175,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY day",
      $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $monthrows[intval($row['day'])][0] = $row['coffees'];
 }
+$result->close();
 
 $sql = sprintf(
     "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%%d') AS day
@@ -180,10 +190,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY day",
      $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $monthrows[intval($row['day'])][1] = $row['mate'];
 }
+$result->close();
 
 // YEAR
 $yearrows = array();
@@ -198,10 +211,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY month",
     $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $yearrows[intval($row['month'])][0] = $row['coffees'];
 }
+$result->close();
 
 $sql = sprintf(
     "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%%m') AS month
@@ -210,10 +226,13 @@ $sql = sprintf(
        AND cuid = %d
      GROUP BY month",
     $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $yearrows[intval($row['month'])][1] = $row['mate'];
 }
+$result->close();
 
 // BY HOUR
 $byhourrows = array();
@@ -227,10 +246,13 @@ $sql = sprintf(
      WHERE cuid = %d
      GROUP BY hour",
     $profileid);
-$result = mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $byhourrows[intval($row['hour'])][0] = $row['coffees'];
 }
+$result->close();
 
 $sql = sprintf(
     "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%%H') AS hour
@@ -238,10 +260,13 @@ $sql = sprintf(
      WHERE cuid = %d
      GROUP BY hour",
     $profileid);
-$result=mysql_query($sql);
-while ($row = mysql_fetch_array($result)) {
+if (($result=$dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $byhourrows[intval($row['hour'])][1] = $row['mate'];
 }
+$result->close();
 
 // BY WEEKDAY
 $byweekdayrows = array();
@@ -256,10 +281,13 @@ $sql=sprintf(
      WHERE cuid = %d
      GROUP BY wday",
     $profileid);
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result)) {
+if (($result=$dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row=$result->fetch_array(MYSQLI_ASSOC)) {
     $byweekdayrows[$row['wday']][0] = $row['coffees'];
 }
+$result->close();
 
 $sql=sprintf(
     "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%%a') AS wday
@@ -267,10 +295,13 @@ $sql=sprintf(
      WHERE cuid = %d
      GROUP BY wday",
     $profileid);
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result)) {
+if (($result=$dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+    handle_mysql_error();
+}
+while ($row=$result->fetch_array(MYSQLI_ASSOC)) {
     $byweekdayrows[$row['wday']][1] = $row['mate'];
 }
+$result->close();
 
 include('includes/charting.php');
 include("header.php");
@@ -322,127 +353,126 @@ if (isset($info['afterlist'])) {
     <canvas id="coffeebyweekday" width="590" height="240" ></canvas>
 </div>
 
-<script src="./lib/Chart.min.js"></script>
+<script type="text/javascript" src="./lib/Chart.min.js"></script>
+<script type="text/javascript">
+var todaycolor = "#E64545";
+var monthcolor = "#FF9900";
+var yearcolor = "#3399FF";
+var hourcolor = "#FF6666";
+var weekdaycolor = "#A3CC52";
+var matecolor = "#FFCC00";
+var matelightcolor = "#FFE066";
+var barChartData;
+var lineChartData;
 
-<script>
-    var todaycolor = "#E64545";
-    var monthcolor = "#FF9900";
-    var yearcolor = "#3399FF";
-    var hourcolor = "#FF6666";
-    var weekdaycolor = "#A3CC52";
-    var matecolor = "#FFCC00";
-    var matelightcolor = "#FFE066";
-    var barChartData;
-    var lineChartData;
+var doughnutData = [
+    {
+        value: <?php echo($wholecoffeestack); ?>,
+        color: todaycolor
+    },
+    {
+        value: <?php echo($wholematestack); ?>,
+        color: matecolor
+    }
+];
+new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
 
-    var doughnutData = [
+barChartData = {
+    labels: [<?php extractlabels($todayrows); ?>],
+    datasets: [
         {
-            value: <?php echo($wholecoffeestack); ?>,
-            color: todaycolor
+            fillColor: todaycolor,
+            strokeColor: todaycolor,
+            data: [<?php extractdata($todayrows, 0); ?>],
         },
         {
-            value: <?php echo($wholematestack); ?>,
-            color: matecolor
-        }
-    ];
-    new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
+            fillColor: matecolor,
+            strokeColor: matecolor,
+            data: [<?php extractdata($todayrows, 1); ?>],
+        },
+    ]
+}
+new Chart(document.getElementById("coffeetoday").getContext("2d")).Bar(barChartData);
 
-    barChartData = {
-        labels: [<?php extractlabels($todayrows); ?>],
-        datasets: [
-            {
-                fillColor: todaycolor,
-                strokeColor: todaycolor,
-                data: [<?php extractdata($todayrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matecolor,
-                data: [<?php extractdata($todayrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeetoday").getContext("2d")).Bar(barChartData);
+lineChartData = {
+    labels: [<?php extractlabels($monthrows); ?>],
+    datasets : [
+        {
+            fillColor: monthcolor,
+            strokeColor: "#FFB84D",
+            pointColor: "#FFB84D",
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($monthrows, 0); ?>],
+        },
+        {
+            fillColor: matecolor,
+            strokeColor: matelightcolor,
+            pointColor: matelightcolor,
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($monthrows, 1); ?>],
+        },
+    ]
+}
+new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
 
-    lineChartData = {
-        labels: [<?php extractlabels($monthrows); ?>],
-        datasets : [
-            {
-                fillColor: monthcolor,
-                strokeColor: "#FFB84D",
-                pointColor: "#FFB84D",
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($monthrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matelightcolor,
-                pointColor: matelightcolor,
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($monthrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
+barChartData = {
+    labels: [<?php extractlabels($yearrows); ?>],
+    datasets: [
+        {
+            fillColor: yearcolor,
+            strokeColor: yearcolor,
+            data: [<?php extractdata($yearrows, 0); ?>],
+        },
+        {
+            fillColor: matecolor,
+            strokeColor : matecolor,
+            data: [<?php extractdata($yearrows, 1); ?>],
+        },
+    ]
+}
+new Chart(document.getElementById("coffeeyear").getContext("2d")).Bar(barChartData);
 
-    barChartData = {
-        labels: [<?php extractlabels($yearrows); ?>],
-        datasets: [
-            {
-                fillColor: yearcolor,
-                strokeColor: yearcolor,
-                data: [<?php extractdata($yearrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor : matecolor,
-                data: [<?php extractdata($yearrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeeyear").getContext("2d")).Bar(barChartData);
+lineChartData = {
+    labels: [<?php extractlabels($byhourrows); ?>],
+    datasets: [
+        {
+            fillColor: hourcolor,
+            strokeColor: "#FF9999",
+            pointColor: "#FF9999",
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($byhourrows, 0); ?>],
+        },
+        {
+            fillColor: matecolor,
+            strokeColor: matelightcolor,
+            pointColor: matelightcolor,
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($byhourrows, 1); ?>],
+        },
+    ]
+}
+new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
 
-    lineChartData = {
-        labels: [<?php extractlabels($byhourrows); ?>],
-        datasets: [
-            {
-                fillColor: hourcolor,
-                strokeColor: "#FF9999",
-                pointColor: "#FF9999",
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($byhourrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matelightcolor,
-                pointColor: matelightcolor,
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($byhourrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
-
-    lineChartData = {
-        labels: [<?php extractlabels($byweekdayrows); ?>],
-        datasets: [
-            {
-                fillColor: weekdaycolor,
-                strokeColor: "#99FF99",
-                pointColor: "#99FF99",
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($byweekdayrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matelightcolor,
-                pointColor: matelightcolor,
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($byweekdayrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
+lineChartData = {
+    labels: [<?php extractlabels($byweekdayrows); ?>],
+    datasets: [
+        {
+            fillColor: weekdaycolor,
+            strokeColor: "#99FF99",
+            pointColor: "#99FF99",
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($byweekdayrows, 0); ?>],
+        },
+        {
+            fillColor: matecolor,
+            strokeColor: matelightcolor,
+            pointColor: matelightcolor,
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($byweekdayrows, 1); ?>],
+        },
+    ]
+}
+new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
 </script>
 
 <?php
