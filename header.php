@@ -18,6 +18,14 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     <div id="wrapper">
         <div id="header">
             <h1><a href="/">coffeestats.org</a></h1>
+<?php
+if (isset($login_session)) {
+?>
+        <div id="account"><a href="settings">Settings</a> / <a href="auth/logout">Logout</a></div>
+<?php
+}
+?>
+            <h1>coffeestats.org</h1>
             <p>...about what keeps you awake at night.</p>
         </div>
         <div id="content">
@@ -33,7 +41,7 @@ if (isset($login_session)) {
                         <li id="navexplore"><a href="explore">Explore</a></li>
                         <li id="navoverall"><a href="overall">Overall Stats</a></li>
                         <li id="navabout"><a href="about">About</a></li>
-                        <li id="navlogout"><a href="auth/logout">Logout</a></li>
+                        <!-- <li id="navlogout"><a href="auth/logout">Logout</a></li> -->
                     </ul>
                 </div>
             </div>

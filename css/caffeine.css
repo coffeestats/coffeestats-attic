@@ -165,6 +165,19 @@ strong {
     margin-bottom: 1px;
 }
 
+#account {
+  z-index: 10;
+  position: relative;
+  float: right;
+}
+
+#account a {
+    font-weight: normal;
+    font-size: 12px;
+    color: #FFF;
+}
+
+
 /* FOOTER */
 .footertext {
     font-size: small;
