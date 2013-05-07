@@ -15,6 +15,7 @@
 						<li><a href="http://chartjs.org">Chart.js</a> by Nick Downie</li> 
 						<li><a href="http://www.dafont.com/harabara.font">Harabara</a> by André Harabara on dafont.com</li>
 						<li><a href="http://adamwhitcroft.com/batch/">Batch Iconset</a> by Adam Whitcroft</li>
+						<li><a href="http://vervex.deviantart.com/art/Somacro-32-300DPI-Social-Media-Icons-267955425">Somacro Social Media Icons</a> by <a href="http://veodesign.com">Vervex</a></li>
 					</ul>
 
                 <p>Follow us on <a href="https://twitter.com/coffeestats">Twitter</a> or 
@@ -23,6 +24,7 @@
 
 			<h2>Changelog</h2>
 					<ul>
+                        <li>2013-05-07 Added nice social media icons to profile page</li>
                         <li>2013-05-03 Public URL has changed (update your bookmarks!)</li>
                         <li>2013-04-28 Performance and Security improvments</li>
 						<li>2013-03-23 New Update page</li>

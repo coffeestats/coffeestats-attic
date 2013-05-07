@@ -106,9 +106,10 @@ if ($ownprofile) {
             sprintf('Your <a href="%s">on-the-run</a> URL', on_the_run_url($profileuser, $profiletoken)),
         ),
         'afterlist' => sprintf(
-            'Share your profile on Facebook!<br /><br />
-<a href="http://www.facebook.com/sharer.php?u=%s&t=My%%20coffee%%20statistic"><img src="images/facebook-share-icon.gif" alt="facebook share icon" /></a>',
-            urlencode(public_url($profileuser))),
+          '<a href="https://www.facebook.com/sharer.php?u=%s&t=My%%20coffee%%20statistics"><img src="images/facebook40.png" alt="facebook share icon" /></a>
+           <a href="https://twitter.com/intent/tweet?original_referer=%s&text=My%%20coffee%%20statistics&tw_p=tweetbutton&url=%s&via=coffeestats"><img src="images/twitter40.png" alt="twitter share" /></a>
+           <a href="https://plus.google.com/share?url=%s"><img src="images/googleplus40.png" alt="google plus share" /></a>',
+            urlencode(public_url($profileuser)), urlencode(public_url($profileuser)), urlencode(public_url($profileuser)), urlencode(public_url($profileuser))),
     );
 }
 else {
