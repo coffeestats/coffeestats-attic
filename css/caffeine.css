@@ -271,6 +271,30 @@ strong {
 }
 
 
+/* Common coffeestats form styles */
+form.coffeeform input[type="text"],
+form.coffeeform input[type="password"] {
+    padding: 5px;
+    margin: 0 0 5px 0;
+    display: block;
+    font-size: 12px;
+    border: none;
+    background-color: #E7E7E7;
+    color: #201200;
+    min-height: 22px;
+}
+
+form.coffeeform input[type="submit"],
+form.coffeeform button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #201200;
+    border: none;
+    color: #FFF;
+    min-width: 100px;
+}
+
+
 /* Responsive */
 
 
