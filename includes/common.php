@@ -130,6 +130,8 @@ function baseurl() {
 }
 
 define('MAIL_FROM_ADDRESS', 'COFFEESTATS_MAIL_FROM_ADDRESS');
+define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
+define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
 
 /**
  * Send a system mail to a given mail address.
