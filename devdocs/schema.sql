@@ -7,8 +7,9 @@ CREATE TABLE IF NOT EXISTS cs_users (
     ucryptsum VARCHAR(60) NOT NULL,      -- blowfish hash
     ujoined DATETIME NOT NULL,
     ulocation VARCHAR(128) NOT NULL,
-    upublic TINYINT(3) NOT NULL,         -- '1'
-    utoken VARCHAR(32) NOT NULL UNIQUE   -- md5 hash
+    upublic TINYINT NOT NULL,            -- 1
+    utoken VARCHAR(32) NOT NULL UNIQUE,  -- md5 hash
+    uactive TINYINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS cs_mate (
