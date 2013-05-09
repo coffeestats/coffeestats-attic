@@ -73,14 +73,6 @@ function total_mate_for_profile($profileid) {
     return $total;
 }
 
-function baseurl() {
-    $protocol = 'http';
-    if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strcmp($_SERVER['HTTPS'], 'off') != 0)) {
-        $protocol = 'https';
-    }
-    return sprintf("%s://%s", $protocol, $_SERVER['SERVER_NAME']);
-}
-
 function public_url($profileuser) {
     return sprintf("%s/profile?u=%s", baseurl(), urlencode($profileuser));
 }

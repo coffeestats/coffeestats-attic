@@ -75,10 +75,10 @@ if (isset($_POST['recaptcha_response_field'])) {
             $sql = sprintf(
                 "INSERT INTO cs_users (
                     ulogin, uemail, ufname, uname, ucryptsum, ujoined,
-                    ulocation, upublic, utoken)
+                    ulocation, upublic, utoken, uactive)
                  VALUES (
                     '%s', '%s', '%s', '%s', '%s', NOW(),
-                    '%s', 1, '%s')",
+                    '%s', 1, '%s', 0)",
                 $dbconn->real_escape_string($login),
                 $dbconn->real_escape_string($email),
                 $dbconn->real_escape_string($forename),
@@ -90,6 +90,8 @@ if (isset($_POST['recaptcha_response_field'])) {
                 handle_mysql_error();
             }
             flash("You got it! Yes we hate CAPTCHAs too.", FLASH_SUCCESS);
+            send_mail_activation_link($email);
+            flash("We have sent you an email with a link to activate your account.", FLASH_INFO);
             redirect_to("../index");
         }
         else {

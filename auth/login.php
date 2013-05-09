@@ -10,7 +10,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $validpassword = FALSE;
     $myusername=$dbconn->real_escape_string($_POST['username']);
     $sql = sprintf(
-        "SELECT uid, ucryptsum FROM cs_users WHERE ulogin='%s'",
+        "SELECT uid, ucryptsum FROM cs_users WHERE ulogin='%s' AND uactive=1",
         $myusername);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
@@ -29,7 +29,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         redirect_to('../index');
     }
 
-    flash("Your username or password seems to be invalid :(", FLASH_ERROR);
+    flash("Your username or password seems to be invalid or you did not activate your account yet :(", FLASH_ERROR);
 }
 
 include("../header.php");
