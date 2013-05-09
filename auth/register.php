@@ -5,9 +5,9 @@ require_once('../lib/recaptchalib.php');
 include('../lib/antixss.php');
 
 // Get a key from https://www.google.com/recaptcha/admin/create
-// TODO: move this information to a config file (see https://bugs.n0q.org/view.php?id=9)
-$publickey = "6LdnPswSAAAAAFSYLEH9f_b0JcPQ2G1VsOHDmJZY";
-$privatekey = "6LdnPswSAAAAALLCLsZt2AFTnl5VAcNH5WUDZBvf";
+// The keys are configured in the server environment
+$publickey = get_setting(RECAPTCHA_PUBLICKEY);
+$privatekey = get_setting(RECAPTCHA_PRIVATEKEY);
 
 # the response from reCAPTCHA
 $resp = null;

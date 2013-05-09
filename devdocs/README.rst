@@ -85,6 +85,8 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_param COFFEESTATS_MYSQL_USER coffeestats;
         fastcgi_param COFFEESTATS_MYSQL_PASSWORD mysqls3cRet;
         fastcgi_param COFFEESTATS_MYSQL_DATABASE coffeestats;
+        fastcgi_param COFFEESTATS_RECAPTCHA_PUBLICKEY yourcustomrecaptchapublickey;
+        fastcgi_param COFFEESTATS_RECAPTCHA_PRIVATEKEY yourcustomrecaptchaprivatekey;
       }
 
       # for php files with GET parameters
@@ -99,6 +101,8 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_param COFFEESTATS_MYSQL_USER coffeestats;
         fastcgi_param COFFEESTATS_MYSQL_PASSWORD mysqls3cRet;
         fastcgi_param COFFEESTATS_MYSQL_DATABASE coffeestats;
+        fastcgi_param COFFEESTATS_RECAPTCHA_PUBLICKEY yourcustomrecaptchapublickey;
+        fastcgi_param COFFEESTATS_RECAPTCHA_PRIVATEKEY yourcustomrecaptchaprivatekey;
       }
 
     }
