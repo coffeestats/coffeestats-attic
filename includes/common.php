@@ -97,16 +97,22 @@ function handle_mysql_error() {
  * Get a configuration setting from the environment and create an appropriate
  * error page if it is missing.
  */
-function get_setting($setting_name) {
+function get_setting($setting_name, $mandatory=TRUE) {
     if (!isset($_SERVER[$setting_name])) {
-        errorpage(
-            "Wrong configuration", 
-            sprintf(
-                "The mandatory configuration setting <strong>%s</strong> " .
-                "is not set for this coffeestats instance. The " .
-                "administrator of the site has to configure it.",
-                $setting_name),
-            "503 Service Unavailable");
+        if ($mandatory) {
+            errorpage(
+                "Wrong configuration",
+                sprintf(
+                    "The mandatory configuration setting " .
+                    "<strong>%s</strong> is not set for this coffeestats " .
+                    "instance. The administrator of the site has to " .
+                    "configure it.",
+                    $setting_name),
+                "503 Service Unavailable");
+        }
+        else {
+            return NULL;
+        }
     }
     return $_SERVER[$setting_name];
 }
