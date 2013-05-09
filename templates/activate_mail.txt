@@ -1,0 +1,15 @@
+Hello @firstname@,
+
+someone, possible you, has registered an coffestats.org account. Please
+activate the account by clicking the link below ff you intend to use
+coffeestats.org.
+
+Your activation link is:
+
+@actionurl@
+
+Enjoy your caffeine and our fine statistics.
+
+
+Best regards,
+your coffeestats.org team

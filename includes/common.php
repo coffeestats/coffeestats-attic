@@ -140,4 +140,64 @@ function send_system_mail($to, $subject, $body) {
     $from = sprintf('From: %s', get_setting(MAIL_FROM_ADDRESS));
     mail($to, $subject, $body, $from);
 }
+
+/**
+ * Generates an action code for the cs_actions table.
+ */
+function generate_actioncode($data) {
+    return md5(sprintf("%s%s%s", get_setting(SITE_SECRET), mt_rand(), $data));
+}
+
+$ACTION_TYPES = array(
+    'activate_mail' => 1,
+);
+
+/**
+ * Sends a mail to activate an account.
+ */
+function send_mail_activation_link($email) {
+    global $dbconn, $ACTION_TYPES;
+    $sql = sprintf(
+        "SELECT ufname, uid FROM cs_users WHERE uemail='%s'",
+        $dbconn->real_escape_string($email));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $firstname = $row['ufname'];
+        $cuid = $row['uid'];
+    }
+    else {
+        errorpage(
+            'Invalid data', 'Invalid data was sent',
+            '500 Internal Server Error');
+    }
+    $result->close();
+
+    $actioncode = generate_actioncode($email);
+    $sql = sprintf(
+        "INSERT INTO cs_actions
+         (cuid, acode,
+          created, validuntil,
+          atype, adata)
+         VALUES
+         (%d, '%s',
+          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL 24 HOUR,
+          %d, '%s')",
+        $cuid, $dbconn->real_escape_string($actioncode),
+        $ACTION_TYPES['activate_mail'], $dbconn->real_escape_string($email));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+
+    $subject = sprintf(
+        "Please activate your account at %s",
+        get_setting(SITE_NAME));
+    $body = str_replace(
+        array('@firstname@', '@actionurl@'),
+        array($firstname, sprintf('%s/action?code=%s', baseurl(), urlencode($actioncode))),
+        file_get_contents(
+            sprintf('%s/../templates/activate_mail.txt', dirname(__FILE__))));
+    send_system_mail($email, $subject, $body);
+}
 ?>
