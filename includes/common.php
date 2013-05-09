@@ -92,4 +92,22 @@ function handle_mysql_error() {
         errorpage("Error", "Sorry, we have a problem.", "500 Internal Server Error");
     }
 }
+
+/**
+ * Get a configuration setting from the environment and create an appropriate
+ * error page if it is missing.
+ */
+function get_setting($setting_name) {
+    if (!isset($_SERVER[$setting_name])) {
+        errorpage(
+            "Wrong configuration", 
+            sprintf(
+                "The mandatory configuration setting <strong>%s</strong> " .
+                "is not set for this coffeestats instance. The " .
+                "administrator of the site has to configure it.",
+                $setting_name),
+            "503 Service Unavailable");
+    }
+    return $_SERVER[$setting_name];
+}
 ?>
