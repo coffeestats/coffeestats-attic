@@ -3,6 +3,12 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     include('includes/common.php');
     redirect_to('index', TRUE);
 }
+
+define('PIWIK_SITE_ID', 'COFFEESTATS_PIWIK_SITEID');
+define('PIWIK_HTTP_URL', 'COFFEESTATS_PIWIK_HTTP_URL');
+define('PIWIK_HTTPS_URL', 'COFFEESTATS_PIWIK_HTTPS_URL');
+
+$siteid = get_setting(PIWIK_SITE_ID, FALSE);
 ?>
 <!-- begin of footer.php -->
     <div class="white-box">
@@ -12,21 +18,33 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 </div><!-- close wrapper -->
 
 <?php
-// TODO: move piwik configuration to config file (see https://bugs.n0q.org/view.php?id=14)
+if ($siteid !== NULL) {
+    $http_url = get_setting(PIWIK_HTTP_URL);
+    $https_url = get_setting(PIWIK_HTTPS_URL);
 ?>
 <!-- Piwik -->
 <script type="text/javascript">
-    var pkBaseURL = (("https:" == document.location.protocol) ? "https://piwik.n0q.org/" : "http://piwik.n0q.org/");
+    var pkBaseURL = (("https:" == document.location.protocol) ? "<?php echo $https_url; ?>" : "<?php echo $http_url; ?>");
     document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
 
     try {
-        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 6);
+        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", <?php echo $siteid; ?>);
         piwikTracker.trackPageView();
         piwikTracker.enableLinkTracking();
     } catch( err ) {}
 </script>
-<noscript><p><img src="http://piwik.n0q.org/piwik.php?idsite=6" style="border:0" alt="" /></p></noscript>
+<noscript><p><img src="<?php
+    if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strcmp($_SERVER['HTTPS'], 'off') != 0)) {
+        printf("%spiwik.php?idsite=%s", $https_url, $siteid);
+    }
+    else {
+        printf("%spiwik.php?idsite=%s", $http_url, $siteid);
+    }
+?>" style="border:0" alt="" /></p></noscript>
 <!-- End Piwik Tracking Code -->
+<?php
+}
+?>
 
 </body>
 </html>

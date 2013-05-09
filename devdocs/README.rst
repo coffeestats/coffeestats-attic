@@ -87,6 +87,9 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_param COFFEESTATS_MYSQL_DATABASE coffeestats;
         fastcgi_param COFFEESTATS_RECAPTCHA_PUBLICKEY yourcustomrecaptchapublickey;
         fastcgi_param COFFEESTATS_RECAPTCHA_PRIVATEKEY yourcustomrecaptchaprivatekey;
+        fastcgi_param COFFEESTATS_PIWIK_SITEID piwiksiteid;
+        fastcgi_param COFFEESTATS_PIWIK_HTTP_URL http://piwik.example.org/;
+        fastcgi_param COFFEESTATS_PIWIK_HTTPS_URL https://piwik.example.org/;
       }
 
       # for php files with GET parameters
@@ -103,6 +106,9 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_param COFFEESTATS_MYSQL_DATABASE coffeestats;
         fastcgi_param COFFEESTATS_RECAPTCHA_PUBLICKEY yourcustomrecaptchapublickey;
         fastcgi_param COFFEESTATS_RECAPTCHA_PRIVATEKEY yourcustomrecaptchaprivatekey;
+        fastcgi_param COFFEESTATS_PIWIK_SITEID piwiksiteid;
+        fastcgi_param COFFEESTATS_PIWIK_HTTP_URL http://piwik.example.org/;
+        fastcgi_param COFFEESTATS_PIWIK_HTTPS_URL https://piwik.example.org/;
       }
 
     }
