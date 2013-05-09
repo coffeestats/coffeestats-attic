@@ -116,4 +116,14 @@ function get_setting($setting_name, $mandatory=TRUE) {
     }
     return $_SERVER[$setting_name];
 }
+
+define('MAIL_FROM_ADDRESS', 'COFFEESTATS_MAIL_FROM_ADDRESS');
+
+/**
+ * Send a system mail to a given mail address.
+ */
+function send_system_mail($to, $subject, $body) {
+    $from = sprintf('From: %s', get_setting(MAIL_FROM_ADDRESS));
+    mail($to, $subject, $body, $from);
+}
 ?>
