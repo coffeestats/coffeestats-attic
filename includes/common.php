@@ -117,6 +117,18 @@ function get_setting($setting_name, $mandatory=TRUE) {
     return $_SERVER[$setting_name];
 }
 
+/**
+ * Generates the base URL based on information of the current request's
+ * environment.
+ */
+function baseurl() {
+    $protocol = 'http';
+    if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strcmp($_SERVER['HTTPS'], 'off') != 0)) {
+        $protocol = 'https';
+    }
+    return sprintf("%s://%s", $protocol, $_SERVER['SERVER_NAME']);
+}
+
 define('MAIL_FROM_ADDRESS', 'COFFEESTATS_MAIL_FROM_ADDRESS');
 
 /**
