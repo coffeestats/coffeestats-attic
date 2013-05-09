@@ -24,13 +24,13 @@ Coffeestats uses MySQL, with a separate database.
 #. Create a MySQL database with the credentials in auth/config.php::
 
     sh> mysql -u root -h localhost -p mysql
-    mysql> CREATE DATABASE devcoffeestats CHARACTER SET 'UTF8';
-    mysql> GRANT ALL PRIVILEGES ON devcoffeestats.* TO
-      dev_coffeestats@localhost IDENTIFIED BY 's3Cr3t';
+    mysql> CREATE DATABASE coffeestats CHARACTER SET 'UTF8';
+    mysql> GRANT ALL PRIVILEGES ON coffeestats.* TO
+      coffeestats@localhost IDENTIFIED BY 'mysqls3cRet';
 
 #. Import the SQL schema into the database::
 
-    sh> mysql -u dev_coffeestats -h localhost -p devcoffeestats <
+    sh> mysql -u coffeestats -h localhost -p coffeestats <
       devdocs/schema.sql
 
 Setup nginx
@@ -81,6 +81,10 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME /home/dev/projects/coffeestats$fastcgi_script_name;
 
+        fastcgi_param COFFEESTATS_MYSQL_HOSTNAME localhost;
+        fastcgi_param COFFEESTATS_MYSQL_USER coffeestats;
+        fastcgi_param COFFEESTATS_MYSQL_PASSWORD mysqls3cRet;
+        fastcgi_param COFFEESTATS_MYSQL_DATABASE coffeestats;
       }
 
       # for php files with GET parameters
@@ -90,7 +94,12 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  /home/dev/projects/coffeestats$fastcgi_script_name;
         include        fastcgi_params;
-        }
+
+        fastcgi_param COFFEESTATS_MYSQL_HOSTNAME localhost;
+        fastcgi_param COFFEESTATS_MYSQL_USER coffeestats;
+        fastcgi_param COFFEESTATS_MYSQL_PASSWORD mysqls3cRet;
+        fastcgi_param COFFEESTATS_MYSQL_DATABASE coffeestats;
+      }
 
     }
 
