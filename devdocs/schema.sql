@@ -22,3 +22,13 @@ CREATE TABLE IF NOT EXISTS cs_coffees (
     cuid INTEGER NOT NULL REFERENCES cs_users(uid),
     cdate DATETIME NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS cs_actions (
+    aid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    cuid INTEGER NOT NULL REFERENCES cs_users(uid),
+    acode VARCHAR(32) NOT NULL UNIQUE,
+    created DATETIME NOT NULL,
+    validuntil DATETIME NOT NULL,
+    atype INTEGER NOT NULL,
+    adata TEXT
+);
