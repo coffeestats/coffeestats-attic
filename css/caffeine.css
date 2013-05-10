@@ -103,15 +103,15 @@ strong {
 }
 
 
-/* LOGIN */
-
-.inlineform input[type="submit"] {
+.inlineform input[type="submit"], .blockform input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     background-color: #201200;
     border: none;
     color: #FFF;
     min-width: 100px;
+    min-height: 22px;
+    line-height: 22px;
 }
 
 .inlineform input[type="text"], .inlineform input[type="password"] {
@@ -121,6 +121,11 @@ strong {
     background-color: #E7E7E7;
     color: #201200;
     min-height: 22px;
+    line-height: 22px;
+}
+
+.hiddeninput {
+    display:none;
 }
 
 /* WRAPPER */
@@ -214,15 +219,6 @@ strong {
     margin: 0;
     font-size: 16px;
     font-weight: bold;
-}
-
-#coffee_plus_one {
-    padding: 10px;
-    font-size: 16px;
-    background-color: #201200;
-    border: none;
-    color: #FFF;
-    min-width: 100px;
 }
 
 

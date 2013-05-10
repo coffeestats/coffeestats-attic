@@ -28,54 +28,70 @@ if (!isset($token) || !isset($user)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['coffeetime']) && validate_datetime($_POST['coffeetime'])) {
-        register_coffee($profileid, $_POST['coffeetime']);
+    if (isset($_POST['coffeetime']) && (($coffeetime = sanitize_datetime($_POST['coffeetime'])) !== FALSE)) {
+        register_coffee($profileid, $coffeetime);
     }
-    elseif (isset($_POST['matetime']) && validate_datetime($_POST['matetime'])) {
-        register_mate($profileid, $_POST['matetime']);
+    elseif (isset($_POST['matetime']) && (($matetime = sanitize_datetime($_POST['matetime'])) !== FALSE)) {
+        register_mate($profileid, $matetime);
     }
 }
 
 include("header.php");
-// simplify JavaScript code (see https://bugs.n0q.org/view.php?id=28)
 ?>
-<script type="text/javascript">
-function pad(n) {
-    return n<10 ? '0'+n : n;
-}
-function coffeetime(d) {
-    return d.getFullYear() + '-' +
-       pad(d.getMonth() + 1) +'-' +
-       pad(d.getDate()) + ' ' +
-       pad(d.getHours()) + ':' +
-       pad(d.getMinutes()) +':' +
-       pad(d.getSeconds());
-}
-function AddPostDataCoffee() {
-    var d = new Date();
-    document.getElementById('coffeetime').value = coffeetime(d);
-    document.getElementById("coffeeform").submit();
-}
-function AddPostDataMate() {
-    var d = new Date();
-    document.getElementById('matetime').value = coffeetime(d);
-    document.getElementById("mateform").submit();
-}
-</script>
-
 <div class="white-box">
     <h2>On the run?</h2>
     <center>
-        <form action="" method="post" id="coffeeform">
-            <input class="imadecoffee" type="submit" value="Coffee!" id="coffee_plus_one" onclick="AddPostDataCoffee();" /><br />
-            <input type='hidden' id='coffeetime' name='coffeetime' value='' />
-        </form>
-        <form action="" method="post" id="mateform">
-            <input class="imademate" type="submit" value="Mate!" id="coffee_plus_one" onclick="AddPostDataMate();" /><br />
-            <input type='hidden' id='matetime' name='matetime' value='' />
-        </form>
+    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="blockform">
+    <input type="submit" value="Coffee!" /><br />
+    <input type="hidden" id="coffeetime" name="coffeetime" />
+    </form>
+    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="mateform" class="blockform">
+    <input type="submit" value="Mate!" /><br />
+    <input type="hidden" id="matetime" name="matetime" />
+    </form>
     </center>
 </div>
+<script type="text/javascript" src="../lib/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    function pad(n) {
+        return n<10 ? '0'+n : n;
+    }
+
+    function coffeetime(d) {
+        return d.getFullYear() + '-' +
+           pad(d.getMonth() + 1) +'-' +
+           pad(d.getDate()) + ' ' +
+           pad(d.getHours()) + ':' +
+           pad(d.getMinutes()) +':' +
+           pad(d.getSeconds());
+    }
+
+    var datetimepat = /^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})\ ([0-9]{1,2}):([0-9]{1,2})(|:([0-9]{1,2}))$/;
+
+    function sanitize_datetime(fieldspec) {
+        var dtfield = $(fieldspec);
+        var dtval = $.trim(dtfield.val());
+        if (dtval.length == 0) {
+            dtval = coffeetime(new Date());
+            dtfield.val(dtval);
+        }
+        if (datetimepat.test(dtval)) {
+            return true;
+        }
+        alert('No valid date/time information. Expected format YYYY-mm-dd HH:MM:ss');
+        dtfield.focus();
+        return false;
+    }
+
+    $('#coffeeform').submit(function(event) {
+        return sanitize_datetime('input#coffeetime');
+    });
+    $('#mateform').submit(function(event) {
+        return sanitize_datetime('input#matetime');
+    });
+});
+</script>
 <?php
 include('footer.php');
 ?>
