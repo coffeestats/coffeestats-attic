@@ -216,4 +216,32 @@ function send_mail_activation_link($email) {
             sprintf('%s/../templates/activate_mail.txt', dirname(__FILE__))));
     send_system_mail($email, $subject, $body);
 }
+
+/**
+ * Performs a cleanup of the action table.
+ */
+function clean_expired_actions() {
+    global $dbconn;
+    $sql = "DELETE FROM cs_actions WHERE validuntil < CURRENT_TIMESTAMP";
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+}
+
+/**
+ * Perform a cleanup of inactive users that have no coffee or mate registered
+ * yet.
+ */
+function clean_inactive_users() {
+    global $dbconn;
+    $sql = "DELETE FROM cs_users
+        WHERE uactive=0 AND NOT EXISTS (
+          SELECT mid FROM cs_mate WHERE cuid=uid
+          UNION
+          SELECT cid FROM cs_coffees WHERE cuid=uid)
+        AND ujoined < (CURRENT_TIMESTAMP - INTERVAL 30 DAY)";
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+}
 ?>

@@ -7,6 +7,12 @@ session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     // username and password sent from Form
     // TODO: proper input validation (see https://bugs.n0q.org/view.php?id=13)
+
+    // do some maintenance
+    clean_expired_actions();
+    clean_inactive_users();
+
+    // authentication
     $validpassword = FALSE;
     $myusername=$dbconn->real_escape_string($_POST['username']);
     $sql = sprintf(
