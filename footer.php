@@ -4,10 +4,6 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     redirect_to('index', TRUE);
 }
 
-define('PIWIK_SITE_ID', 'COFFEESTATS_PIWIK_SITEID');
-define('PIWIK_HTTP_URL', 'COFFEESTATS_PIWIK_HTTP_URL');
-define('PIWIK_HTTPS_URL', 'COFFEESTATS_PIWIK_HTTPS_URL');
-
 $siteid = get_setting(PIWIK_SITE_ID, FALSE);
 ?>
 <!-- begin of footer.php -->

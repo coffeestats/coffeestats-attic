@@ -136,3 +136,98 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
     sh> echo '127.0.0.1 local.coffeestats.org' >> /etc/hosts
 
 #. Open http://local.coffeestats.org/ in a browser of your choice
+
+Available Settings
+==================
+
+Coffeestats is configured by settings in the environment of the PHP processes.
+For FastCGI/nginx these variables are configured by using `fastcgi_param
+directives`_ as in the example above. You can accomplish the same effect for
+Apache httpd with its `SetEnv directive`_.
+
+.. _fastcgi_param directives: http://nginx.org/en/docs/http/ngx_http_fastcgi_module.html#fastcgi_param
+
+.. _SetEnv directive: http://httpd.apache.org/docs/current/mod/mod_env.html#setenv
+
+The setting name constants are defined in includes/common.php. The same file
+contains a convenience method to retrieve settings from the server provided
+environment.
+
+The following sections lists the available settings and their meaning, for
+example values have a look at the example nginx configuration above.
+
+MySQL settings
+--------------
+
+``COFFEESTATS_MYSQL_HOSTNAME``
+    hostname of the MySQL database to use
+
+
+``COFFEESTATS_MYSQL_USER``
+    user name for the MySQL database connection
+
+
+``COFFEESTATS_MYSQL_PASSWORD``
+    password for the MySQL database connection
+
+
+``COFFEESTATS_MYSQL_DATABASE``
+    name of the MySQL database to use
+
+
+ReCAPTCHA settings
+------------------
+
+Coffeestats uses Google's ReCAPTCHA at registration time to make it harder to
+do malicious automatic registrations. You have to get a key pair for the
+ReCAPTCHA API from https://www.google.com/recaptcha/admin/create.
+
+
+``COFFEESTATS_RECAPTCHA_PUBLICKEY``
+    ReCAPTCHA API public key
+
+
+``COFFEESTATS_RECAPTCHA_PRIVATEKEY``
+    ReCAPTCHA API private key
+
+
+Piwik settings
+--------------
+
+Coffeestats can use `Piwik`_ to track visitors. The Piwik functionality is
+optional and is activated by defining ``COFFEESTATS_PIWIK_SITEID``.
+
+
+``COFFEESTATS_PIWIK_HTTP_URL``
+    address of a `Piwik`_ server for HTTP access
+
+
+``COFFEESTATS_PIWIK_HTTPS_URL``
+    address of a `Piwik`_ server for HTTPS access
+
+
+``COFFEESTATS_PIWIK_SITEID``
+    Piwik server's siteid for the coffeestats instance
+
+
+.. _Piwik: http://piwik.org/
+
+
+General settings
+----------------
+
+``COFFEESTATS_MAIL_FROM_ADDRESS``
+    email address as defined in `RFC-2822`_ section 3.4 for mails sent from
+    coffeestats
+
+
+``COFFEESTATS_SITE_NAME``
+    visible name of your coffeestats installation (i.e. for emails)
+
+
+``COFFEESTATS_SITE_SECRET``
+    site specific secret that is used to encrypt values. It is important to
+    make this a unique value per site and keep it secret.
+
+
+.. _RFC-2822: http://www.rfc-editor.org/rfc/rfc2822.txt

@@ -14,6 +14,26 @@ define('FLASH_SUCCESS', "success");
 define('FLASH_ERROR', "error");
 define('FLASH_WARNING', "warning");
 
+/*
+ * Constants for setting names.
+ */
+define('MAIL_FROM_ADDRESS', 'COFFEESTATS_MAIL_FROM_ADDRESS');
+
+define('MYSQL_DATABASE', 'COFFEESTATS_MYSQL_DATABASE');
+define('MYSQL_HOSTNAME', 'COFFEESTATS_MYSQL_HOSTNAME');
+define('MYSQL_PASSWORD', 'COFFEESTATS_MYSQL_PASSWORD');
+define('MYSQL_USER', 'COFFEESTATS_MYSQL_USER');
+
+define('PIWIK_HTTPS_URL', 'COFFEESTATS_PIWIK_HTTPS_URL');
+define('PIWIK_HTTP_URL', 'COFFEESTATS_PIWIK_HTTP_URL');
+define('PIWIK_SITE_ID', 'COFFEESTATS_PIWIK_SITEID');
+
+define('RECAPTCHA_PRIVATEKEY', 'COFFEESTATS_RECAPTCHA_PRIVATEKEY');
+define('RECAPTCHA_PUBLICKEY', 'COFFEESTATS_RECAPTCHA_PUBLICKEY');
+
+define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
+define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
+
 /**
  * Store a flash message in the flash message stack.
  */
@@ -128,10 +148,6 @@ function baseurl() {
     }
     return sprintf("%s://%s", $protocol, $_SERVER['SERVER_NAME']);
 }
-
-define('MAIL_FROM_ADDRESS', 'COFFEESTATS_MAIL_FROM_ADDRESS');
-define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
-define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
 
 /**
  * Send a system mail to a given mail address.
