@@ -41,14 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     include_once(sprintf('%s/../includes/validation.php', dirname(__FILE__)));
 
-    if (validate_password($_POST['password'], $_POST['password2'])) {
+    if (($password = sanitize_password($_POST['password'], $_POST['password2'])) !== FALSE) {
         $sql = sprintf(
             "UPDATE cs_users SET ucryptsum='%s' WHERE uid=%d",
-            hash_password($_POST['password']), $uid);
+            hash_password($password), $uid);
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
             handle_mysql_error();
         }
-        session_destroy();
         flash('Your password has been changed successfully!', FLASH_SUCCESS);
         redirect_to('../index');
     }
@@ -60,14 +59,35 @@ include('../header.php');
     <h2>Change Your Password</h2>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
     <p>
-        <input type="password" name="password" />
-        <input type="password" name="password2" />
+        <input type="password" name="password" id="password" />
+        <input type="password" name="password2" id="password2" />
         <input type="submit" name="Reset my password" />
     </p>
     </form>
 </div>
-<?php
-// TODO: add proper validation
+<script type="text/javascript" src="../lib/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('form').submit(function(event) {
+        var password = $.trim($('#password')[0].value);
+        var repeat = $.trim($('#password2')[0].value);
+        var valid = true;
 
+        if (password.length < 8) {
+            alert('Password must be at least 8 characters long!');
+            $('#password').focus();
+            valid = false;
+        }
+        else if (password != repeat) {
+            alert('Passwords must match!');
+            $('#password2').focus();
+            valid = false;
+        }
+
+        return valid;
+    });
+});
+</script>
+<?php
 include('../footer.php');
 ?>
