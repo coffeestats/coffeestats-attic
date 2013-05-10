@@ -1,6 +1,5 @@
 <?php
 include("auth/lock.php");
-include("header.php");
 include("lib/antixss.php");
 
 
@@ -179,6 +178,7 @@ while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
 $result->close();
 
 include('includes/charting.php');
+include("header.php");
 ?>
 <div class="white-box">
   <h2>Overall Statistics</h2>
