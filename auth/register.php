@@ -39,8 +39,9 @@ if (isset($_POST['recaptcha_response_field'])) {
 
             // TODO: extend query to find users with the same email address (see https://bugs.n0q.org/view.php?id=29)
             $sql = sprintf(
-                "SELECT uid FROM cs_users WHERE ulogin='%s'",
-                $dbconn->real_escape_string($login));
+                "SELECT uid FROM cs_users WHERE ulogin='%s' OR uemail='%s'",
+                $dbconn->real_escape_string($login),
+                $dbconn->real_escape_string($email));
             if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
                 handle_mysql_error();
             }
