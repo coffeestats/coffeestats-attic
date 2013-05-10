@@ -40,54 +40,53 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 include("../header.php");
 ?>
-<div id="login">
-    <div class="white-box">
-        <h2>What is coffeestats.org?</h2>
-        <p>You like coffee, mate, graphs and nerdy statistics? Well, we do too!</p>
-        <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep
-        track of it -- enabling us to present you with awesome statistics about
-        your general coffee consumption. Why? Just because, of course!</p>
-    </div>
-    <div class="white-box">
-        <h2>Login</h2>
-        <form action="<?php echo($_SERVER['REQUEST_URI']); ?>" method="post">
-            <input type="text" name="username" placeholder="Username" class="default_input_field" />
-            <input type="password" name="password" placeholder="Password" class="default_input_field" />
-            <input type="submit" name="submit" value="Login" id="login_button_submit" />
-            <p>Oh, you don't have an account yet?<br/>
-            Simply register one <a href="register">here</a>.</p>
-            <?php if (isset($error)) { echo("$error"); } ?>
-        </form>
-    </div>
-    <div class="white-box">
-        <h2>Graphs!</h2>
-        Overall Coffee vs. Mate consumption<br><br>
-        <canvas id="coffeeexample" width="590" height="240" ></canvas>
-    </div>
+<div class="white-box">
+    <h2>What is coffeestats.org?</h2>
+    <p>You like coffee, mate, graphs and nerdy statistics? Well, we do too!</p>
+    <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep
+    track of it -- enabling us to present you with awesome statistics about
+    your general coffee consumption. Why? Just because, of course!</p>
+</div>
+<div class="white-box">
+    <h2>Login</h2>
+    <form action="<?php echo($_SERVER['REQUEST_URI']); ?>" method="post" class="inlineform">
+        <input type="text" name="username" placeholder="Username" />
+        <input type="password" name="password" placeholder="Password"/>
+        <input type="submit" name="submit" value="Login" />
+        <p>Forgot your password? <a href="passwordreset">Request a password reset</a>.</p>
+        <p>Oh, you don't have an account yet?<br/>
+        Simply register one <a href="register">here</a>.</p>
+        <?php if (isset($error)) { echo("$error"); } ?>
+    </form>
+</div>
+<div class="white-box">
+    <h2>Graphs!</h2>
+    Overall Coffee vs. Mate consumption<br><br>
+    <canvas id="coffeeexample" width="590" height="240" ></canvas>
 </div>
 <script type="text/javascript" src="../lib/Chart.min.js"></script>
 <script type="text/javascript">
-    var lineChartData = {
-        labels: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
-        datasets: [
-            {
-                fillColor: "#FF9900",
-                strokeColor: "#FFB84D",
-                pointColor: "#FFB84D",
-                pointStrokeColor: "#fff",
-                data: [40,26,180,72,102,60,30,14,]
-            },
-            {
-                fillColor:  "#E64545",
-                strokeColor: "#FF9999",
-                pointColor: "#FF9999",
-                pointStrokeColor: "#fff",
-                data: [101,3,87,32,12,80,17,14,]
-            },
-        ]
-    }
+var lineChartData = {
+    labels: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
+    datasets: [
+        {
+            fillColor: "#FF9900",
+            strokeColor: "#FFB84D",
+            pointColor: "#FFB84D",
+            pointStrokeColor: "#fff",
+            data: [40,26,180,72,102,60,30,14,]
+        },
+        {
+            fillColor:  "#E64545",
+            strokeColor: "#FF9999",
+            pointColor: "#FF9999",
+            pointStrokeColor: "#fff",
+            data: [101,3,87,32,12,80,17,14,]
+        },
+    ]
+}
 
-    new Chart(document.getElementById("coffeeexample").getContext("2d")).Line(lineChartData);
+new Chart(document.getElementById("coffeeexample").getContext("2d")).Line(lineChartData);
 </script>
 <?php
 include('../footer.php');

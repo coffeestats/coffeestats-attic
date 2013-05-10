@@ -28,6 +28,16 @@ else {
 }
 $result->close();
 
+function delete_action($actioncode) {
+    global $dbconn;
+    $sql = sprintf(
+        "DELETE FROM cs_actions WHERE acode='%s'",
+        $dbconn->real_escape_string($actioncode));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+}
+
 function activate_account($cuid) {
     global $dbconn;
     $sql = sprintf(
@@ -39,9 +49,23 @@ function activate_account($cuid) {
     flash("Your account has been activated successfully.", FLASH_SUCCESS);
 }
 
+function reset_password($cuid) {
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+    $_SESSION['reset_password_uid'] = $cuid;
+    redirect_to('auth/changepassword');
+}
+
 switch ($atype) {
 case $ACTION_TYPES['activate_mail']:
     activate_account($cuid);
+    delete_action($_GET['code']);
+    redirect_to('index');
+    break;
+case $ACTION_TYPES['reset_password']:
+    delete_action($_GET['code']);
+    reset_password($cuid);
     break;
 default:
     errorpage(
@@ -49,13 +73,4 @@ default:
         'Your request could not be processed',
         '400 Bad Request');
 }
-
-$sql = sprintf(
-    "DELETE FROM cs_actions WHERE acode='%s'",
-    $dbconn->real_escape_string($_GET['code']));
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-
-redirect_to('index');
 ?>

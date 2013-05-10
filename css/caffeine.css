@@ -105,24 +105,22 @@ strong {
 
 /* LOGIN */
 
-#login {
-
-}
-
-#login h2 {
-    padding: 0 0 10px 0;
-    margin: 0;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-#login_button_submit {
+.inlineform input[type="submit"] {
     padding: 10px;
     font-size: 16px;
     background-color: #201200;
     border: none;
     color: #FFF;
     min-width: 100px;
+}
+
+.inlineform input[type="text"], .inlineform input[type="password"] {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    background-color: #E7E7E7;
+    color: #201200;
+    min-height: 22px;
 }
 
 /* WRAPPER */
