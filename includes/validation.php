@@ -26,7 +26,7 @@ function validate_datetime($datetime) {
         flash('No valid date/time information. Must not be empty!', FLASH_ERROR);
         return FALSE;
     }
-    if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/', $datetime)) {
+    if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}(|:[0-9]{2})$/', $datetime)) {
         flash('No valid date/time information. Expected format YYYY-mm-dd HH:MM', FLASH_ERROR);
         return FALSE;
     }
