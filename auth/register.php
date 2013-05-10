@@ -15,19 +15,6 @@ $resp = null;
 # the error code from reCAPTCHA, if any
 $error = null;
 
-/**
- * Creates a string of random characters with the given length from the given
- * set of characters.
- */
-function random_chars($charset, $charcount) {
-    $result = array();
-    for ($i=0; $i<$charcount; $i++) {
-        $char = $charset[mt_rand(0, strlen($charset) - 1)];
-        array_push($result, $char);
-    }
-    return implode($result);
-}
-
 # was there a reCAPTCHA response?
 if (isset($_POST['recaptcha_response_field'])) {
     $resp = recaptcha_check_answer(
@@ -42,15 +29,10 @@ if (isset($_POST['recaptcha_response_field'])) {
         } else {
             $cerr=0;
 
-            $saltchars = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            // blowfish salt for PHP >= 5.3.7, with 22 random characters, see
-            // http://www.php.net/manual/en/function.crypt.php
-            $salt = sprintf('$2y$07$%s', random_chars($saltchars, 22));
-
             $login = AntiXSS::setFilter($_POST['Login'], "whitelist", "string");
             $email = AntiXSS::setFilter($_POST['Email'], "whitelist", "string");
-            $password = crypt($_POST['Password'], $salt);
-            $otrtoken = md5($password . $login . $salt);
+            $password = hash_password($_POST['Password']);
+            $otrtoken = md5($password . $login);
             $forename = AntiXSS::setFilter($_POST['Forename'], "whitelist", "string");
             $name = AntiXSS::setFilter($_POST['Name'], "whitelist", "string");
             $location = AntiXSS::setFilter($_POST['Location'], "whitelist", "string");

@@ -150,6 +150,30 @@ function baseurl() {
 }
 
 /**
+ * Creates a string of random characters with the given length from the given
+ * set of characters.
+ */
+function random_chars($charset, $charcount) {
+    $result = array();
+    for ($i=0; $i<$charcount; $i++) {
+        $char = $charset[mt_rand(0, strlen($charset) - 1)];
+        array_push($result, $char);
+    }
+    return implode($result);
+}
+
+/**
+ * Hash a password for database storage.
+ */
+function hash_password($password) {
+    $saltchars = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    // blowfish salt for PHP >= 5.3.7, with 22 random characters, see
+    // http://www.php.net/manual/en/function.crypt.php
+    $salt = sprintf('$2y$07$%s', random_chars($saltchars, 22));
+    return crypt($password, $salt);
+}
+
+/**
  * Send a system mail to a given mail address.
  */
 function send_system_mail($to, $subject, $body) {
@@ -166,13 +190,38 @@ function generate_actioncode($data) {
 
 $ACTION_TYPES = array(
     'activate_mail' => 1,
+    'reset_password' => 2,
 );
+
+function create_action_entry($cuid, $action_type, $data) {
+    global $dbconn, $ACTION_TYPES;
+    $actioncode = generate_actioncode($data);
+    $sql = sprintf(
+        "INSERT INTO cs_actions
+         (cuid, acode,
+          created, validuntil,
+          atype, adata)
+         VALUES
+         (%d, '%s',
+          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL 24 HOUR,
+          %d, '%s')",
+        $cuid, $dbconn->real_escape_string($actioncode),
+        $ACTION_TYPES[$action_type], $dbconn->real_escape_string($data));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    return $actioncode;
+}
+
+function get_action_url($actioncode) {
+    return sprintf('%s/action?code=%s', baseurl(), urlencode($actioncode));
+}
 
 /**
  * Sends a mail to activate an account.
  */
 function send_mail_activation_link($email) {
-    global $dbconn, $ACTION_TYPES;
+    global $dbconn;
     $sql = sprintf(
         "SELECT ufname, uid FROM cs_users WHERE uemail='%s'",
         $dbconn->real_escape_string($email));
@@ -190,30 +239,50 @@ function send_mail_activation_link($email) {
     }
     $result->close();
 
-    $actioncode = generate_actioncode($email);
-    $sql = sprintf(
-        "INSERT INTO cs_actions
-         (cuid, acode,
-          created, validuntil,
-          atype, adata)
-         VALUES
-         (%d, '%s',
-          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL 24 HOUR,
-          %d, '%s')",
-        $cuid, $dbconn->real_escape_string($actioncode),
-        $ACTION_TYPES['activate_mail'], $dbconn->real_escape_string($email));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
+    $actioncode = create_action_entry($cuid, 'activate_mail', $email);
 
     $subject = sprintf(
         "Please activate your account at %s",
         get_setting(SITE_NAME));
     $body = str_replace(
         array('@firstname@', '@actionurl@'),
-        array($firstname, sprintf('%s/action?code=%s', baseurl(), urlencode($actioncode))),
+        array($firstname, get_action_url($actioncode)),
         file_get_contents(
             sprintf('%s/../templates/activate_mail.txt', dirname(__FILE__))));
+    send_system_mail($email, $subject, $body);
+}
+
+/**
+ * Send an email with a password reset link if there is an account with the given email address.
+ */
+function send_reset_password_link($email) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ufname, ulogin, uid FROM cs_users WHERE uemail='%s'",
+        $dbconn->real_escape_string($email));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $firstname = $row['ufname'];
+        $login = $row['ulogin'];
+        $cuid = $row['uid'];
+    }
+    $result->close();
+    if (!isset($cuid)) {
+        return;
+    }
+
+    $actioncode = create_action_entry($cuid, 'reset_password', $email);
+
+    $subject = sprintf(
+        "Reset your password for %s",
+        get_setting(SITE_NAME));
+    $body = str_replace(
+        array('@firstname@', '@login@', '@actionurl@'),
+        array($firstname, $login, get_action_url($actioncode)),
+        file_get_contents(
+            sprintf('%s/../templates/reset_password.txt', dirname(__FILE__))));
     send_system_mail($email, $subject, $body);
 }
 
