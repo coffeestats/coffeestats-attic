@@ -13,7 +13,7 @@ include("header.php");
 <div class="white-box">
     <h2>You're not always on a Workstation?</h2>
     <p>Register a coffee on-the-run! Get your on-the-run url on your
-    <a href="profile?u=<?php echo $_SESSION['login_user']; ?>">profile page</a>.
+    <a href="profile">profile page</a>.
     Simply bookmark the url on your mobile device and you will never forget a
     coffee =)</p>
 </div>
