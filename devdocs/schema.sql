@@ -33,3 +33,18 @@ CREATE TABLE IF NOT EXISTS cs_actions (
     atype INTEGER NOT NULL,
     adata TEXT
 );
+
+-- add some indexes to improve query performance
+CREATE INDEX cs_users_upublic_idx ON cs_users(upublic);
+CREATE INDEX cs_users_ujoined_idx ON cs_users(ujoined);
+CREATE INDEX cs_users_uactive_idx ON cs_users(uactive);
+
+CREATE INDEX cs_mate_cuid_idx ON cs_mate(cuid);
+CREATE INDEX cs_mate_mdate_idx ON cs_mate(mdate);
+
+CREATE INDEX cs_coffees_cuid_idx ON cs_coffees(cuid);
+CREATE INDEX cs_coffees_cdate_idx ON cs_coffees(cuid);
+
+CREATE INDEX cs_actions_cuid_idx ON cs_actions(cuid);
+CREATE INDEX cs_actions_atype_idx ON cs_actions(atype);
+CREATE INDEX cs_actions_validuntil_idx ON cs_actions(validuntil);
