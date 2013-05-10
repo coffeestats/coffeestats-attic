@@ -313,4 +313,78 @@ function clean_inactive_users() {
         handle_mysql_error();
     }
 }
+
+/**
+ * Register a new coffee for the given user at the given time.
+ */
+function register_coffee($uid, $coffeetime) {
+    global $dbconn;
+    $sql = sprintf(
+        'SELECT cid, cdate
+         FROM cs_coffees
+         WHERE cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
+           AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
+           AND cuid = %2$d',
+        $dbconn->real_escape_string($coffeetime), $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $result->close();
+        flash(sprintf(
+            'Error: Your last coffee was less than 5 minutes ago at %s. O_o',
+            $row['cdate']),
+            FLASH_WARNING);
+    }
+    else {
+        $result->close();
+        $sql = sprintf(
+            "INSERT INTO cs_coffees (cuid, cdate)
+             VALUES (%d, '%s')",
+            $uid, $dbconn->real_escape_string($coffeetime));
+        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+            handle_mysql_error();
+        }
+        flash(sprintf(
+            'Your coffee at %s has been registered!', $coffeetime),
+            FLASH_SUCCESS);
+    }
+}
+
+/**
+ * Register a new mate for the given user at the given time.
+ */
+function register_mate($uid, $matetime) {
+    global $dbconn;
+    $sql = sprintf(
+        'SELECT mid, mdate
+         FROM cs_mate
+         WHERE mdate > (\'%1$s\' - INTERVAL 5 MINUTE)
+           AND mdate < (\'%1$s\' + INTERVAL 5 MINUTE)
+           AND cuid = %2$d',
+        $dbconn->real_escape_string($matetime), $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $result->close();
+        flash(sprintf(
+            "Error: Your last mate was less than 5 minutes ago at %s. O_o",
+            $row['mdate']),
+            FLASH_WARNING);
+    }
+    else {
+        $result->close();
+        $sql=sprintf(
+            "INSERT INTO cs_mate (cuid, mdate)
+             VALUES (%d, '%s')",
+            $uid, $dbconn->real_escape_string($matetime));
+        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+            handle_mysql_error();
+        }
+        flash(sprintf(
+            'Your mate at %s has been registered!', $matetime),
+            FLASH_SUCCESS);
+    }
+}
 ?>
