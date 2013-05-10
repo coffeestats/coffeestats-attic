@@ -3,8 +3,6 @@
  * Validation functions.
  */
 
-include_once(sprintf('%s/../lib/AntiXSS.php', dirname(__FILE__)));
-
 /**
  * Validate a single password or a pair of passwords and return a sanitized
  * version of the password.
