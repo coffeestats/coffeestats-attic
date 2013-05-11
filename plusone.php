@@ -2,6 +2,7 @@
 include('auth/lock.php');
 include_once('includes/common.php');
 include_once('includes/validation.php');
+include_once('includes/jsvalidation.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['coffeetime']) && (($coffeetime = sanitize_datetime($_POST['coffeetime'])) !== FALSE)) {
@@ -41,38 +42,9 @@ include("header.php");
     </form>
 </div>
 <script type="text/javascript" src="../lib/jquery.min.js"></script>
+<?php js_sanitize_datetime(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    function pad(n) {
-        return n<10 ? '0'+n : n;
-    }
-
-    function coffeetime(d) {
-        return d.getFullYear() + '-' +
-           pad(d.getMonth() + 1) +'-' +
-           pad(d.getDate()) + ' ' +
-           pad(d.getHours()) + ':' +
-           pad(d.getMinutes()) +':' +
-           pad(d.getSeconds());
-    }
-
-    var datetimepat = /^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})\ ([0-9]{1,2}):([0-9]{1,2})(|:([0-9]{1,2}))$/;
-
-    function sanitize_datetime(fieldspec) {
-        var dtfield = $(fieldspec);
-        var dtval = $.trim(dtfield.val());
-        if (dtval.length == 0) {
-            dtval = coffeetime(new Date());
-            dtfield.val(dtval);
-        }
-        if (datetimepat.test(dtval)) {
-            return true;
-        }
-        alert('No valid date/time information. Expected format YYYY-mm-dd HH:MM:ss');
-        dtfield.focus();
-        return false;
-    }
-
     $('img.toggle').click(function(event) {
         $('#' + $(this).attr('data-toggle')).toggle();
     });
