@@ -151,4 +151,26 @@ function js_sanitize_password() {
 </script>
 <?php
 }
+
+/**
+ * Render a JavaScript function to sanitize a string.
+ */
+function js_sanitize_string() {
+?>
+<script type="text/javascript">
+    function sanitize_string(fieldspec, mandatory, fieldname) {
+        mandatory = typeof mandatory !== 'undefined' ? mandatory : true;
+        fieldname = typeof fieldname !== 'undefined' ? fieldname : 'Field';
+        var stfield = $(fieldspec);
+        var stvalue = $.trim(stfield.val());
+        if ((stvalue.length == 0) && mandatory) {
+            alert(fieldname + ' must not be empty!');
+            stfield.focus();
+            return false;
+        }
+        return true;
+    }
+</script>
+<?php
+}
 ?>

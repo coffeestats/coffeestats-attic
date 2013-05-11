@@ -29,16 +29,23 @@ function sanitize_password($password, $repeat=NULL) {
 }
 
 /**
+ * Validate a given string.
+ */
+function sanitize_string($value, $mandatory=TRUE, $name="Field") {
+    $value = trim($value);
+    if (empty($value) && $mandatory) {
+        flash(sprintf('%s must not be empty!', $name), FLASH_ERROR);
+        return FALSE;
+    }
+    return $value;
+}
+
+/**
  * Validate that the given value is not empty. Return the value with stripped
  * whitespace.
  */
 function sanitize_notempty($value, $name) {
-    $value = trim($value);
-    if (empty($value)) {
-        flash('%s must not be empty!', FLASH_ERROR);
-        return FALSE;
-    }
-    return $value;
+    return sanitize_string($value, TRUE, $name);
 }
 
 /**

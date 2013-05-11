@@ -7,40 +7,52 @@ include('../lib/antixss.php');
 // Get a key from https://www.google.com/recaptcha/admin/create
 // The keys are configured in the server environment
 $publickey = get_setting(RECAPTCHA_PUBLICKEY);
-$privatekey = get_setting(RECAPTCHA_PRIVATEKEY);
-
-# the response from reCAPTCHA
-$resp = null;
 
 # the error code from reCAPTCHA, if any
-$error = null;
+$error = NULL;
 
-# was there a reCAPTCHA response?
-if (isset($_POST['recaptcha_response_field'])) {
-    $resp = recaptcha_check_answer(
-        $privatekey, $_SERVER["REMOTE_ADDR"],
-        $_POST["recaptcha_challenge_field"],
-        $_POST["recaptcha_response_field"]);
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    // check for existence of expected form fields
+    if (!isset($_POST['recaptcha_response_field']) ||
+        !isset($_POST['recaptcha_challenge_field']) ||
+        !isset($_POST['username']) ||
+        !isset($_POST['email']) ||
+        !isset($_POST['password']) ||
+        !isset($_POST['password2']) ||
+        !isset($_POST['firstname']) ||
+        !isset($_POST['lastname']) ||
+        !isset($_POST['location']))
+    {
+        errorpage('Bad request', 'The request is invalid.', '400 Bad Request');
+    }
 
-    if ($resp->is_valid) {
-        // TODO: implement better validation including client side validation (see https://bugs.n0q.org/view.php?id=13)
-        if (!isset($_POST['Login']) || !ctype_alnum($_POST['Login']) || !isset($_POST['Email']) || !isset($_POST['Password'])) {
-            $cerr=2;
-        } else {
-            $cerr=0;
+    include_once('../includes/validation.php');
 
-            $login = AntiXSS::setFilter($_POST['Login'], "whitelist", "string");
-            $email = AntiXSS::setFilter($_POST['Email'], "whitelist", "string");
-            $password = hash_password($_POST['Password']);
-            $otrtoken = md5($password . $login);
-            $forename = AntiXSS::setFilter($_POST['Forename'], "whitelist", "string");
-            $name = AntiXSS::setFilter($_POST['Name'], "whitelist", "string");
-            $location = AntiXSS::setFilter($_POST['Location'], "whitelist", "string");
+    $username = sanitize_username($_POST['username']);
+    $email = sanitize_email($_POST['email']);
+    $password = sanitize_password($_POST['password'], $_POST['password2']);
+    $firstname = sanitize_string($_POST['firstname'], FALSE);
+    $lastname = sanitize_string($_POST['lastname'], FALSE);
+    $location = sanitize_string($_POST['location'], FALSE);
 
-            // TODO: extend query to find users with the same email address (see https://bugs.n0q.org/view.php?id=29)
+    if (($username !== FALSE) && ($email !== FALSE) &&
+        ($password !== FALSE) && ($firstname !== FALSE) &&
+        ($lastname !== FALSE) && ($location !== FALSE))
+    {
+        # the response from reCAPTCHA
+        $privatekey = get_setting(RECAPTCHA_PRIVATEKEY);
+        $resp = recaptcha_check_answer(
+            $privatekey, $_SERVER["REMOTE_ADDR"],
+            $_POST["recaptcha_challenge_field"],
+            $_POST["recaptcha_response_field"]);
+
+        if (!$resp->is_valid) {
+            $error = $resp->error;
+        }
+        else {
             $sql = sprintf(
                 "SELECT uid FROM cs_users WHERE ulogin='%s' OR uemail='%s'",
-                $dbconn->real_escape_string($login),
+                $dbconn->real_escape_string($username),
                 $dbconn->real_escape_string($email));
             if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
                 handle_mysql_error();
@@ -52,43 +64,41 @@ if (isset($_POST['recaptcha_response_field'])) {
                 $userexists = FALSE;
             }
             $result->close();
-        }
 
-        if (($cerr == 0) && (!isset($userexists) || !$userexists)) {
-            $sql = sprintf(
-                "INSERT INTO cs_users (
-                    ulogin, uemail, ufname, uname, ucryptsum, ujoined,
-                    ulocation, upublic, utoken, uactive)
-                 VALUES (
-                    '%s', '%s', '%s', '%s', '%s', NOW(),
-                    '%s', 1, '%s', 0)",
-                $dbconn->real_escape_string($login),
-                $dbconn->real_escape_string($email),
-                $dbconn->real_escape_string($forename),
-                $dbconn->real_escape_string($name),
-                $dbconn->real_escape_string($password),
-                $dbconn->real_escape_string($location),
-                $dbconn->real_escape_string($otrtoken));
-            if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-                handle_mysql_error();
+            if ($userexists) {
+                flash("Error: Sorry. Username already taken.", FLASH_ERROR);
             }
-            flash("You got it! Yes we hate CAPTCHAs too.", FLASH_SUCCESS);
-            send_mail_activation_link($email);
-            flash("We have sent you an email with a link to activate your account.", FLASH_INFO);
-            redirect_to("../index");
+            else {
+                $password = hash_password($password);
+                $otrtoken = md5($password . $username);
+
+                $sql = sprintf(
+                    "INSERT INTO cs_users (
+                        ulogin, uemail, ufname, uname, ucryptsum, ujoined,
+                        ulocation, upublic, utoken, uactive)
+                     VALUES (
+                        '%s', '%s', '%s', '%s', '%s', NOW(),
+                        '%s', 1, '%s', 0)",
+                    $dbconn->real_escape_string($username),
+                    $dbconn->real_escape_string($email),
+                    $dbconn->real_escape_string($firstname),
+                    $dbconn->real_escape_string($lastname),
+                    $dbconn->real_escape_string($password),
+                    $dbconn->real_escape_string($location),
+                    $dbconn->real_escape_string($otrtoken));
+                if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+                    handle_mysql_error();
+                }
+                flash("You got it! Yes we hate CAPTCHAs too.", FLASH_SUCCESS);
+                send_mail_activation_link($email);
+                flash("We have sent you an email with a link to activate your account.", FLASH_INFO);
+                redirect_to("../index");
+            }
         }
-        else {
-            flash(
-                "Error: Sorry. Username already taken, invalid or you forgot something in General section.",
-                FLASH_ERROR);
-        }
-    }
-    else {
-        # set the error code so that we can display it
-        $error = $resp->error;
     }
 }
 
+include('../includes/jsvalidation.php');
 include('../header.php');
 ?>
 <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
@@ -97,13 +107,14 @@ include('../header.php');
         <p>Fill these fields with your data, write down what reCAPTCHA says u and click Register!</p>
         <p>
         <b>General</b><br/>
-        <input type="text" name="Login" maxlength="20" placeholder="Username" class="register_field_standard" />
-        <input type="password" name="Password" maxlength="20" placeholder="Password" class="register_field_standard" />
-        <input type="text" name="Email" maxlength="50" placeholder="E-Mail" class="register_field_standard" /></p>
+        <input type="text" name="username" id="username" maxlength="30" placeholder="Username" class="register_field_standard" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>/>
+        <input type="password" name="password" id="password" maxlength="20" placeholder="Password" class="register_field_standard" />
+        <input type="password" name="password2" id="password2" placeholder="Repeat" class="register_field_standard" />
+        <input type="text" name="email" id="email" maxlength="128" placeholder="E-Mail" class="register_field_standard" <?php if (isset($email)) { printf('value="%s"', htmlspecialchars($email)); } ?>/></p>
         <p><b>Additional</b><br/>
-        <input type="text" name="Forename" maxlength="20" placeholder="Forename" class="register_field_standard" />
-        <input type="text" name="Name" maxlength="20" placeholder="Name" class="register_field_standard" />
-        <input type="text" name="Location" maxlength="20" placeholder="Location" class="register_field_standard" />
+        <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" class="register_field_standard" <?php if (isset($firstname)) { printf('value="%s"', htmlspecialchars($firstname)); } ?>/>
+        <input type="text" name="lastname" id="lastname" maxlength="20" placeholder="Last name" class="register_field_standard" <?php if (isset($lastname)) { printf('value="%s"', htmlspecialchars($lastname)); } ?>/>
+        <input type="text" name="location" id="location" maxlength="20" placeholder="Location" class="register_field_standard" <?php if (isset($location)) { printf('value="%s"', htmlspecialchars($location)); } ?>/>
         </p>
     </div> <!-- end of white-box -->
 
@@ -113,6 +124,28 @@ include('../header.php');
         <input type="submit" value="Register!" class="register_button_standard" />
     </div>
 </form>
+<script type="text/javascript" src="../lib/jquery.min.js"></script>
+<?php
+js_sanitize_username();
+js_sanitize_password();
+js_sanitize_email();
+js_sanitize_string();
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('input#username').focus();
+
+    $('form').submit(function(event) {
+        return sanitize_username('input#username')
+            && sanitize_password('input#password', 'input#password2')
+            && sanitize_email('input#email')
+            && sanitize_string('input#firstname', false, 'Firstname')
+            && sanitize_string('input#lastname', false, 'Lastname')
+            && sanitize_string('input#location', false, 'Location')
+            && sanitize_string('input#recaptcha_response_field', true);
+    });
+});
+</script>
 <?php
 include('../footer.php');
 ?>

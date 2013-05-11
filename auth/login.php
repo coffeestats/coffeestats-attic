@@ -59,7 +59,7 @@ include("../header.php");
 <div class="white-box">
     <h2>Login</h2>
     <form action="<?php echo($_SERVER['REQUEST_URI']); ?>" method="post" class="inlineform">
-        <input type="text" name="username" id="username" <?php if (isset($username)) { printf('value="%s"', $username); } ?>placeholder="Username" />
+        <input type="text" name="username" id="username" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>placeholder="Username" />
         <input type="password" name="password" id="password" placeholder="Password"/>
         <input type="submit" name="submit" value="Login" />
         <p>Forgot your password? <a href="passwordreset">Request a password reset</a>.</p>
