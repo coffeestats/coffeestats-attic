@@ -3,6 +3,7 @@ include('auth/config.php');
 include('lib/antixss.php');
 include_once('includes/common.php');
 include_once('includes/validation.php');
+include_once('includes/jsvalidation.php');
 
 if (isset($_GET['t']) && isset($_GET['u'])) {
     $token = AntiXSS::setFilter($_GET['t'], 'whitelist', 'string');
@@ -51,39 +52,10 @@ include("header.php");
     </form>
     </center>
 </div>
-<script type="text/javascript" src="../lib/jquery.min.js"></script>
+<script type="text/javascript" src="lib/jquery.min.js"></script>
+<?php js_sanitize_datetime(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    function pad(n) {
-        return n<10 ? '0'+n : n;
-    }
-
-    function coffeetime(d) {
-        return d.getFullYear() + '-' +
-           pad(d.getMonth() + 1) +'-' +
-           pad(d.getDate()) + ' ' +
-           pad(d.getHours()) + ':' +
-           pad(d.getMinutes()) +':' +
-           pad(d.getSeconds());
-    }
-
-    var datetimepat = /^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})\ ([0-9]{1,2}):([0-9]{1,2})(|:([0-9]{1,2}))$/;
-
-    function sanitize_datetime(fieldspec) {
-        var dtfield = $(fieldspec);
-        var dtval = $.trim(dtfield.val());
-        if (dtval.length == 0) {
-            dtval = coffeetime(new Date());
-            dtfield.val(dtval);
-        }
-        if (datetimepat.test(dtval)) {
-            return true;
-        }
-        alert('No valid date/time information. Expected format YYYY-mm-dd HH:MM:ss');
-        dtfield.focus();
-        return false;
-    }
-
     $('#coffeeform').submit(function(event) {
         return sanitize_datetime('input#coffeetime');
     });
