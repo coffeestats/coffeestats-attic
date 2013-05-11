@@ -16,7 +16,7 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 <body>
     <div id="wrapper">
         <div id="header">
-            <h1>coffeestats.org</h1>
+            <h1><a href="/">coffeestats.org</a></h1>
             <p>...about what keeps you awake at night.</p>
         </div>
         <div id="content">
