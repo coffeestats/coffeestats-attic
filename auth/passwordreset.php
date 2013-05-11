@@ -4,14 +4,17 @@
  */
 include('config.php');
 include_once('../includes/common.php');
+include_once('../includes/validation.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['email'])) {
         errorpage('Bad request', 'The request is invalid.', '400 Bad Request');
     }
-    send_reset_password_link($_POST['email']);
-    flash('We sent an email with a password reset link if any of our users has an account with the given email address.', FLASH_INFO);
-    redirect_to('login');
+    if (($email = sanitize_email($_POST['email'])) !== FALSE) {
+        send_reset_password_link($email);
+        flash('We sent an email with a password reset link if any of our users has an account with the given email address.', FLASH_INFO);
+        redirect_to('login');
+    }
 }
 
 include('../header.php');
