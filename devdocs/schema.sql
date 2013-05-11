@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS cs_users (
     uid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    ulogin VARCHAR(128) NOT NULL UNIQUE,
+    ulogin VARCHAR(30) NOT NULL UNIQUE,
     uemail VARCHAR(128) NOT NULL UNIQUE,
     ufname VARCHAR(128) NOT NULL,
     uname VARCHAR(128) NOT NULL,
@@ -43,7 +43,7 @@ CREATE INDEX cs_mate_cuid_idx ON cs_mate(cuid);
 CREATE INDEX cs_mate_mdate_idx ON cs_mate(mdate);
 
 CREATE INDEX cs_coffees_cuid_idx ON cs_coffees(cuid);
-CREATE INDEX cs_coffees_cdate_idx ON cs_coffees(cuid);
+CREATE INDEX cs_coffees_cdate_idx ON cs_coffees(cdate);
 
 CREATE INDEX cs_actions_cuid_idx ON cs_actions(cuid);
 CREATE INDEX cs_actions_atype_idx ON cs_actions(atype);
