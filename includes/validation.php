@@ -69,4 +69,20 @@ function sanitize_email($email, $optional=FALSE) {
     }
     return sprintf("%s@%s", $localpart, $domainpart);
 }
+
+/**
+ * Validate a username and return a sanitized version.
+ */
+function sanitize_username($username) {
+    $username = trim($username);
+    if (empty($username)) {
+        flash('Username must not be empty!');
+        return FALSE;
+    }
+    if (!preg_match('/^[a-z][a-z0-9_-]{1,29}$/', $username)) {
+        flash('Invalid username! A username has at least 3 characters, starting with a letter. It may consist of letters, digits, hypens and underscores.');
+        return FALSE;
+    }
+    return $username;
+}
 ?>

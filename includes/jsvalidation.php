@@ -4,6 +4,27 @@
  */
 
 /**
+ * Render a JavaScript function to sanitize not-empty strings.
+ */
+function js_sanitize_not_empty() {
+?>
+<script type="text/javascript">
+    function sanitize_not_empty(fieldspec, message) {
+        var nefield = $(fieldspec);
+        var nevalue = $.trim(nefield.val());
+        if (nevalue.length == 0) {
+            alert(message);
+            nefield.focus();
+            return false;
+        }
+        nefield.val(nevalue);
+        return true;
+    }
+</script>
+<?php
+}
+
+/**
  * Render a JavaScript function to sanitize email addresses.
  */
 function js_sanitize_email() {
@@ -26,6 +47,34 @@ function js_sanitize_email() {
         }
         alert('Email address must contain a local and a domain part separated by on @ sing!');
         emfield.focus();
+        return false;
+    }
+</script>
+<?php
+}
+
+/**
+ * Render a JavaScript function to sanitize username values.
+ */
+function js_sanitize_username() {
+?>
+<script type="text/javascript">
+    var usernamepat = /^[a-z][a-z0-9_-]{1,29}$/;
+
+    function sanitize_username(fieldspec) {
+        var unfield = $(fieldspec);
+        var unvalue = $.trim(unfield.val());
+        if (unvalue.length == 0) {
+            alert('Username must not be empty!');
+            unfield.focus();
+            return false;
+        }
+        if (usernamepat.test(unvalue)) {
+            unfield.val(unvalue);
+            return true;
+        }
+        alert('Invalid username! A username has at least 3 characters, starting with a letter. It may consist of letters, digits, hypens and underscores.');
+        unfield.focus();
         return false;
     }
 </script>
