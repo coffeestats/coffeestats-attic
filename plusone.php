@@ -1,10 +1,10 @@
 <?php
 include('auth/lock.php');
 include_once('includes/common.php');
-include_once('includes/validation.php');
-include_once('includes/jsvalidation.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include_once('includes/validation.php');
+
     if (isset($_POST['coffeetime']) && (($coffeetime = sanitize_datetime($_POST['coffeetime'])) !== FALSE)) {
         register_coffee($_SESSION['login_id'], $coffeetime);
     }
@@ -18,6 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             '400 Bad Request');
     }
 }
+
+include_once('includes/jsvalidation.php');
 include("header.php");
 ?>
 <div class="white-box">

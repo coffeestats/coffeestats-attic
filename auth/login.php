@@ -1,8 +1,6 @@
 <?php
 include_once("config.php");
 include_once("../includes/common.php");
-include_once('../includes/validation.php');
-include_once("../includes/jsvalidation.php");
 
 session_start();
 
@@ -11,6 +9,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($_POST['username']) || !isset($_POST['password'])) {
         errorpage('Bad request', 'The request is invalid.', '400 Bad Request');
     }
+
+    include_once('../includes/validation.php');
+
     if ((($username = sanitize_username($_POST['username'])) !== FALSE) &&
         (($password = sanitize_password($_POST['password'])) !== FALSE))
     {
@@ -45,6 +46,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+include_once("../includes/jsvalidation.php");
 include("../header.php");
 ?>
 <div class="white-box">
@@ -77,6 +79,8 @@ include("../header.php");
 <script type="text/javascript" src="../lib/Chart.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+    $('input#username').focus();
+
     var lineChartData = {
         labels: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
         datasets: [

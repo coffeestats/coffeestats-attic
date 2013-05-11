@@ -1,31 +1,38 @@
 <?php
 include('auth/config.php');
-include('lib/antixss.php');
 include_once('includes/common.php');
 include_once('includes/validation.php');
-include_once('includes/jsvalidation.php');
 
 if (isset($_GET['t']) && isset($_GET['u'])) {
-    $token = AntiXSS::setFilter($_GET['t'], 'whitelist', 'string');
-    $user = AntiXSS::setFilter($_GET['u'], 'whitelist', 'string');
-    $sql = sprintf(
-        "SELECT uid, utoken, ulogin FROM cs_users
-         WHERE ulogin='%s' AND utoken='%s'",
-         $dbconn->real_escape_string($user),
-         $dbconn->real_escape_string($token));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+    if ((($user = sanitize_username($_GET['u'])) !== FALSE) &&
+        (($token = sanitize_md5value($_GET['t'], 'Token')) !== FALSE))
+    {
+        $sql = sprintf(
+            "SELECT uid, utoken, ulogin FROM cs_users
+             WHERE ulogin='%s' AND utoken='%s'",
+            $dbconn->real_escape_string($user),
+            $dbconn->real_escape_string($token));
+        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+            handle_mysql_error();
+        }
+        if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+            $token = $row['utoken'];
+            $user = $row['ulogin'];
+            $profileid = $row['uid'];
+        }
+        else {
+            flash('Invalid token or username', FLASH_ERROR);
+            $result->close();
+            redirect_to('index');
+        }
+        $result->close();
     }
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $token = $row['utoken'];
-        $user = $row['ulogin'];
-        $profileid = $row['uid'];
+    else {
+        redirect_to('index');
     }
-    $result->close();
 }
-
-if (!isset($token) || !isset($user)) {
-    redirect_to('auth/login.php');
+else {
+    errorpage('Bad request', 'The request was bad.', '400 Bad Request');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -37,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+include_once('includes/jsvalidation.php');
 include("header.php");
 ?>
 <div class="white-box">

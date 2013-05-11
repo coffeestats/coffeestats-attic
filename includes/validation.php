@@ -74,15 +74,32 @@ function sanitize_email($email, $optional=FALSE) {
  * Validate a username and return a sanitized version.
  */
 function sanitize_username($username) {
-    $username = trim($username);
+    $username = strtolower(trim($username));
     if (empty($username)) {
-        flash('Username must not be empty!');
+        flash('Username must not be empty!', FLASH_ERROR);
         return FALSE;
     }
     if (!preg_match('/^[a-z][a-z0-9_-]{1,29}$/', $username)) {
-        flash('Invalid username! A username has at least 3 characters, starting with a letter. It may consist of letters, digits, hypens and underscores.');
+        flash('Invalid username! A username has at least 3 characters, starting with a letter. It may consist of lowercase letters, digits, hypens and underscores.', FLASH_ERROR);
         return FALSE;
     }
     return $username;
+}
+
+/**
+ * Validate a hexadecimal encoded MD5 hash value and return a sanitized
+ * version.
+ */
+function sanitize_md5value($value, $name='MD5 value') {
+    $value = strtolower(trim($value));
+    if (empty($value)) {
+        flash(sprintf('%s must not be empty!', $name), FLASH_ERROR);
+        return FALSE;
+    }
+    if (!preg_match('/^[a-f0-9]{32}$/', $value)) {
+        flash(sprintf('Invalid %s', $name), FLASH_ERROR);
+        return FALSE;
+    }
+    return $value;
 }
 ?>

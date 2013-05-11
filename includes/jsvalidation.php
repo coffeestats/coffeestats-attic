@@ -120,4 +120,35 @@ function js_sanitize_datetime() {
 </script>
 <?php
 }
+
+/**
+ * Render a JavaScript function to sanitize a pair of passwords.
+ */
+function js_sanitize_password() {
+?>
+<script type="text/javascript">
+    function sanitize_password(pwfieldspec, repfieldspec) {
+        var pwfield = $(pwfieldspec);
+        var repfield = $(repfieldspec);
+        var pwval = $.trim(pwfield.val());
+        var repval = $.trim(repfield.val());
+
+        pwfield.val(pwval);
+        repfield.val(repval);
+
+        if (pwval.length < 8) {
+            alert('Password must be at least 8 characters long!');
+            pwfield.focus();
+            return false;
+        }
+        if (pwval != repval) {
+            alert('Passwords must match!');
+            repfield.focus();
+            return false;
+        }
+        return true;
+    }
+</script>
+<?php
+}
 ?>

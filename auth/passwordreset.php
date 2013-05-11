@@ -4,13 +4,14 @@
  */
 include('config.php');
 include_once('../includes/common.php');
-include_once('../includes/validation.php');
-include_once('../includes/jsvalidation.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['email'])) {
         errorpage('Bad request', 'The request is invalid.', '400 Bad Request');
     }
+
+    include_once('../includes/validation.php');
+
     if (($email = sanitize_email($_POST['email'])) !== FALSE) {
         send_reset_password_link($email);
         flash('We sent an email with a password reset link if any of our users has an account with the given email address.', FLASH_INFO);
@@ -18,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+include_once('../includes/jsvalidation.php');
 include('../header.php');
 ?>
 <div class="white-box">
@@ -34,6 +36,8 @@ include('../header.php');
 <?php js_sanitize_email(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
+    $('input#email').focus();
+
     $('form').submit(function(event) {
         return sanitize_email('input#email');
     });

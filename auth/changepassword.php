@@ -1,6 +1,6 @@
 <?php
 include('config.php');
-include_once(sprintf('%s/../includes/common.php', dirname(__FILE__)));
+include_once('../includes/common.php');
 
 if (!isset($_SESSION)) {
     session_start();
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    include_once(sprintf('%s/../includes/validation.php', dirname(__FILE__)));
+    include_once('../includes/validation.php');
 
     if (($password = sanitize_password($_POST['password'], $_POST['password2'])) !== FALSE) {
         $sql = sprintf(
@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+include_once('../includes/jsvalidation.php');
 include('../header.php');
 ?>
 <div class="white-box">
@@ -66,25 +67,13 @@ include('../header.php');
     </form>
 </div>
 <script type="text/javascript" src="../lib/jquery.min.js"></script>
+<?php js_sanitize_password(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
+    $('input#password').focus();
+
     $('form').submit(function(event) {
-        var password = $.trim($('#password')[0].value);
-        var repeat = $.trim($('#password2')[0].value);
-        var valid = true;
-
-        if (password.length < 8) {
-            alert('Password must be at least 8 characters long!');
-            $('#password').focus();
-            valid = false;
-        }
-        else if (password != repeat) {
-            alert('Passwords must match!');
-            $('#password2').focus();
-            valid = false;
-        }
-
-        return valid;
+        return sanitize_password('input#password', 'input#password2');
     });
 });
 </script>
