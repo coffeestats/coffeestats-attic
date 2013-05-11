@@ -2,6 +2,7 @@
 /*
  * Validation functions.
  */
+include_once(sprintf('%s/common.php', dirname(__FILE__)));
 
 /**
  * Validate a single password or a pair of passwords and return a sanitized
@@ -45,5 +46,27 @@ function sanitize_datetime($datetime) {
         "%04d-%02d-%02d %02d:%02d:%02d",
         $matches[1], $matches[2], $matches[3],
         $matches[4], $matches[5], isset($matches[7]) ? $matches[7] : 0);
+}
+
+/**
+ * Validate an e-mail address and return a sanitized version.
+ */
+function sanitize_email($email, $optional=FALSE) {
+    $email = trim($email);
+    if (empty($email)) {
+        flash('Email address must not be empty!', FLASH_ERROR);
+        return $optional ? "" : FALSE;
+    }
+    if (!preg_match('/^([A-Za-z0-9._%+-]+)@([^@]+)$/', $email, $matches)) {
+        flash('Email address must contain a local and a domain part separated by one @ sign!', FLASH_ERROR);
+        return FALSE;
+    }
+    $localpart = $matches[1];
+    $domainpart = $matches[2];
+    if (getmxrr($domainpart, $mxhosts) === FALSE) {
+        flash('Email address must contain a valid domain part!', FLASH_ERROR);
+        return FALSE;
+    }
+    return sprintf("%s@%s", $localpart, $domainpart);
 }
 ?>

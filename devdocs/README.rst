@@ -231,3 +231,14 @@ General settings
 
 
 .. _RFC-2822: http://www.rfc-editor.org/rfc/rfc2822.txt
+
+
+Unit tests
+==========
+
+There are some PHPUnit_ tests in devdocs/tests, the script
+``devdocs/runtests.sh`` can be used to run the tests and to generate a coverage
+report in ``devdocs/tests/testdocs/``.
+
+
+.. _PHPUnit: http://phpunit.de/
