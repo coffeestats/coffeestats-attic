@@ -13,7 +13,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     include_once('../includes/validation.php');
 
     if ((($username = sanitize_username($_POST['username'])) !== FALSE) &&
-        (($password = sanitize_password($_POST['password'])) !== FALSE))
+        (($password = sanitize_notempty($_POST['password'], 'Password')) !== FALSE))
     {
         // do some maintenance
         clean_expired_actions();

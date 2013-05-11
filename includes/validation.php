@@ -29,6 +29,19 @@ function sanitize_password($password, $repeat=NULL) {
 }
 
 /**
+ * Validate that the given value is not empty. Return the value with stripped
+ * whitespace.
+ */
+function sanitize_notempty($value, $name) {
+    $value = trim($value);
+    if (empty($value)) {
+        flash('%s must not be empty!', FLASH_ERROR);
+        return FALSE;
+    }
+    return $value;
+}
+
+/**
  * Validate a combined datetime string and return a sanitized version of the
  * datetime value.
  */
