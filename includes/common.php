@@ -150,6 +150,22 @@ function baseurl() {
 }
 
 /**
+ * Return a user's public profile URL.
+ */
+function public_url($username) {
+    return sprintf("%s/profile?u=%s", baseurl(), urlencode($username));
+}
+
+/**
+ * Generate HTML code for a user's public profile link.
+ */
+function profilelink($username) {
+    return sprintf(
+        '<a href="%s">%s</a>',
+        public_url($username), htmlspecialchars($username));
+}
+
+/**
  * Creates a string of random characters with the given length from the given
  * set of characters.
  */

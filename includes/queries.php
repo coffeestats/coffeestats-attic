@@ -357,4 +357,118 @@ function weekdaily_caffeine_alltime() {
     $result->close();
     return $retval;
 }
+
+/**
+ * Returns a set of random users.
+ */
+function random_users($count) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ulogin, ufname, uname, ulocation,
+         (SELECT COUNT(cid) FROM cs_coffees WHERE cuid=uid) AS coffees,
+         (SELECT COUNT(mid) FROM cs_mate WHERE cuid=uid) AS mate
+         FROM cs_users ORDER BY RAND() LIMIT %d",
+        $count);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    $result->close();
+
+    return $retval;
+}
+
+/**
+ * Returns the latest caffeine activity.
+ *
+ * TODO: currently only coffee is counted, change to also look for mate
+ */
+function latest_caffeine_activity($count) {
+    global $dbconn;
+    // TODO: handle https://bugs.n0q.org/view.php?id=34
+    // TODO: handle https://bugs.n0q.org/view.php?id=38
+    $sql = sprintf(
+        "SELECT cs_users.ulogin AS ulogin, cs_coffees.cdate AS cdate
+         FROM cs_coffees, cs_users
+         WHERE cs_coffees.cuid = cs_users.uid
+         ORDER BY cid DESC LIMIT %d",
+        $count);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Returns the top caffeine consumers.
+ *
+ * TODO: handle mate too
+ */
+function top_caffeine_consumers_total($count) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT COUNT(cid) AS total, cs_users.ulogin AS ulogin
+         FROM cs_coffees,cs_users
+         WHERE cs_coffees.cuid = cs_users.uid
+         GROUP BY cs_users.ulogin ORDER BY COUNT(cid) DESC LIMIT %d",
+        $count);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Returns the top average caffeine consumers.
+ *
+ * TODO: handle mate too
+ */
+function top_caffeine_consumers_average($count) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ulogin, COUNT(cid) / (DATEDIFF(CURRENT_DATE, MIN(cdate)) + 1) AS average
+         FROM cs_users JOIN cs_coffees ON cuid=uid
+         GROUP BY cuid LIMIT %d",
+        $count);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Returns the most recently joined users.
+ */
+function recently_joined_users($count) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ulogin FROM cs_users ORDER BY ujoined DESC LIMIT %d",
+        $count);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    return $retval;
+}
 ?>

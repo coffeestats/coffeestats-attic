@@ -44,10 +44,6 @@ else {
 }
 $result->close();
 
-function public_url($profileuser) {
-    return sprintf("%s/profile?u=%s", baseurl(), urlencode($profileuser));
-}
-
 function on_the_run_url($profileuser, $profiletoken) {
     return sprintf("%s/ontherun?u=%s&t=%s", baseurl(), urlencode($profileuser), urlencode($profiletoken));
 }
