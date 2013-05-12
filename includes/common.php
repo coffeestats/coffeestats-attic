@@ -101,14 +101,14 @@ function errorpage($title, $text, $http_status=NULL) {
 /**
  * Handle a MySQL error, log to error log and show an error page to the user.
  */
-function handle_mysql_error() {
+function handle_mysql_error($sql=NULL) {
     global $dbconn;
     if ($dbconn->errno !== 0) {
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         error_log(sprintf(
-            "%s line %d: MySQL error %d: %s",
+            "%s line %d: MySQL error %d: %s%s",
             $backtrace[0]['file'], $backtrace[0]['line'],
-            $dbconn->errno, $dbconn->error));
+            $dbconn->errno, $dbconn->error, ($sql === NULL) ? "" : "\n" . $sql));
         errorpage("Error", "Sorry, we have a problem.", "500 Internal Server Error");
     }
 }

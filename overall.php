@@ -1,7 +1,5 @@
 <?php
 include("auth/lock.php");
-include("lib/antixss.php");
-
 
 // COFFEE VS MATE CHART
 $sql = "SELECT count(cs_coffees.cid) as coffees FROM cs_coffees";
