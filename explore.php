@@ -1,6 +1,4 @@
 <?php
-// TODO: rework (see https://bugs.n0q.org/view.php?id=21)
-
 include("auth/lock.php");
 include_once('includes/queries.php');
 
