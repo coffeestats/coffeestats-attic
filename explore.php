@@ -43,7 +43,7 @@ $result->close();
 
 foreach ($users as $user) { ?>
     <div class="usercard">
-        <a href="profile.php?u=<? echo urlencode($user['ulogin']); ?>"><?php echo $user['ulogin']; ?></a><br />
+        <a href="profile.php?u=<?php echo urlencode($user['ulogin']); ?>"><?php echo $user['ulogin']; ?></a><br />
         Name: <?php printf("%s %s", $user['ufname'], $user['uname']); ?><br />
         Location: <?php echo $user['ulocation']; ?><br />
         Coffees total: <?php echo $user['coffees']; ?><br />
