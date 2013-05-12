@@ -2,67 +2,71 @@
 // TODO: do some real comparison (see https://bugs.n0q.org/view.php?id=23)
 
 include("auth/lock.php");
-include("header.php");
 include_once("includes/common.php");
 include_once("includes/validation.php");
+include_once("includes/queries.php");
 
 // Parse user
 if (isset($_GET['u'])) {
     if (($profileuser = sanitize_username($_GET['u'])) === FALSE) {
         errorpage('Error', 'Invalid username.', '400 Bad Request');
     }
-    $sql = sprintf(
-        "SELECT uid FROM cs_users WHERE ulogin='%s'",
-        $dbconn->real_escape_string($profileuser));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $profileid = $row['uid'];
-    }
-    $result->close();
 }
-?>
-<div class="white-box">
-<?php
-// TODO: handle similarly to profile.php
-if (isset($profileid)) {
-    if ($profileid == $_SESSION['login_id']) {
-        echo("<h2>Your Profile</h2>");
-    }
-    else {
-        echo("<h2>".$profileuser."'s Profile</h2>");
-    }
-}
-else {
-    $profileid=$_SESSION['login_id'];
-    echo ("<h2>Your Profile</h2>");
-    echo("Error finding User. Showing your Graphs instead.");
+if (!isset($profileuser)) {
+    errorpage('Error', 'Invalid request!', '400 Bad Request');
 }
 
-// total
 $sql = sprintf(
-    "SELECT count(cid) AS total
-     FROM cs_coffees
-     WHERE cuid=%d",
-     $profileid);
+    "SELECT uid FROM cs_users WHERE ulogin='%s'",
+    $dbconn->real_escape_string($profileuser));
 if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
     handle_mysql_error();
 }
 if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $totalcoffees = $row['total'];
+    $profileid = $row['uid'];
 }
 $result->close();
+
+// TODO: handle similarly to profile.php
+if (isset($profileid)) {
+    if ($profileid == $_SESSION['login_id']) {
+        $headline = 'Your Profile';
+    }
+    else {
+        $headline = sprintf("%s's Profile", htmlspecialchars($profileuser));
+    }
+}
+else {
+    errorpage('Profile not found', 'No user with the given username exists.', '404 Not Found');
+}
+
+// total
+$totalcoffees = total_coffees_for_profile($profileid);
 
 /**
  * print an associative array with a specified element count for a chart row.
  */
-function chartrows($data, $begin, $maxcount) {
-    for ($counter = $begin; $counter <= $maxcount; $counter++) {
-        printf("['%s',%d],", $counter, $data[$counter]);
+function chartrows($data) {
+    foreach ($data as $label => $value) {
+        printf("['%s',%d],", $label, $value[0]);
     }
 }
+
+// queries for charts
+
+// today
+$hourrows = hourly_caffeine_for_profile($profileid);
+
+// month
+$dayrows = daily_caffeine_for_profile($profileid);
+
+// year
+$monthrows = monthly_caffeine_for_profile($profileid);
+
+include("header.php");
 ?>
+<div class="white-box">
+  <h2><?php echo $headline; ?></h2>
   Coffees total: <?php echo $totalcoffees; ?>
 </div>
 <div class="white-box">
@@ -75,74 +79,6 @@ function chartrows($data, $begin, $maxcount) {
   <div id="coffee_year"></div>
 </div>
 
-<?php
-// queries for charts
-
-// today
-$maxhours = 23;
-$hourrows = array();
-for ($counter = 0; $counter <= $maxhours; $counter++) {
-    $hourrows[$counter] = 0;
-}
-$sql = sprintf(
-    "SELECT DATE_FORMAT(cdate, '%%H') AS hour, COUNT(cid) AS coffees
-     FROM cs_coffees
-     WHERE DATE_FORMAT(CURRENT_TIMESTAMP, '%%Y-%%m-%%d') = DATE_FORMAT(cdate, '%%Y-%%m-%%d')
-       AND cuid = %d
-     GROUP BY hour",
-    $profileid);
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $hourrows[intval($row['hour'])] = $row['coffees'];
-}
-$result->close();
-
-// month
-$now = getdate();
-$maxdays = cal_days_in_month(CAL_GREGORIAN, $now['mon'], $now['year']);
-$dayrows = array();
-for ($counter = 1; $counter <= $maxdays; $counter ++) {
-    $dayrows[$counter] = 0;
-}
-$sql = sprintf(
-    "SELECT DATE_FORMAT(cdate, '%%d') AS day, COUNT(cid) AS coffees
-     FROM cs_coffees
-     WHERE DATE_FORMAT(CURRENT_TIMESTAMP, '%%Y-%%m') = DATE_FORMAT(cdate, '%%Y-%%m')
-       AND cuid = %d
-     GROUP BY day",
-     $profileid);
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $dayrows[intval($row['day'])] = $row['coffees'];
-}
-$result->close();
-
-// year
-$maxmonths = 12;
-$monthrows = array();
-for ($counter = 1; $counter <= $maxmonths; $counter++) {
-    $monthrows[$counter] = 0;
-}
-$sql = sprintf(
-    "SELECT DATE_FORMAT(cdate, '%%m') AS month, COUNT(cid) AS coffees
-     FROM cs_coffees
-     WHERE DATE_FORMAT(CURRENT_TIMESTAMP, '%%Y') = DATE_FORMAT(cdate, '%%Y')
-       AND cuid = %d
-     GROUP BY month",
-    $profileid);
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $monthrows[intval($row['month'])] = $row['coffees'];
-}
-$result->close();
-
-?>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
     google.load("visualization", "1", {packages:["corechart"]});
@@ -152,7 +88,7 @@ $result->close();
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Hour');
         data.addColumn('number', 'Coffees');
-        data.addRows([<?php chartrows($hourrows, 0, $maxhours); ?>]);
+        data.addRows([<?php chartrows($hourrows); ?>]);
 
         var options = {
             width: 550, height: 240,
@@ -166,7 +102,7 @@ $result->close();
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Month');
         data.addColumn('number', 'Coffees');
-        data.addRows([<?php chartrows($dayrows, 1, $maxdays); ?>]);
+        data.addRows([<?php chartrows($dayrows); ?>]);
 
         var options = {
           width: 550, height: 240,
@@ -180,7 +116,7 @@ $result->close();
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Day');
         data.addColumn('number', 'Coffees');
-        data.addRows([<?php chartrows($monthrows, 1, $maxmonths); ?>]);
+        data.addRows([<?php chartrows($monthrows); ?>]);
 
         var options = {
           width: 550, height: 240,
