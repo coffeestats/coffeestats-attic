@@ -383,18 +383,19 @@ function random_users($count) {
 
 /**
  * Returns the latest caffeine activity.
- *
- * TODO: currently only coffee is counted, change to also look for mate
  */
 function latest_caffeine_activity($count) {
     global $dbconn;
-    // TODO: handle https://bugs.n0q.org/view.php?id=34
-    // TODO: handle https://bugs.n0q.org/view.php?id=38
     $sql = sprintf(
-        "SELECT cs_users.ulogin AS ulogin, cs_coffees.cdate AS cdate
-         FROM cs_coffees, cs_users
-         WHERE cs_coffees.cuid = cs_users.uid
-         ORDER BY cid DESC LIMIT %d",
+        "SELECT label, ulogin, date
+         FROM (
+             SELECT 0 AS label, ulogin, cdate AS date
+             FROM cs_coffees JOIN cs_users ON cuid=uid
+             UNION
+             SELECT 1 AS label, ulogin, mdate AS date
+             FROM cs_mate JOIN cs_users ON cuid=uid
+         ) AS x
+         ORDER BY date DESC LIMIT %d",
         $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);

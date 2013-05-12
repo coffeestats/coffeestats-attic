@@ -20,7 +20,17 @@ include("header.php");
     <h2>Caffeine Activity</h2>
     <ul class="userlist">
 <?php foreach ($activities as $activity) { ?>
-        <li><?php echo profilelink($activity['ulogin']); ?> at <?php echo $activity['cdate']; ?></li>
+        <li><?php echo profilelink($activity['ulogin']); ?> <?php
+        switch ($activity['label']) {
+        case 0:
+            echo 'coffee';
+            break;
+        case 1:
+            echo 'mate';
+            break;
+        default:
+            echo 'unknown caffeinated drink';
+        } ?> at <?php echo $activity['date']; ?></li>
 <?php } ?>
     </ul>
 </div>
