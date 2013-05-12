@@ -41,7 +41,7 @@ else {
 }
 
 // total
-$totalcoffees = total_coffees_for_profile($profileid);
+$total = total_caffeine_for_profile($profileid);
 
 /**
  * print an associative array with a specified element count for a chart row.
@@ -67,7 +67,7 @@ include("header.php");
 ?>
 <div class="white-box">
   <h2><?php echo $headline; ?></h2>
-  Coffees total: <?php echo $totalcoffees; ?>
+  Coffees total: <?php echo $total['coffees']; ?>
 </div>
 <div class="white-box">
   <div id="coffee_today"></div>

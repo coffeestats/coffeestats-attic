@@ -52,8 +52,7 @@ function on_the_run_url($profileuser, $profiletoken) {
     return sprintf("%s/ontherun?u=%s&t=%s", baseurl(), urlencode($profileuser), urlencode($profiletoken));
 }
 
-$wholecoffeestack = total_coffees_for_profile($profileid);
-$wholematestack = total_mate_for_profile($profileid);
+$total = total_caffeine_for_profile($profileid);
 
 if ($ownprofile) {
     $info = array(
@@ -61,8 +60,8 @@ if ($ownprofile) {
         'data' => array(
             'Name' => sprintf('%s %s', htmlspecialchars($profileforename), htmlspecialchars($profilename)),
             'Location' => htmlspecialchars($profilelocation),
-            'Your Coffees total' => $wholecoffeestack,
-            'Your Mate total' => $wholematestack,
+            'Your Coffees total' => $total['coffees'],
+            'Your Mate total' => $total['mate'],
         ),
         'extra' => array(
             sprintf('Your <a href="%s">public profile page</a>', public_url($profileuser)),
@@ -84,8 +83,8 @@ else {
         'data' => array(
             'Name' => sprintf('%s %s', htmlspecialchars($profileforename), htmlspecialchars($profilename)),
             'Location' => htmlspecialchars($profilelocation),
-            'Coffees total' => $wholecoffeestack,
-            'Mate total' => $wholematestack,
+            'Coffees total' => $total['coffees'],
+            'Mate total' => $total['mate'],
         ),
     );
 }
@@ -160,11 +159,11 @@ var lineChartData;
 
 var doughnutData = [
     {
-        value: <?php echo($wholecoffeestack); ?>,
+        value: <?php echo($total['coffees']); ?>,
         color: todaycolor
     },
     {
-        value: <?php echo($wholematestack); ?>,
+        value: <?php echo($total['mate']); ?>,
         color: matecolor
     }
 ];

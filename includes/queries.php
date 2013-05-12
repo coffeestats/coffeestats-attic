@@ -12,20 +12,22 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 /**
  * Return total coffees for user profile.
  */
-function total_coffees_for_profile($profileid) {
+function total_caffeine_for_profile($profileid) {
     global $dbconn;
+    $retval = array('coffees' => 0, 'mate' => 0);
     $sql = sprintf(
-        "SELECT COUNT(cid) AS total FROM cs_coffees WHERE cuid = %d",
-        $profileid);
+        "SELECT 'coffees' AS label, COUNT(cid) AS value FROM cs_coffees WHERE cuid = %d
+         UNION
+         SELECT 'mate' AS label, COUNT(mid) AS value FROM cs_mate WHERE cuid = %d",
+        $profileid, $profileid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
-    $total = 0;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $total = $row['total'];
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval[$row['label']] = $row['value'];
     }
     $result->close();
-    return $total;
+    return $retval;
 }
 
 /**
