@@ -3,11 +3,14 @@
 
 include("auth/lock.php");
 include("header.php");
-include("lib/antixss.php");
+include_once("includes/common.php");
+include_once("includes/validation.php");
 
 // Parse user
 if (isset($_GET['u'])) {
-    $profileuser = AntiXSS::setFilter($_GET['u'], "whitelist", "string");
+    if (($profileuser = sanitize_username($_GET['u'])) === FALSE) {
+        errorpage('Error', 'Invalid username.', '400 Bad Request');
+    }
     $sql = sprintf(
         "SELECT uid FROM cs_users WHERE ulogin='%s'",
         $dbconn->real_escape_string($profileuser));

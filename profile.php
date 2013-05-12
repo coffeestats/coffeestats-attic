@@ -5,13 +5,15 @@ if (isset($_SESSION['login_user'])) {
 } else {
     include("auth/config.php");
 }
-include_once("lib/antixss.php");
 include_once("includes/common.php");
+include_once("includes/validation.php");
 
 $ownprofile = FALSE;
 // Parse user
 if (isset($_GET['u'])) {
-    $profileuser = AntiXSS::setFilter($_GET['u'], "whitelist", "string");
+    if (($profileuser = sanitize_username($_GET['u'])) === FALSE) {
+        errorpage('Error', 'Invalid username.', '400 Bad Request');
+    }
 }
 elseif (isset($_SESSION['login_user'])) {
     $ownprofile = TRUE;

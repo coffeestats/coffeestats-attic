@@ -2,7 +2,6 @@
 include('config.php');
 include_once('../includes/common.php');
 require_once('../lib/recaptchalib.php');
-include('../lib/antixss.php');
 
 // Get a key from https://www.google.com/recaptcha/admin/create
 // The keys are configured in the server environment
