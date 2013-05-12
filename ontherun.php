@@ -50,11 +50,11 @@ include("header.php");
 <div class="white-box">
     <h2>On the run?</h2>
     <center>
-    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="blockform">
+    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="otrblockform">
     <input type="submit" value="Coffee!" /><br />
     <input type="hidden" id="coffeetime" name="coffeetime" />
     </form>
-    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="mateform" class="blockform">
+    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="mateform" class="otrblockform">
     <input type="submit" value="Mate!" /><br />
     <input type="hidden" id="matetime" name="matetime" />
     </form>
