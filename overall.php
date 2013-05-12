@@ -1,179 +1,13 @@
 <?php
 include("auth/lock.php");
+include('includes/queries.php');
 
-// COFFEE VS MATE CHART
-$sql = "SELECT count(cs_coffees.cid) as coffees FROM cs_coffees";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $wholecoffeestack = $row['coffees'];
-}
-else {
-    $wholecoffeestack = 0;
-}
-$result->close();
-
-$sql="SELECT count(cs_mate.mid) as mate FROM cs_mate";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $wholematestack = $row['mate'];
-}
-else {
-    $wholematestack = 0;
-}
-$result->close();
-
-
-// TODAY CHART
-$todayrows = array();
-for ($counter = 0; $counter <= 23; $counter++) {
-    $todayrows[$counter] = array(0, 0);
-}
-
-$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%H') AS hour
-        FROM cs_coffees
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(cdate, '%Y-%m-%d')
-        GROUP BY hour";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $todayrows[intval($row['hour'])][0] = $row['coffees'];
-}
-$result->close();
-
-$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%H') AS hour
-        FROM cs_mate
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(mdate, '%Y-%m-%d')
-        GROUP BY hour";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $todayrows[intval($row['hour'])][1] = $row['mate'];
-}
-$result->close();
-
-// MONTH CHART
-$monthrows = array();
-$now = getdate();
-$maxdays = cal_days_in_month(CAL_GREGORIAN, $now['mon'], $now['year']);
-for ($counter = 1; $counter <= $maxdays; $counter++) {
-    $monthrows[$counter] = array(0, 0);
-}
-
-$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%d') AS day
-        FROM cs_coffees
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(cdate, '%Y-%m')
-        GROUP BY day";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $monthrows[intval($row['day'])][0] = $row['coffees'];
-}
-$result->close();
-
-$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%d') AS day
-        FROM cs_mate
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(mdate, '%Y-%m')
-        GROUP BY day";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $monthrows[intval($row['day'])][1] = $row['mate'];
-}
-$result->close();
-
-// YEAR CHART
-$yearrows = array();
-for ($counter = 1; $counter <= 12; $counter++) {
-    $yearrows[$counter] = array(0, 0);
-}
-
-$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate,'%m') AS month
-        FROM cs_coffees
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(cdate, '%Y')
-        GROUP BY month";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $yearrows[intval($row['month'])][0] = $row['coffees'];
-}
-
-$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%m') AS month
-        FROM cs_mate
-        WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(mdate, '%Y')
-        GROUP BY month";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $yearrows[intval($row['month'])][1] = $row['mate'];
-}
-$result->close();
-
-// BY HOUR
-$byhourrows = array();
-for ($counter = 0; $counter <= 23; $counter++) {
-    $byhourrows[$counter] = array(0, 0);
-}
-
-$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%H') AS hour
-        FROM cs_coffees
-        GROUP BY hour";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $byhourrows[intval($row['hour'])][0] = $row['coffees'];
-}
-$result->close();
-
-$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%H') AS hour
-        FROM cs_mate
-        GROUP BY hour";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row=$result->fetch_array(MYSQLI_ASSOC)) {
-    $byhourrows[intval($row['hour'])][1] = $row['mate'];
-}
-$result->close();
-
-// BY WEEKDAY
-$byweekdayrows = array();
-$weekdays = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
-for ($counter = 0; $counter < count($weekdays); $counter++) {
-    $byweekdayrows[$weekdays[$counter]] = array(0, 0);
-}
-
-$sql = "SELECT COUNT(cid) AS coffees, DATE_FORMAT(cdate, '%a') AS wday
-        FROM cs_coffees
-        GROUP BY wday";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $byweekdayrows[$row['wday']][0] = $row['coffees'];
-}
-$result->close();
-
-$sql = "SELECT COUNT(mid) AS mate, DATE_FORMAT(mdate, '%a') AS wday
-        FROM cs_mate
-        GROUP BY wday";
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $byweekdayrows[$row['wday']][1] = $row['mate'];
-}
-$result->close();
+$total = total_caffeine();
+$todayrows = hourly_caffeine_overall();
+$monthrows = daily_caffeine_overall();
+$yearrows = monthly_caffeine_overall();
+$byhourrows = hourly_caffeine_alltime();
+$byweekdayrows = weekdaily_caffeine_alltime();
 
 include('includes/charting.php');
 include("header.php");
@@ -226,11 +60,11 @@ include("header.php");
 
     var doughnutData = [
         {
-            value: <?php echo($wholecoffeestack); ?>,
+            value: <?php echo($total['coffees']); ?>,
             color: todaycolor
         },
         {
-            value: <?php echo($wholematestack); ?>,
+            value: <?php echo($total['mate']); ?>,
             color : matecolor
         }
     ];
