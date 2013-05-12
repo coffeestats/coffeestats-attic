@@ -12,7 +12,7 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     <meta name="description" content="coffeestats.org | All about coffee" />
     <title>coffeestats.org</title>
     <link rel="stylesheet" type="text/css" href="../css/caffeine.css" />
-    <link href="../images/coffee16x16.png" rel="icon">
+    <link href="../images/coffee32px.png" rel="icon">
 </head>
 <body>
     <div id="wrapper">
