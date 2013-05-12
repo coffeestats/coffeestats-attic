@@ -49,6 +49,66 @@ class ValidationTest extends PHPUnit_Framework_TestCase {
         }
     }
 
+    public function test_sanitize_string_empty() {
+        $emptyvariants = array("", NULL, "   ");
+        foreach ($emptyvariants as $variant) {
+            $this->assertFalse(sanitize_string($variant));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'Field must not be empty!'),
+                pop_flash());
+        }
+        foreach ($emptyvariants as $variant) {
+            $this->assertFalse(sanitize_string($variant, TRUE, 'Yada'));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'Yada must not be empty!'),
+                pop_flash());
+        }
+        foreach ($emptyvariants as $variant) {
+            $this->assertEquals("", sanitize_string($variant, FALSE));
+            $this->assertNull(pop_flash());
+        }
+    }
+
+    public function test_sanitize_string_good() {
+        $goodvariants = array(
+            array('Test', 'Test'),
+            array('Täst', ' Täst '),
+            array('<Test', '<Test'),
+        );
+        foreach ($goodvariants as $variant) {
+            $this->assertEquals($variant[0], sanitize_string($variant[1]));
+            $this->assertNull(pop_flash());
+        }
+    }
+
+    public function test_sanitize_notempty_empty() {
+        $emptyvariants = array("", NULL, "   ");
+        foreach ($emptyvariants as $variant) {
+            $this->assertFalse(sanitize_notempty($variant, 'Yada'));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'Yada must not be empty!'),
+                pop_flash());
+        }
+    }
+
+    public function test_sanitize_notempty_good() {
+        $goodvariants = array(
+            array('Test', 'Test'),
+            array('Täst', ' Täst '),
+            array('<Test', '<Test'),
+        );
+        foreach ($goodvariants as $variant) {
+            $this->assertEquals($variant[0], sanitize_notempty($variant[1], 'Yada'));
+            $this->assertNull(pop_flash());
+        }
+    }
+
     public function test_sanitize_datetime_empty() {
         $emptyvariants = array("", NULL, "   ");
         foreach ($emptyvariants as $datetime) {
@@ -139,6 +199,102 @@ class ValidationTest extends PHPUnit_Framework_TestCase {
         );
         foreach ($goodvariants as $good) {
             $this->assertEquals($good[0], sanitize_email($good[1]));
+            $this->assertNull(pop_flash());
+        }
+    }
+
+    public function test_sanitize_username_empty() {
+        $emptyvariants = array("", NULL, "   ");
+        foreach ($emptyvariants as $variant) {
+            $this->assertFalse(sanitize_username($variant));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'Username must not be empty!'),
+                pop_flash());
+        }
+    }
+
+    public function test_sanitize_username_bad() {
+        $badvariants = array(
+            '.abcd', '_abcd', 'abcd#', 'abcd.',
+            'abcdefghijklmnopqrstuvwxyz0123456789');
+        foreach ($badvariants as $variant) {
+            $this->assertFalse(sanitize_username($variant));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'Invalid username! A username has at least 3 ' .
+                    'characters, starting with a letter. It may consist of ' .
+                    'lowercase letters, digits, hypens and underscores.'),
+                pop_flash());
+        }
+    }
+
+    public function test_sanitize_username_good() {
+        $goodvariants = array(
+            array('tester', 'tester'),
+            array('tester', ' Tester'),
+            array('tester2', 'tester2'),
+            array('test_user-20', 'Test_User-20'),
+            array(
+                'abcdefghijklmnopqrstuvwxyz0123',
+                'AbCdEfGhIjKlMnOpQrStUvWxYz0123'),
+        );
+        foreach ($goodvariants as $variant) {
+            $this->assertEquals($variant[0], sanitize_username($variant[1]));
+            $this->assertNull(pop_flash());
+        }
+    }
+
+    public function test_sanitize_md5value_empty() {
+        $emptyvariants = array("", NULL, "   ");
+        foreach ($emptyvariants as $variant) {
+            $this->assertFalse(sanitize_md5value($variant));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'MD5 value must not be empty!'),
+                pop_flash());
+        }
+        foreach ($emptyvariants as $variant) {
+            $this->assertFalse(sanitize_md5value($variant, 'Yada'));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'Yada must not be empty!'),
+                pop_flash());
+        }
+    }
+
+    public function test_sanitize_md5value_bad() {
+        $badvariants = array('012345', 'abcdefghijklmnopqrstuvwxyz012345');
+        foreach ($badvariants as $variant) {
+            $this->assertFalse(sanitize_md5value($variant));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'Invalid MD5 value'),
+                pop_flash());
+        }
+        foreach ($badvariants as $variant) {
+            $this->assertFalse(sanitize_md5value($variant, 'Yada'));
+            $this->assertEquals(
+                array(
+                    FLASH_ERROR,
+                    'Invalid Yada'),
+                pop_flash());
+        }
+    }
+
+    public function test_sanitize_md5value_good() {
+        $goodvariants = array(
+            array(md5('test'), md5('test')),
+            array(md5('test'), strtoupper(md5('test'))),
+            array(md5('test'), sprintf(' %s ', md5('test'))),
+        );
+        foreach ($goodvariants as $variant) {
+            $this->assertEquals($variant[0], sanitize_md5value($variant[1]));
             $this->assertNull(pop_flash());
         }
     }
