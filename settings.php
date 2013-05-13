@@ -46,6 +46,52 @@ function export_csv($type) {
 
 }
 
+function update_user($uuserid) {
+    global $dbconn;
+    if (!isset($_POST['email']) ||
+        !isset($_POST['password']) ||
+        !isset($_POST['password2']) ||
+        !isset($_POST['firstname']) ||
+        !isset($_POST['lastname']) ||
+        !isset($_POST['location']))
+    {
+        errorpage('Bad request', 'The request is invalid.', '400 Bad Request');
+    }
+
+    include_once('includes/validation.php');
+
+    $email = sanitize_email($_POST['email']);
+    $password = sanitize_password($_POST['password'], $_POST['password2']);
+    $firstname = sanitize_string($_POST['firstname'], FALSE);
+    $lastname = sanitize_string($_POST['lastname'], FALSE);
+    $location = sanitize_string($_POST['location'], FALSE);
+
+    if (($email !== FALSE) &&
+        ($password !== FALSE) && ($firstname !== FALSE) &&
+        ($lastname !== FALSE) && ($location !== FALSE))
+    {
+      $password = hash_password($password);
+
+      $sql = sprintf(
+             "UPDATE cs_users SET 
+              uemail='%s', ufname='%s', uname='%s', ucryptsum='%s',
+              ulocation='%s' 
+              WHERE uid = %d",
+            $dbconn->real_escape_string($email),
+            $dbconn->real_escape_string($firstname),
+            $dbconn->real_escape_string($lastname),
+            $dbconn->real_escape_string($password),
+            $dbconn->real_escape_string($location),
+            $dbconn->real_escape_string($uuserid));
+      if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+      }
+      flash("Successfully updated your profile informations!", FLASH_SUCCESS);
+    }
+}
+
+
+
 // Switching between modes
 if (isset($_POST['action'])) {
     switch ($_POST['action']) {
@@ -56,7 +102,8 @@ if (isset($_POST['action'])) {
         flash('Your data has been exported. You will receive an email with two CSV files with your coffee and mate registrations attached.', FLASH_INFO);
         break;
     case 'update':
-        flash('Updating ...', FLASH_INFO);
+        flash($_SESSION['login_id'], FLASH_INFO);
+        update_user($_SESSION['login_id']);
         break;
     case 'delete':
         flash('Deleting ...', FLASH_INFO);
@@ -71,19 +118,21 @@ include("header.php");
 ?>
 <div class="white-box">
     <h2>Update your profile</h2>
+    <p>Please fill in all your information, including your password.</p>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="coffeeform">
     <input type="hidden" name="action" value="update" />
     <p>
         <b>General</b><br/>
-        <input type="text" name="Login" maxlength="20" placeholder="Username" readonly="readonly" />
-        <input type="password" name="Password" maxlength="20" placeholder="Password" />
-        <input type="text" name="Email" maxlength="50" placeholder="E-Mail" />
+        <input type="text" name="username" id="username" maxlength="30" placeholder="<?php printf('%s', htmlspecialchars($_SESSION['login_user'])); ?>" class="register_field_standard"  readonly="readonly" />
+        <input type="password" name="password" id="password" maxlength="20" placeholder="Password" class="register_field_standard" />
+        <input type="password" name="password2" id="password2" placeholder="Repeat" class="register_field_standard" />
+        <input type="text" name="email" id="email" maxlength="128" placeholder="E-Mail" class="register_field_standard" <?php if (isset($email)) { printf('value="%s"', htmlspecialchars($email)); } ?>/></p>
     </p>
     <p>
-        <b>Additional</b><br/>
-        <input type="text" name="Forename" maxlength="20" placeholder="Forename" />
-        <input type="text" name="Name" maxlength="20" placeholder="Name" />
-        <input type="text" name="Location" maxlength="20" placeholder="Location" />
+        <p><b>Additional</b><br/>
+        <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" class="register_field_standard" <?php if (isset($firstname)) { printf('value="%s"', htmlspecialchars($firstname)); } ?>/>
+        <input type="text" name="lastname" id="lastname" maxlength="20" placeholder="Last name" class="register_field_standard" <?php if (isset($lastname)) { printf('value="%s"', htmlspecialchars($lastname)); } ?>/>
+        <input type="text" name="location" id="location" maxlength="20" placeholder="Location" class="register_field_standard" <?php if (isset($location)) { printf('value="%s"', htmlspecialchars($location)); } ?>/>
     </p>
     <p><input type="submit" name="submit" value="Update my settings" /></p>
     </form>
@@ -106,6 +155,26 @@ include("header.php");
     <p><input type="submit" name="submit" value="Delete me, please!" /></p>
     </form>
 </div>
+<script type="text/javascript" src="../lib/jquery.min.js"></script>
+<?php
+js_sanitize_password();
+js_sanitize_email();
+js_sanitize_string();
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('input#password').focus();
+
+    $('form').submit(function(event) {
+        return sanitize_password('input#password', 'input#password2')
+            && sanitize_email('input#email')
+            && sanitize_string('input#firstname', false, 'Firstname')
+            && sanitize_string('input#lastname', false, 'Lastname')
+            && sanitize_string('input#location', false, 'Location');
+    });
+});
+</script>
+
 <?php
 include("footer.php");
 ?>
