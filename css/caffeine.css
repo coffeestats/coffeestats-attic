@@ -220,6 +220,23 @@ strong {
     background-image: url('/images/out.png');
 }
 
+p.flash-success, p.flash-info {
+    padding: 10px 10px 10px 20px;
+    margin: 0;
+    background-image: url('/images/info.png');
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+
+p.flash-error, p.flash-warning {
+    padding: 10px 10px 10px 20px;
+    margin: 0;
+    background-image: url('/images/alert.png');
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+
+
 /* CONTENT */
 
 #content {
