@@ -14,6 +14,8 @@ Clone your initial copy::
   export PROJECTS=/home/dev/projects
   cd $PROJECTS
   git clone -b dev git@o0.n0q.org:coffeestats
+  cd coffeestats
+  git submodule update --init
 
 Setup database
 ==============
