@@ -1,3 +1,0 @@
-[submodule "devdocs/php-database-migration"]
-	path = devdocs/php-database-migration
-	url = git://github.com/alwex/php-database-migration.git
