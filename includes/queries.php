@@ -442,7 +442,7 @@ function top_caffeine_consumers_average($count) {
     $sql = sprintf(
         "SELECT ulogin, COUNT(cid) / (DATEDIFF(CURRENT_DATE, MIN(cdate)) + 1) AS average
          FROM cs_users JOIN cs_coffees ON cuid=uid
-         GROUP BY cuid LIMIT %d",
+         GROUP BY cuid ORDER BY average DESC LIMIT %d",
         $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
