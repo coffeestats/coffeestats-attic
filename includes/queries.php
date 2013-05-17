@@ -47,7 +47,7 @@ function total_caffeine() {
     global $dbconn;
     $retval = array('coffees' => 0, 'mate' => 0);
     $sql =
-        "SELECT ctype AS label, COUNT(cid) AS value
+        "SELECT ctype, COUNT(cid) AS value
          FROM cs_caffeine GROUP BY ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
