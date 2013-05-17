@@ -430,6 +430,59 @@ function recently_joined_users($count) {
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         array_push($retval, $row);
     }
+    $result->close();
     return $retval;
+}
+
+/**
+ * Return the latest entries for the given user.
+ */
+function latest_entries($profileid, $count=10) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT cid, cdate, ctype FROM cs_caffeine WHERE cuid=%d ORDER BY centrytime DESC LIMIT %d",
+        $profileid, $count);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Fetch the entry with the given id if it matches the given user.
+ */
+function fetch_entry($cid, $profileid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT cid, ctype, cdate FROM cs_caffeine
+         WHERE cid=%d AND cuid=%d",
+        $cid, $profileid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    return $retval;
+}
+
+/**
+ * Delete the given entry if it matches the given user.
+ */
+function delete_caffeine_entry($cid, $profileid) {
+    global $dbconn;
+    $sql = sprintf(
+        "DELETE FROM cs_caffeine WHERE cid=%d AND cuid=%d",
+        $cid, $profileid);
+    if (($result = $dbconn->query($sql)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return (($dbconn->affected_rows) === 1);
 }
 ?>

@@ -34,6 +34,11 @@ define('RECAPTCHA_PUBLICKEY', 'COFFEESTATS_RECAPTCHA_PUBLICKEY');
 define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
 define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
 
+$ENTRY_TYPES = array(
+    0 => 'coffee',
+    1 => 'mate',
+);
+
 /**
  * Store a flash message in the flash message stack.
  */
@@ -402,5 +407,16 @@ function register_mate($uid, $matetime) {
             'Your mate at %s has been registered!', $matetime),
             FLASH_SUCCESS);
     }
+}
+
+/**
+ * Return a name for the given numeric entry type.
+ */
+function get_entrytype($entrytype) {
+    global $ENTRY_TYPES;
+    if (array_key_exists($entrytype, $ENTRY_TYPES)) {
+        return $ENTRY_TYPES[$entrytype];
+    }
+    return "unknown";
 }
 ?>
