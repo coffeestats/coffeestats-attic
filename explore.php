@@ -1,5 +1,6 @@
 <?php
 include("auth/lock.php");
+include_once('includes/common.php');
 include_once('includes/queries.php');
 
 $activities = latest_caffeine_activity(10);
@@ -18,17 +19,11 @@ include("header.php");
     <h2>Caffeine Activity</h2>
     <ul class="userlist">
 <?php foreach ($activities as $activity) { ?>
-        <li><?php echo profilelink($activity['ulogin']); ?> <?php
-        switch ($activity['label']) {
-        case 0:
-            echo 'coffee';
-            break;
-        case 1:
-            echo 'mate';
-            break;
-        default:
-            echo 'unknown caffeinated drink';
-        } ?> at <?php echo $activity['date']; ?></li>
+        <li><?php echo profilelink($activity['ulogin']); ?>
+<?php printf('%s at %s', get_entrytype($activity['label']), $activity['date']); ?>
+<?php if ($login_session === $activity['ulogin']) { ?>
+    <a href="delete?c=<?php echo $activity['cid']; ?>">Delete this</a>
+<? } ?></li>
 <?php } ?>
     </ul>
 </div>
