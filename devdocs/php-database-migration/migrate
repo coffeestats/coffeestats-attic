@@ -3,27 +3,22 @@
 /**
  * php-database-migration is a database migration script
  * management inspired by rake and myBatis
- * 
+ *
+ * Adapted for use with coffeestats by Jan Dittberner <jan@dittberner.info>
+ *
  * @category Database_Migration
  * @package  php-database-migration
  * @author   Alexandre GUIDET <alwex@free.fr>
  * @license  http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link     https://github.com/alwex/php-database-migration
- *
- *
  */
 const UP = "up";
 const DOWN = "down";
-const ENV_PATH = "environments";
 const MIGRATIONS_PATH = "migrations";
-const DEFAULT_ENVIRONMENT = "development";
-const DEFAULT_DRIVER = "pgsql";
-const DEFAULT_DATABASE = "mybdd";
-const DEFAULT_HOST = "localhost";
-const DEFAULT_LOGIN = "login";
-const DEFAULT_PASSWORD = "password";
-const DEFAULT_CHANGELOG_TABLE = "changelog";
+const DEFAULT_CHANGELOG_TABLE = "cs_changelog";
 const DEFAULT_NOTIFICATION_EMAIL_SUBJECT = "SQL scripts applied";
+
+include_once(sprintf("%s/../../includes/common.php", dirname(__FILE__)));
 
 /**
  * Main class
@@ -31,22 +26,11 @@ const DEFAULT_NOTIFICATION_EMAIL_SUBJECT = "SQL scripts applied";
  */
 class MigrationManager
 {
-
-    /**
-     * default classic environment list
-     * @var array
-     */
-    private $_environments = array(
-        "development",
-        "preproduction",
-        "production",
-    );
-
     /**
      * default changelog table
      * @var string
      */
-    private $_changelogTable = "changelog";
+    private $_changelogTable = DEFAULT_CHANGELOG_TABLE;
 
     /**
      * migrations file list
@@ -67,11 +51,6 @@ class MigrationManager
     private $_longOpts = array(
         // init required options
         "init::",
-        "driver:",
-        "database:",
-        "host:",
-        "login:",
-        "password:",
         "changelog:",
         // other actions
         "status::",
@@ -81,6 +60,7 @@ class MigrationManager
         "env:",
         "force::",
         "transactional::",
+        "fake::",
     );
     private $_shortOpts = "";
     private $_config;
@@ -114,6 +94,39 @@ class MigrationManager
     }
 
     /**
+     * Create the settings array from environment variables.
+     */
+    private function _settings_from_env()
+    {
+        if (!isset($_SERVER[MYSQL_DATABASE])
+         || !isset($_SERVER[MYSQL_HOSTNAME])
+         || !isset($_SERVER[MYSQL_USER])
+         || !isset($_SERVER[MYSQL_PASSWORD]))
+        {
+            $defvars = <<< DEF_VARS
+You have to define the following environment variables:
+
+%s
+%s
+%s
+%s
+DEF_VARS;
+            $this->_showError(
+                $defvars, MYSQL_DATABASE, MYSQL_HOSTNAME,
+                MYSQL_USER, MYSQL_PASSWORD);
+        }
+        return array(
+            'url' => sprintf(
+                "mysql:dbname=%s;host=%s",
+                $_SERVER[MYSQL_DATABASE],
+                $_SERVER[MYSQL_HOSTNAME]),
+            'username' => $_SERVER[MYSQL_USER],
+            'password' => $_SERVER[MYSQL_PASSWORD],
+            'changelog' => DEFAULT_CHANGELOG_TABLE,
+        );
+    }
+
+    /**
      * initialize environments configuration files
      * and migration directory
      *
@@ -121,79 +134,51 @@ class MigrationManager
      */
     private function _init()
     {
-
-        if (is_dir(ENV_PATH)) {
+        if (is_dir(MIGRATIONS_PATH)) {
             $this->_showWarning("Already initialized");
-        } else if (!isset($this->_options["driver"])
-                || !isset($this->_options["database"])
-                || !isset($this->_options["host"])
-                || !isset($this->_options["login"])
-                || !isset($this->_options["password"])
-                || !isset($this->_options["changelog"])) {
+        } else if (!isset($_SERVER[MYSQL_DATABASE])
+                || !isset($_SERVER[MYSQL_HOSTNAME])
+                || !isset($_SERVER[MYSQL_USER])
+                || !isset($_SERVER[MYSQL_PASSWORD])) {
             $initUsage = <<< INIT_USAGE
 Example:
-    
-./migrate --init --driver=<driver> --database=<database_name> --host=<host> --login=<database_login> --password=<database_password> --changelog=<changelog_table>
+
+You have to define the following environment variables:
+
+%s
+%s
+%s
+%s
+
+and run
+
+./migrate --init
 
 INIT_USAGE;
-            $this->_showNotice($initUsage);
+            $this->_showNotice(sprintf($initUsage, MYSQL_DATABASE, MYSQL_HOSTNAME, MYSQL_USER, MYSQL_PASSWORD));
         } else {
-            $configurationTemplate = <<< CONFIGURATION_TEMPLATE
-; BDD %s configuration
-url="%s:dbname=%s;host=%s"
-username=%s
-password=%s
-
-; notification email for SQL migrations
-; uncomment the line below for activation
-; notification_email=
-; notification_email_subject=
-
-; name of the changelog table
-; id | applied_at | description
-; create table %s (id numeric(20,0), applied_at character varying(25), description character varying(255));
-changelog=%s
-CONFIGURATION_TEMPLATE;
-
             if (!is_dir(MIGRATIONS_PATH)) {
                 mkdir(MIGRATIONS_PATH);
-            }
-
-            if (!is_dir(ENV_PATH)) {
-                mkdir(ENV_PATH);
-                foreach ($this->_environments as $environment) {
-                    file_put_contents(ENV_PATH . "/" . $environment . ".ini", sprintf(
-                                    $configurationTemplate, $environment, $this->_options["driver"], $this->_options["database"], $this->_options["host"], $this->_options["login"], $this->_options["password"], $this->_options["changelog"], $this->_options["changelog"]
-                            )
-                    );
-                }
             }
 
             $initializationDone = <<<INIT_DONE
 ======= Initialization =======
 
-Configuration files created:
-  ./environments
-         |----development.ini
-         |----preproduction.ini
-         `----production.ini
-
 Migration directory created:
    ./migrations
 
-You may modify the environemnts configuration files
-and create the changelog table %s
+You may create the changelog table %s
 
-create table %s (id numeric(20,0), applied_at character varying(25), description character varying(255));
+CREATE TABLE %s (id NUMERIC(20,0), applied_at CHARACTER VARYING(25), description CHARACTER VARYING(255));
 
 INIT_DONE;
-            $this->_showNotice(sprintf($initializationDone, $this->_options["changelog"], $this->_options["changelog"]));
+            $this->_showNotice(sprintf($initializationDone, DEFAULT_CHANGELOG_TABLE, DEFAULT_CHANGELOG_TABLE));
         }
     }
 
     /**
      * validate command line parameters
-     * 
+     *
      * @return boolean
      */
     private function _validate()
@@ -215,6 +200,10 @@ INIT_DONE;
         }
 
         if (isset($this->_options["status"])) {
+            return true;
+        }
+
+        if (isset($this->_options["fake"])) {
             return true;
         }
 
@@ -240,6 +229,8 @@ INIT_DONE;
             $action = "down";
         } else if (isset($this->_options["status"])) {
             $action = "status";
+        } else if (isset($this->_options["fake"])) {
+            $action = "fake";
         }
 
         return $action;
@@ -268,23 +259,13 @@ INIT_DONE;
 
     /**
      * load configuration file
-     * 
+     *
      * @return void
      */
     private function _config()
     {
-        $env = DEFAULT_ENVIRONMENT;
-        if (isset($this->_options["env"])) {
-            if (!file_exists(ENV_PATH . "/" . $this->_options["env"] . ".ini")) {
-                exit(ENV_PATH . "/" . $this->_options["env"] . ".ini not found\n");
-            } else {
-                $env = $this->_options["env"];
-            }
-        }
-
-        $this->_options["env"] = $env;
-        $this->_config = parse_ini_file(ENV_PATH . "/" . $env . ".ini");
-        $this->_changelogTable = $this->_config["changelog"];
+        $this->_config = $this->_settings_from_env();
+        $this->_changelogTable = DEFAULT_CHANGELOG_TABLE;
     }
 
     /**
@@ -300,24 +281,77 @@ No command specified.
 Usage: ./migrate command [parameters] [--env=<environment>]
 
 Commands:
-  --env=<environment>       Environment to configure. Default environment is 'dev'.
+  --init                    Initialize the migrations system.
   --generate <description>  Creates a new migration with the provided description.
   --up                      Run unapplied migrations, ALL by default.
   --up=<version>            Run unapplied migrations up to version (included).
   --down                    Undoes migrations applied to the database. ONE by default.
   --down=<version>          Undoes migrations applied to the database. Down to version (included).
   --force                   Run or undoes only specified migration (not recommended).
+  --fake=<version>          Does a fake change to version (i.e. for initial schema).
   --transactional           Rollback all applied migration up or down on error.
   --status                  Show migrations status (applied, unapplied ect...).
 
 Examples:
 ./migrate [--generate <migration_name>]
-./migrate [--up | --up=<version> | --down | --down=<version>] [--transactional] [--force] [--env=<environment>]
-./migrate [--status] [--env=<environment>]
+./migrate [--up | --up=<version> | --down | --down=<version>] [--transactional] [--force]
+./migrate [--fake=<version>]
+./migrate [--status]
 
 USAGE;
 
         $this->_showNotice($usage);
+    }
+
+    /**
+     * Check whether the changelog table exists.
+     */
+    private function _checkChangeLogExists() 
+    {
+        $result = $this->_db->query(
+            sprintf("SELECT id FROM %s ORDER BY id", $this->_changelogTable));
+        if (FALSE === $result) {
+            if ($this->_db->errorCode() === "42S02") { // table does not exist
+                $this->_showWarning(sprintf("Migration changelog table %s does not exist.", $this->_changelogTable));
+                return FALSE;
+            }
+            $errorInfo = "";
+            $pdoError = $this->_db->errorInfo();
+            foreach ($pdoError as $errorLine) {
+                $errorInfo .= $errorLine . "\n";
+            }
+            throw new Exception(sprintf(
+                "ERROR checking for changelog table %s!!!!!\n\n%s",
+                $this->_changelogTable, $errorInfo));
+
+        }
+        return TRUE;
+    }
+
+    /**
+     * Make sure that the changelog table exists.
+     */
+    private function _ensureChangeLogExists()
+    {
+        if (FALSE === $this->_checkChangeLogExists()) {
+            $result = $this->_db->exec(
+                sprintf(
+                    "CREATE TABLE %s (" .
+                    " id NUMERIC(20, 0) NOT NULL PRIMARY KEY," .
+                    " applied_at CHARACTER VARYING(25)," .
+                    " description CHARACTER VARYING(255))",
+                        $this->_changelogTable));
+            if (FALSE === $result) {
+                $errorInfo = "";
+                $pdoError = $this->_db->errorInfo();
+                foreach ($pdoError as $errorLine) {
+                    $errorInfo .= $errorLine . "\n";
+                }
+                throw new Exception(sprintf(
+                    "FAILURE CREATING changelog table %s!!!!!\n\n%s",
+                    $this->_changelogTable, $errorInfo));
+            }
+        }
     }
 
     /**
@@ -340,19 +374,29 @@ USAGE;
                 $this->_config();
                 $this->_loadMigrationList();
                 $this->_connect();
+                $this->_ensureChangeLogExists();
                 $this->_processActionUp();
                 break;
             case "down":
                 $this->_config();
                 $this->_loadMigrationList();
                 $this->_connect();
+                $this->_ensureChangeLogExists();
                 $this->_processActionDown();
                 break;
             case "status":
                 $this->_config();
                 $this->_loadMigrationList();
                 $this->_connect();
+                $this->_checkChangeLogExists();
                 $this->_processActionStatus();
+                break;
+            case "fake":
+                $this->_config();
+                $this->_loadMigrationList();
+                $this->_connect();
+                $this->_ensureChangeLogExists();
+                $this->_processActionFake();
                 break;
             default:
                 $this->_showError("unknown action");
@@ -402,9 +446,9 @@ USAGE;
 
     /**
      * generate migration script
-     * 
+     *
      * @param type $fileName script
-     * 
+     *
      * @return void
      */
     private function _processActionGenerate($fileName)
@@ -472,17 +516,17 @@ TEMPLATE;
                         break;
                     }
 
-                    $mailBody .= "\n-- MIGRATION ID " . $migrationId . "\n\n";         
+                    $mailBody .= "\n-- MIGRATION ID " . $migrationId . "\n\n";
                     $mailBody .= $this->_getUpScriptForMigration($aMigrationFile);
 
                 }
-                
-                
+
+
 
                 if (isset($this->_options["transactional"])) {
                     $this->_db->commit();
                 }
-                
+
                 // envois de l'email de notification si configuré dans .ini
                 if (isset($this->_config["notification_email"]) && $this->_config["notification_email"] != null) {
                     $notificationEmailSubject = DEFAULT_NOTIFICATION_EMAIL_SUBJECT;
@@ -491,7 +535,7 @@ TEMPLATE;
                     }
                     mail($this->_config["notification_email"], "[" . $this->_options["env"] . "] " . $notificationEmailSubject, $mailBody);
                 }
-                
+
             } catch (Exception $e) {
                 if (isset($this->_options["transactional"])) {
                     $this->_db->rollBack();
@@ -503,7 +547,7 @@ TEMPLATE;
 
     /**
      * handle the down action
-     * 
+     *
      * @return void
      */
     private function _processActionDown()
@@ -559,15 +603,71 @@ TEMPLATE;
     }
 
     /**
-     * process the migration id up or down
-     * 
-     * @param type $migrationId   id of the migration
-     * @param type $migrationFile migration file name
-     * @param type $upOrDown      is it up or down?
+     * handle the fake action
      *
      * @return void
      */
-    private function _migrate($migrationId, $migrationFile, $upOrDown)
+    private function _processActionFake()
+    {
+        $fakeTo = $this->_options["fake"];
+
+        if (FALSE === $fakeTo) {
+            $this->_showError("must give a version id for fake action");
+            exit(2);
+        }
+
+        $result = $this->_db->query("SELECT id FROM " . $this->_changelogTable . " ORDER BY id");
+
+        $alreadyDone = array();
+        if (FALSE !== $result) {
+            foreach ($result as $row) {
+                $alreadyDone[$row["id"]] = $row["id"];
+            }
+        }
+
+        if (in_array($fakeTo, $alreadyDone)) {
+            $this->_showWarning("migration already done");
+            exit(2);
+        }
+
+        $toMigrate = array_diff_key($this->_migrationFileList, $alreadyDone);
+        ksort($toMigrate);
+
+        if (isset($this->options["transactional"])) {
+            $this->_db->beginTransaction();
+        }
+
+        try {
+            foreach ($toMigrate as $migrationId => $aMigrationFile) {
+                $this->_migrate($migrationId, $aMigrationFile, UP, TRUE);
+
+                if ($migrationId === $fakeTo) {
+                    break;
+                }
+            }
+
+            if (isset($this->_options["transactional"])) {
+                $this->_db->commit();
+            }
+        } catch (Exception $e) {
+            if (isset($this->_options["transactional"])) {
+                $this->_db->rollback();
+                $this->_showError("FAILURE !!! rollback all migration");
+            }
+        }
+    }
+
+    /**
+     * process the migration id up or down
+     *
+     * @param type $migrationId   id of the migration
+     * @param type $migrationFile migration file name
+     * @param type $upOrDown      is it up or down?
+     * @param type $fake          fake or real migration
+     *
+     * @return void
+     */
+    private function _migrate($migrationId, $migrationFile, $upOrDown, $fake=FALSE)
     {
         $fileContent = file_get_contents(MIGRATIONS_PATH . "/" . $migrationFile);
         $upDown = explode("-- @UNDO", $fileContent);
@@ -590,13 +690,15 @@ TEMPLATE;
                     $sql = trim($upDown[0]);
                     $this->_showNotice($sql);
 
-                    if (false === $this->_db->exec($sql)) {
-                        $errorInfo = "";
-                        $pdoError = $this->_db->errorInfo();
-                        foreach ($pdoError as $errorLine) {
-                            $errorInfo .= $errorLine . "\n";
+                    if (FALSE === $fake) {
+                        if (false === $this->_db->exec($sql)) {
+                            $errorInfo = "";
+                            $pdoError = $this->_db->errorInfo();
+                            foreach ($pdoError as $errorLine) {
+                                $errorInfo .= $errorLine . "\n";
+                            }
+                            throw new Exception("UP FAILURE !!!!!\n\n" . $errorInfo);
                         }
-                        throw new Exception("UP FAILURE !!!!!\n\n" . $errorInfo);
                     }
                     $this->_db->query("INSERT INTO " . $this->_changelogTable . " (id, applied_at, description) values (" . $migrationId . ", '" . date("Y-m-d H:m:s") . "', '" . $migrationDesctiption . "')");
                     $this->_showSuccess("UP SUCCESS");
@@ -606,8 +708,15 @@ TEMPLATE;
                     $sql = trim($upDown[1]);
                     $this->_showNotice($sql);
 
-                    if (false === $this->_db->exec($sql)) {
-                        throw new Exception("DOWN FAILURE !!!!!");
+                    if (FALSE === $fake) {
+                        $errorInfo = "";
+                        $pdoError = $this->_db->errorInfo();
+                        foreach ($pdoError as $errorLine) {
+                            $errorInfo .= $errorLine . "\n";
+                        }
+                        if (false === $this->_db->exec($sql)) {
+                            throw new Exception("DOWN FAILURE !!!!!\n\n", $errorInfo);
+                        }
                     }
 
                     $this->_db->query("DELETE FROM " . $this->_changelogTable . " WHERE id = " . $migrationId);
@@ -627,13 +736,13 @@ TEMPLATE;
             }
         }
     }
-    
+
     public function _getUpScriptForMigration($migrationFile)  {
         $fileContent = file_get_contents(MIGRATIONS_PATH . "/" . $migrationFile);
         $upDown = explode("-- @UNDO", $fileContent);
         return $upDown[0];
     }
-    
+
     public function _getDownScriptForMigration($migrationFile)  {
         $fileContent = file_get_contents(MIGRATIONS_PATH . "/" . $migrationFile);
         $upDown = explode("-- @UNDO", $fileContent);
@@ -642,7 +751,7 @@ TEMPLATE;
 
     /**
      * load all available migrations files
-     * 
+     *
      * @return void
      */
     private function _loadMigrationList()
@@ -653,7 +762,7 @@ TEMPLATE;
 
         if ($handle = opendir(MIGRATIONS_PATH)) {
             while (false !== ($file = readdir($handle))) {
-                if (!is_dir($file)) {
+                if (!is_dir($file) && (strpos($file, '.') != 0)) {
                     $tempId = explode("_", $file);
                     $migrationIdList[$tempId[0]] = $tempId[0];
                     $migrationFileList[$tempId[0]] = $file;
@@ -715,7 +824,7 @@ TEMPLATE;
      * echo notice message
      *
      * @param type $message the message to show
-     * 
+     *
      * @return void
      */
     private function _showNotice($message)
