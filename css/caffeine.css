@@ -70,6 +70,10 @@ body {
     float: left;
 }
 
+.rightfloated {
+    float:right;
+}
+
 .clearfix {
     clear: both;
     height: 0;

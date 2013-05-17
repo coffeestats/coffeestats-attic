@@ -51,6 +51,8 @@ function on_the_run_url($profileuser, $profiletoken) {
 $total = total_caffeine_for_profile($profileid);
 
 if ($ownprofile) {
+    $public_url = public_url($profileuser);
+    $otr_url = on_the_run_url($profileuser, $profiletoken);
     $info = array(
         'title' => 'Your Profile',
         'data' => array(
@@ -60,8 +62,8 @@ if ($ownprofile) {
             'Your Mate total' => $total['mate'],
         ),
         'extra' => array(
-            sprintf('Your <a href="%s">public profile page</a>', public_url($profileuser)),
-            sprintf('Your <a href="%s">on-the-run</a> URL', on_the_run_url($profileuser, $profiletoken)),
+            sprintf('Your <a href="%s">public profile page</a>', $public_url),
+            sprintf('Your <a href="%s">on-the-run</a> URL', $otr_url),
         ),
         'afterlist' => sprintf(
             '<a href="https://www.facebook.com/sharer.php?u=%1$s&t=My%%20coffee%%20statistics">' .
@@ -95,6 +97,11 @@ include('includes/charting.php');
 include("header.php");
 ?>
 <div class="white-box">
+<?php if ($ownprofile) { ?>
+     <div class="rightfloated">
+        <canvas id="ontherunqrcode" width="100" height="100"></canvas>
+    </div>
+<?php } ?>
     <h2><?php echo $info['title']; ?></h2>
     <ul>
 <?php
@@ -141,7 +148,36 @@ if (isset($info['afterlist'])) {
     <canvas id="coffeebyweekday" width="590" height="240" ></canvas>
 </div>
 
-<script type="text/javascript" src="./lib/Chart.min.js"></script>
+<script type="text/javascript" src="lib/Chart.min.js"></script>
+<?php if ($ownprofile) { ?>
+<script type="text/javascript" src="lib/jsqr-0.2-min.js"></script>
+<script type="text/javascript">
+function drawQR(data, canvasid) {
+    var qr = new JSQR();
+    var code = new qr.Code();
+
+    code.encodeMode = code.ENCODE_MODE.BYTE;
+    code.version = code.DEFAULT;
+    code.errorCorrection = code.ERROR_CORRECTION.H;
+
+    var input = new qr.Input();
+    input.dataType = input.DATA_TYPE.TEXT;
+    input.data = data;
+
+    var matrix = new qr.Matrix(input, code);
+    matrix.scale = 3;
+    matrix.margin = 2;
+
+    var canvas = document.getElementById(canvasid);
+    canvas.setAttribute('width', matrix.pixelWidth);
+    canvas.setAttribute('height', matrix.pixelWidth);
+    canvas.getContext('2d').fillStyle = 'rgb(0,0,0)';
+    matrix.draw(canvas, 0, 0);
+}
+
+drawQR('<?php echo $otr_url; ?>', 'ontherunqrcode');
+</script>
+<?php } ?>
 <script type="text/javascript">
 var todaycolor = "#E64545";
 var monthcolor = "#FF9900";
