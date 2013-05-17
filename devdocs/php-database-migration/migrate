@@ -615,6 +615,7 @@ TEMPLATE;
             $this->_showError("must give a version id for fake action");
             exit(2);
         }
+        $fakeTo = intval($fakeTo);
 
         $result = $this->_db->query("SELECT id FROM " . $this->_changelogTable . " ORDER BY id");
 

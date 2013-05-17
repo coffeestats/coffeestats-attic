@@ -34,6 +34,11 @@ define('RECAPTCHA_PUBLICKEY', 'COFFEESTATS_RECAPTCHA_PUBLICKEY');
 define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
 define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
 
+$ENTRY_TYPES = array(
+    0 => 'coffee',
+    1 => 'mate',
+);
+
 /**
  * Store a flash message in the flash message stack.
  */
@@ -321,9 +326,7 @@ function clean_inactive_users() {
     global $dbconn;
     $sql = "DELETE FROM cs_users
         WHERE uactive=0 AND NOT EXISTS (
-          SELECT mid FROM cs_mate WHERE cuid=uid
-          UNION
-          SELECT cid FROM cs_coffees WHERE cuid=uid)
+          SELECT cid FROM cs_caffeine WHERE cuid=uid)
         AND ujoined < (CURRENT_TIMESTAMP - INTERVAL 30 DAY)";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
@@ -337,8 +340,9 @@ function register_coffee($uid, $coffeetime) {
     global $dbconn;
     $sql = sprintf(
         'SELECT cid, cdate
-         FROM cs_coffees
-         WHERE cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
+         FROM cs_caffeine
+         WHERE ctype = 0
+           AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
            AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
            AND cuid = %2$d',
         $dbconn->real_escape_string($coffeetime), $uid);
@@ -355,8 +359,8 @@ function register_coffee($uid, $coffeetime) {
     else {
         $result->close();
         $sql = sprintf(
-            "INSERT INTO cs_coffees (cuid, cdate)
-             VALUES (%d, '%s')",
+            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime)
+             VALUES (%d, 0, '%s', UTC_TIMESTAMP)",
             $uid, $dbconn->real_escape_string($coffeetime));
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
             handle_mysql_error();
@@ -373,10 +377,11 @@ function register_coffee($uid, $coffeetime) {
 function register_mate($uid, $matetime) {
     global $dbconn;
     $sql = sprintf(
-        'SELECT mid, mdate
-         FROM cs_mate
-         WHERE mdate > (\'%1$s\' - INTERVAL 5 MINUTE)
-           AND mdate < (\'%1$s\' + INTERVAL 5 MINUTE)
+        'SELECT cid, cdate
+         FROM cs_caffeine
+         WHERE ctype = 1
+           AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
+           AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
            AND cuid = %2$d',
         $dbconn->real_escape_string($matetime), $uid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
@@ -386,14 +391,14 @@ function register_mate($uid, $matetime) {
         $result->close();
         flash(sprintf(
             "Error: Your last mate was less than 5 minutes ago at %s. O_o",
-            $row['mdate']),
+            $row['cdate']),
             FLASH_WARNING);
     }
     else {
         $result->close();
         $sql=sprintf(
-            "INSERT INTO cs_mate (cuid, mdate)
-             VALUES (%d, '%s')",
+            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime)
+             VALUES (%d, 1, '%s', UTC_TIMESTAMP)",
             $uid, $dbconn->real_escape_string($matetime));
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
             handle_mysql_error();
@@ -402,5 +407,16 @@ function register_mate($uid, $matetime) {
             'Your mate at %s has been registered!', $matetime),
             FLASH_SUCCESS);
     }
+}
+
+/**
+ * Return a name for the given numeric entry type.
+ */
+function get_entrytype($entrytype) {
+    global $ENTRY_TYPES;
+    if (array_key_exists($entrytype, $ENTRY_TYPES)) {
+        return $ENTRY_TYPES[$entrytype];
+    }
+    return "unknown";
 }
 ?>
