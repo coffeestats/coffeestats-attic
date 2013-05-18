@@ -485,4 +485,19 @@ function delete_caffeine_entry($cid, $profileid) {
     }
     return (($dbconn->affected_rows) === 1);
 }
+
+/**
+ * Set the user's time zone information.
+ */
+function set_user_timezone($profileid, $tzname) {
+    global $dbconn;
+    $sql = sprintf(
+        "UPDATE cs_users SET utimezone='%s' WHERE uid=%d",
+        $dbconn->real_escape_string($tzname),
+        $profileid);
+    if (($result = $dbconn->query($sql)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return (($dbconn->affected_rows) === 1);
+}
 ?>
