@@ -151,7 +151,14 @@ function baseurl() {
     if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strcmp($_SERVER['HTTPS'], 'off') != 0)) {
         $protocol = 'https';
     }
-    return sprintf("%s://%s", $protocol, $_SERVER['SERVER_NAME']);
+    $appendport = (
+        (($protocol === 'https') && ($_SERVER['SERVER_PORT'] !== '443')) ||
+        (($protocol === 'http') && ($_SERVER['SERVER_PORT'] !== '80'))
+    );
+    return sprintf(
+        "%s://%s%s",
+        $protocol, $_SERVER['SERVER_NAME'],
+        $appendport ? ":" . $_SERVER['SERVER_PORT'] : "");
 }
 
 /**
