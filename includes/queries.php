@@ -350,7 +350,7 @@ function random_users($count) {
 function latest_caffeine_activity($count) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT cid, ctype AS label, ulogin, cdate AS date
+        "SELECT cid, ctype, ulogin, cdate, ctimezone
          FROM cs_caffeine JOIN cs_users ON cuid=uid
          ORDER BY cdate DESC LIMIT %d",
         $count);

@@ -20,7 +20,7 @@ include("header.php");
     <ul class="userlist">
 <?php foreach ($activities as $activity) { ?>
         <li><?php echo profilelink($activity['ulogin']); ?>
-<?php printf(' %s at %s', get_entrytype($activity['label']), $activity['date']); ?>
+<?php printf(' %s at %s%s', get_entrytype($activity['ctype']), $activity['cdate'], format_timezone($activity['ctimezone'])); ?>
 </li>
 <?php } ?>
     </ul>
