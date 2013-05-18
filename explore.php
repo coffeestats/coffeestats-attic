@@ -21,9 +21,7 @@ include("header.php");
 <?php foreach ($activities as $activity) { ?>
         <li><?php echo profilelink($activity['ulogin']); ?>
 <?php printf(' %s at %s', get_entrytype($activity['label']), $activity['date']); ?>
-<?php if ($login_session === $activity['ulogin']) { ?>
-    <a href="delete?c=<?php echo $activity['cid']; ?>">Delete this</a>
-<?php } ?></li>
+</li>
 <?php } ?>
     </ul>
 </div>

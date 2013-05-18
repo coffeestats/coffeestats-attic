@@ -52,7 +52,7 @@ include("header.php");
     <h2>Your latest entries</h2>
     <table>
         <?php foreach ($entries as $entry) { ?>
-        <tr><td><?php printf("%s at %s", get_entrytype($entry['ctype']), $entry['cdate']); ?></td><td><a href="delete?c=<?php echo $entry['cid']; ?>" data-cid="<?php echo $entry['cid']; ?>" class="deletecaffeine">Delete</a></td></tr>
+        <tr><td><?php printf("%s at %s", get_entrytype($entry['ctype']), $entry['cdate']); ?></td><td><a href="delete?c=<?php echo $entry['cid']; ?>" data-cid="<?php echo $entry['cid']; ?>" class="deletecaffeine"> <img src="images/nope.png"></a></td></tr>
         <?php } ?>
     </table>
 </div>
