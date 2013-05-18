@@ -367,8 +367,6 @@ function latest_caffeine_activity($count) {
 
 /**
  * Returns the top caffeine consumers.
- *
- * TODO: handle mate too
  */
 function top_caffeine_consumers_total($count, $ctype=0) {
     global $dbconn;
@@ -392,8 +390,6 @@ function top_caffeine_consumers_total($count, $ctype=0) {
 
 /**
  * Returns the top average caffeine consumers.
- *
- * TODO: handle mate too
  */
 function top_caffeine_consumers_average($count, $ctype=0) {
     global $dbconn;
