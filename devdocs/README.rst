@@ -113,6 +113,17 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
 
       location ~ \.php$ {
         try_files $uri =404;
+
+        if (!-f $request_filename) {
+          rewrite ^/api/([^/]+)/(.*)\.php$ /api/api-$1.php?q=$2 last;
+          break;
+        }
+
+        if (!-d $request_filename) {
+          rewrite ^/api/([^/]+)/(.*)\.php$ /api/api-$1.php?q=$2 last;
+          break;
+        }
+
         include /etc/nginx/fastcgi_params;
         fastcgi_pass unix:/var/run/php-fastcgi/php-fastcgi.socket;
         fastcgi_index index.php;
@@ -133,7 +144,7 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
       }
 
       # for php files with GET parameters
-      location ~ (profile|public|ontherun|action)$ {
+      location ~ (profile|public|ontherun|action|delete)$ {
         root           /htdocs/$server_name;
         fastcgi_pass   unix:/var/run/php-fastcgi/php-fastcgi.socket;
         fastcgi_index  index.php;
