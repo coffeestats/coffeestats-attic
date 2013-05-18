@@ -36,6 +36,6 @@ printf("Do you really want to delete your %s entry at %s", get_entrytype($entry[
         <p><input type="submit" name="submit" value="Yes!" /> <a href="plusone">No, cancel</a></p>
     </form>
 </div>
-<?
+<?php
 include('footer.php');
 ?>
