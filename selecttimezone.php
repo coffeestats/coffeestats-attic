@@ -13,6 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'Your time zone has been set to %s successfully.',
                 $_POST['timezone']),
             FLASH_SUCCESS);
+        $_SESSION['timezone'] = $_POST['timezone'];
         redirect_to('../index');
     }
     else {

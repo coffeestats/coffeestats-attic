@@ -39,6 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (($validpassword === TRUE) && isset($uid)) {
             $_SESSION['login_user'] = $username;
             $_SESSION['login_id'] = $uid;
+            $_SESSION['timezone'] = $row['utimezone'];
             if ($row['utimezone'] === NULL) {
                 flash('You have not set your timezone yet.', FLASH_INFO);
                 redirect_to('../selecttimezone');
