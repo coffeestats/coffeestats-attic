@@ -10,6 +10,7 @@ $topcoffeeavg = top_caffeine_consumers_average(10, 0);
 $topmate = top_caffeine_consumers_total(10, 1);
 $topmateavg = top_caffeine_consumers_average(10, 1);
 $recentlyjoined = recently_joined_users(5);
+$longestjoined = longest_joined_users(5);
 
 include("header.php");
 ?>
@@ -80,12 +81,24 @@ include("header.php");
     <div class="clearfix">&nbsp;</div>
 </div>
 <div class="white-box">
-    <h2>Recently registered</h2>
-    <ul>
+    <h2>Newest vs. Oldest members</h2>
+    <div class="rankbox">
+        <h3>Joined recently</h3>
+        <ul class="userlist">
 <?php foreach ($recentlyjoined as $user) { ?>
-        <li><?php echo profilelink($user['ulogin']); ?></li>
+            <li><?php echo profilelink($user['ulogin']); ?> (<?php echo $user['days']; ?> days)</li>
 <?php } ?>
-    </ul>
+        </ul>
+    </div>
+    <div class="rankbox">
+        <h3>Veterans</h3>
+        <ul class="userlist">
+<?php foreach($longestjoined as $user) { ?>
+            <li><?php echo profilelink($user['ulogin']); ?> (<?php echo $user['days']; ?> days)</li>
+<?php } ?>
+        </ul>
+    </div>
+    <div class="clearfix">&nbsp;</div>
 </div>
 <?php
 include("footer.php");

@@ -412,13 +412,14 @@ function top_caffeine_consumers_average($count, $ctype=0) {
 }
 
 /**
- * Returns the most recently joined users.
+ * Return latest $count users ordered by ujoined in the given direction.
  */
-function recently_joined_users($count) {
+function _fetch_users_by_jointime($count, $direction) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT ulogin FROM cs_users ORDER BY ujoined DESC LIMIT %d",
-        $count);
+        "SELECT ulogin, DATEDIFF(CURRENT_TIMESTAMP, ujoined) AS days
+         FROM cs_users ORDER BY ujoined %s LIMIT %d",
+        $direction, $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
@@ -428,6 +429,20 @@ function recently_joined_users($count) {
     }
     $result->close();
     return $retval;
+}
+
+/**
+ * Returns the most recently joined users.
+ */
+function recently_joined_users($count) {
+    return _fetch_users_by_jointime($count, 'DESC');
+}
+
+/**
+ * Returns the earliest users.
+ */
+function longest_joined_users($count) {
+    return _fetch_users_by_jointime($count, 'ASC');
 }
 
 /**
