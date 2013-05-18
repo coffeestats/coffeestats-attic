@@ -31,7 +31,10 @@ include('header.php');
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
         <input type="hidden" name="cid" value="<?php echo $entry['cid']; ?>" />
         <p><?php
-printf("Do you really want to delete your %s entry at %s", get_entrytype($entry['ctype']), $entry['cdate']);
+printf(
+    "Do you really want to delete your %s entry at %s%s",
+    get_entrytype($entry['ctype']), $entry['cdate'],
+    format_timezone($entry['ctimezone']));
 ?>?</p>
         <p><input type="submit" name="submit" value="Yes!" /> <a href="plusone">No, cancel</a></p>
     </form>

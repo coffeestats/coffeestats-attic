@@ -334,12 +334,22 @@ function clean_inactive_users() {
 }
 
 /**
+ * Unified formatting for timezone information.
+ */
+function format_timezone($timezone) {
+    if ($timezone === NULL) {
+        return "";
+    }
+    return sprintf(" %s", $timezone);
+}
+
+/**
  * Register a new coffee for the given user at the given time.
  */
-function register_coffee($uid, $coffeetime) {
+function register_coffee($uid, $coffeetime, $timezone) {
     global $dbconn;
     $sql = sprintf(
-        'SELECT cid, cdate
+        'SELECT cid, cdate, ctimezone
          FROM cs_caffeine
          WHERE ctype = 0
            AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
@@ -352,21 +362,22 @@ function register_coffee($uid, $coffeetime) {
     if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $result->close();
         flash(sprintf(
-            'Error: Your last coffee was less than 5 minutes ago at %s. O_o',
-            $row['cdate']),
+            'Error: Your last coffee was less than 5 minutes ago at %s %s. O_o',
+            $row['cdate'], ($row['ctimezone'] != NULL) ? $row['ctimezone'] : ""),
             FLASH_WARNING);
     }
     else {
         $result->close();
         $sql = sprintf(
-            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime)
-             VALUES (%d, 0, '%s', UTC_TIMESTAMP)",
-            $uid, $dbconn->real_escape_string($coffeetime));
+            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime, ctimezone)
+             SELECT uid, 0, '%s', UTC_TIMESTAMP, utimezone FROM cs_users WHERE uid=%d",
+            $dbconn->real_escape_string($coffeetime), $uid);
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
             handle_mysql_error();
         }
         flash(sprintf(
-            'Your coffee at %s has been registered!', $coffeetime),
+            'Your coffee at %s%s has been registered!',
+            $coffeetime, format_timezone($timezone)),
             FLASH_SUCCESS);
     }
 }
@@ -374,10 +385,10 @@ function register_coffee($uid, $coffeetime) {
 /**
  * Register a new mate for the given user at the given time.
  */
-function register_mate($uid, $matetime) {
+function register_mate($uid, $matetime, $timezone) {
     global $dbconn;
     $sql = sprintf(
-        'SELECT cid, cdate
+        'SELECT cid, cdate, ctimezone
          FROM cs_caffeine
          WHERE ctype = 1
            AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
@@ -390,21 +401,22 @@ function register_mate($uid, $matetime) {
     if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $result->close();
         flash(sprintf(
-            "Error: Your last mate was less than 5 minutes ago at %s. O_o",
-            $row['cdate']),
+            "Error: Your last mate was less than 5 minutes ago at %s %s. O_o",
+            $row['cdate'], ($row['ctimezone'] != NULL) ? $row['ctimezone'] : ""),
             FLASH_WARNING);
     }
     else {
         $result->close();
         $sql=sprintf(
-            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime)
-             VALUES (%d, 1, '%s', UTC_TIMESTAMP)",
-            $uid, $dbconn->real_escape_string($matetime));
+            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime, ctimezone)
+             SELECT uid, 1, '%s', UTC_TIMESTAMP, utimezone FROM cs_users WHERE uid=%d",
+            $dbconn->real_escape_string($matetime), $uid);
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
             handle_mysql_error();
         }
         flash(sprintf(
-            'Your mate at %s has been registered!', $matetime),
+            'Your mate at %s%s has been registered!',
+            $matetime, format_timezone($timezone)),
             FLASH_SUCCESS);
     }
 }

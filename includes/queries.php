@@ -440,7 +440,7 @@ function recently_joined_users($count) {
 function latest_entries($profileid, $count=10) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT cid, cdate, ctype FROM cs_caffeine WHERE cuid=%d ORDER BY centrytime DESC LIMIT %d",
+        "SELECT cid, cdate, ctype, ctimezone FROM cs_caffeine WHERE cuid=%d ORDER BY centrytime DESC LIMIT %d",
         $profileid, $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
@@ -459,7 +459,7 @@ function latest_entries($profileid, $count=10) {
 function fetch_entry($cid, $profileid) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT cid, ctype, cdate FROM cs_caffeine
+        "SELECT cid, ctype, cdate, ctimezone FROM cs_caffeine
          WHERE cid=%d AND cuid=%d",
         $cid, $profileid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
