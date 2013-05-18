@@ -42,6 +42,7 @@ include("header.php");
 <?php } ?>
     </div>
     <div class="clearfix">&nbsp;</div>
+    <p><a href="#" id="more-users">More users</a></p>
 </div>
 <div class="white-box" id="ranks">
     <h2>Caffeine Ranking</h2>
@@ -100,6 +101,25 @@ include("header.php");
     </div>
     <div class="clearfix">&nbsp;</div>
 </div>
+<script type="text/javascript" src="lib/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#more-users').click(function(event) {
+        $.getJSON('<?php echo baseurl(); ?>/api/v1/random-users/4', function(data) {
+            $('#random_users > div').remove();
+            for (var i=0; i < data.length; i++) {
+                $('#random_users').append(
+                    '<div class="usercard"><a href="' + data[i].profile + '">' + data[i].username + '</a><br />' +
+                    'Name: ' + data[i].name + '<br />' +
+                    'Locaton: ' + data[i].location + '<br />' +
+                    'Coffees total: ' + data[i].coffees + '<br />' +
+                    'Mate total: ' + data[i].mate + '</div>');
+            }
+        });
+        return false;
+    });
+});
+</script>
 <?php
 include("footer.php");
 ?>
