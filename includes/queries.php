@@ -350,7 +350,7 @@ function random_users($count) {
 function latest_caffeine_activity($count) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT cid, ctype AS label, ulogin, cdate AS date
+        "SELECT cid, ctype, ulogin, cdate, ctimezone
          FROM cs_caffeine JOIN cs_users ON cuid=uid
          ORDER BY cdate DESC LIMIT %d",
         $count);
@@ -440,7 +440,7 @@ function recently_joined_users($count) {
 function latest_entries($profileid, $count=10) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT cid, cdate, ctype FROM cs_caffeine WHERE cuid=%d ORDER BY centrytime DESC LIMIT %d",
+        "SELECT cid, cdate, ctype, ctimezone FROM cs_caffeine WHERE cuid=%d ORDER BY centrytime DESC LIMIT %d",
         $profileid, $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
@@ -459,7 +459,7 @@ function latest_entries($profileid, $count=10) {
 function fetch_entry($cid, $profileid) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT cid, ctype, cdate FROM cs_caffeine
+        "SELECT cid, ctype, cdate, ctimezone FROM cs_caffeine
          WHERE cid=%d AND cuid=%d",
         $cid, $profileid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
@@ -484,5 +484,30 @@ function delete_caffeine_entry($cid, $profileid) {
         handle_mysql_error($sql);
     }
     return (($dbconn->affected_rows) === 1);
+}
+
+/**
+ * Set the user's time zone information.
+ */
+function set_user_timezone($profileid, $tzname) {
+    global $dbconn;
+    $sql = sprintf(
+        "UPDATE cs_users SET utimezone='%s' WHERE uid=%d",
+        $dbconn->real_escape_string($tzname),
+        $profileid);
+    if (($result = $dbconn->query($sql)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $success = (($dbconn->affected_rows) === 1);
+    // set existing entries without timezone to the selected timezone
+    $sql = sprintf(
+        "UPDATE cs_caffeine SET ctimezone='%s'
+         WHERE cuid=%d AND ctimezone IS NULL",
+        $dbconn->real_escape_string($tzname),
+        $profileid);
+    if (($result = $dbconn->query($sql)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return $success;
 }
 ?>

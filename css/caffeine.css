@@ -118,7 +118,7 @@ strong {
     line-height: 22px;
 }
 
-.inlineform input[type="text"], .inlineform input[type="password"] {
+.inlineform input[type="text"], .inlineform input[type="password"], .inlineform select {
     padding: 10px;
     font-size: 16px;
     border: none;

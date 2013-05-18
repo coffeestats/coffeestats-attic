@@ -4,7 +4,7 @@ include_once("../includes/common.php");
 
 session_start();
 
-if($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // username and password sent from Form
     if (!isset($_POST['username']) || !isset($_POST['password'])) {
         errorpage('Bad request', 'The request is invalid.', '400 Bad Request');
@@ -23,7 +23,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $validpassword = FALSE;
         $username = $dbconn->real_escape_string($username);
         $sql = sprintf(
-            "SELECT uid, ucryptsum FROM cs_users WHERE ulogin='%s' AND uactive=1",
+            "SELECT uid, ucryptsum, utimezone FROM cs_users WHERE ulogin='%s' AND uactive=1",
             $username);
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
             handle_mysql_error();
@@ -39,7 +39,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         if (($validpassword === TRUE) && isset($uid)) {
             $_SESSION['login_user'] = $username;
             $_SESSION['login_id'] = $uid;
-            redirect_to('../index');
+            $_SESSION['timezone'] = $row['utimezone'];
+            if ($row['utimezone'] === NULL) {
+                flash('You have not set your timezone yet.', FLASH_INFO);
+                redirect_to('../selecttimezone');
+            }
+            else {
+                redirect_to('../index');
+            }
         }
 
         flash("Your username or password seems to be invalid or you did not activate your account yet :(", FLASH_ERROR);
