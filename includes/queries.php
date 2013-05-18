@@ -498,6 +498,16 @@ function set_user_timezone($profileid, $tzname) {
     if (($result = $dbconn->query($sql)) === FALSE) {
         handle_mysql_error($sql);
     }
-    return (($dbconn->affected_rows) === 1);
+    $success = (($dbconn->affected_rows) === 1);
+    // set existing entries without timezone to the selected timezone
+    $sql = sprintf(
+        "UPDATE cs_caffeine SET ctimezone='%s'
+         WHERE cuid=%d AND ctimezone IS NULL",
+        $dbconn->real_escape_string($tzname),
+        $profileid);
+    if (($result = $dbconn->query($sql)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return $success;
 }
 ?>
