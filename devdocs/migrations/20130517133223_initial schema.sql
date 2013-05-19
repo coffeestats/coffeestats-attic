@@ -1,4 +1,7 @@
-CREATE TABLE IF NOT EXISTS cs_users (
+-- initial schema
+-- Migration SQL that makes the change goes here.
+
+CREATE TABLE cs_users (
     uid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     ulogin VARCHAR(30) NOT NULL UNIQUE,
     uemail VARCHAR(128) NOT NULL UNIQUE,
@@ -12,19 +15,19 @@ CREATE TABLE IF NOT EXISTS cs_users (
     uactive TINYINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS cs_mate (
+CREATE TABLE cs_mate (
     mid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     cuid INTEGER NOT NULL REFERENCES cs_users(uid),
     mdate DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS cs_coffees (
+CREATE TABLE cs_coffees (
     cid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     cuid INTEGER NOT NULL REFERENCES cs_users(uid),
     cdate DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS cs_actions (
+CREATE TABLE cs_actions (
     aid INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
     cuid INTEGER NOT NULL REFERENCES cs_users(uid),
     acode VARCHAR(32) NOT NULL UNIQUE,
@@ -48,3 +51,11 @@ CREATE INDEX cs_coffees_cdate_idx ON cs_coffees(cdate);
 CREATE INDEX cs_actions_cuid_idx ON cs_actions(cuid);
 CREATE INDEX cs_actions_atype_idx ON cs_actions(atype);
 CREATE INDEX cs_actions_validuntil_idx ON cs_actions(validuntil);
+
+-- @UNDO
+-- SQL to undo the change goes here.
+
+DROP TABLE cs_actions;
+DROP TABLE cs_coffees;
+DROP TABLE cs_mate;
+DROP TABLE cs_users;

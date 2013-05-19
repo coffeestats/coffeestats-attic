@@ -9,7 +9,9 @@ Send credentials to Florian Baumann to get access to the `git repository`_.
 
 .. _git repository: git@o0.n0q.org:coffeestats
 
-Clone your initial copy::
+Clone your initial copy:
+
+.. code-block:: sh
 
   export PROJECTS=/home/dev/projects
   cd $PROJECTS
@@ -21,17 +23,46 @@ Setup database
 Coffeestats uses MySQL, with a separate database.
 
 #. Install MySQL from operating system packages or from source.
-#. Create a MySQL database with the credentials in auth/config.php::
+#. Create a MySQL database with the credentials in auth/config.php:
 
-    sh> mysql -u root -h localhost -p mysql
-    mysql> CREATE DATABASE coffeestats CHARACTER SET 'UTF8';
-    mysql> GRANT ALL PRIVILEGES ON coffeestats.* TO
-      coffeestats@localhost IDENTIFIED BY 'mysqls3cRet';
+    .. code-block:: sh
 
-#. Import the SQL schema into the database::
+        mysql -u root -h localhost -p mysql
 
-    sh> mysql -u coffeestats -h localhost -p coffeestats <
-      devdocs/schema.sql
+    .. code-block:: sql
+
+        CREATE DATABASE coffeestats CHARACTER SET 'UTF8';
+        GRANT ALL PRIVILEGES ON coffeestats.* TO
+          coffeestats@localhost IDENTIFIED BY 'mysqls3cRet';
+
+#. Define environment variables COFFEESTATS_MYSQL_HOSTNAME,
+   COFFEESTATS_MYSQL_DATABASE, COFFEESTATS_MYSQL_USER and
+   COFFEESTATS_MYSQL_PASSWORD:
+
+    .. code-block:: sh
+
+        export COFFEESTATS_MYSQL_HOSTNAME=localhost
+        export COFFEESTATS_MYSQL_DATABASE=coffeestats
+        export COFFEESTATS_MYSQL_USER=coffeestats
+        export COFFEESTATS_MYSQL_PASSWORD=mysqls3cRet
+
+#. Use php-database-migrations to setup the database schema:
+
+    .. code-block:: sh
+
+        cd devdocs
+        ./php-database-migration/migrate --up
+
+If you already have a coffeestats database schema that is from before the
+introduction of schema migrations you will have to fake the initial schema
+migration before running the update:
+
+.. code-block:: sh
+
+    cd devdocs
+    ./php-database-migration/migrate --fake=20130517133223
+    ./php-database-migration/migrate --up
+
 
 Setup nginx
 ===========
@@ -42,21 +73,27 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
 .. _nginx: http://nginx.com/
 .. _Linode Wiki: http://library.linode.com/web-servers/nginx/php-fastcgi/debian-6-squeeze
 
-#. Create the necessary directories::
+#. Create the necessary directories:
 
-    sh> mkdir -p /srv/www/bin /srv/www/coffeestats/logs
+    .. code-block:: sh
 
-#. Create a FastCGI launcher script (/srv/www/bin/php-fastcgi)::
+        mkdir -p /srv/www/bin /srv/www/coffeestats/logs
 
-    #!/bin/sh
-    FASTCGI_USER=www-data
-    FASTCGI_GROUP=www-data
-    SOCKET=/var/run/php-fastcgi/php-fastcgi.socket
-    PIDFILE=/var/run/php-fastcgi/php-fastcgi.pid
-    CHILDREN=6
-    PHP5=/usr/bin/php5-cgi
+#. Create a FastCGI launcher script (/srv/www/bin/php-fastcgi):
 
-    /usr/bin/spawn-fcgi -s $SOCKET -P $PIDFILE -C $CHILDREN -u $FASTCGI_USER -g $FASTCGI_GROUP -f $PHP5
+    .. code-block:: sh
+
+        #!/bin/sh
+        FASTCGI_USER=www-data
+        FASTCGI_GROUP=www-data
+        SOCKET=/var/run/php-fastcgi/php-fastcgi.socket
+        PIDFILE=/var/run/php-fastcgi/php-fastcgi.pid
+        CHILDREN=6
+        PHP5=/usr/bin/php5-cgi
+
+    .. code-block:: sh
+
+        /usr/bin/spawn-fcgi -s $SOCKET -P $PIDFILE -C $CHILDREN -u $FASTCGI_USER -g $FASTCGI_GROUP -f $PHP5
 
 #. Create the virtualhost config (/etc/nginx/sites-available/coffeestats)::
 
@@ -66,7 +103,7 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
       error_log /srv/www/coffeestats/logs/error.log;
       root /home/dev/projects/coffeestats;
 
-     location / {
+      location / {
         root   /htdocs/$server_name;
         index  index index.php;
         try_files $uri $uri/ $uri.php;
@@ -76,6 +113,17 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
 
       location ~ \.php$ {
         try_files $uri =404;
+
+        if (!-f $request_filename) {
+          rewrite ^/api/([^/]+)/(.*)\.php$ /api/api-$1.php?q=$2 last;
+          break;
+        }
+
+        if (!-d $request_filename) {
+          rewrite ^/api/([^/]+)/(.*)\.php$ /api/api-$1.php?q=$2 last;
+          break;
+        }
+
         include /etc/nginx/fastcgi_params;
         fastcgi_pass unix:/var/run/php-fastcgi/php-fastcgi.socket;
         fastcgi_index index.php;
@@ -88,15 +136,14 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_param COFFEESTATS_RECAPTCHA_PUBLICKEY yourcustomrecaptchapublickey;
         fastcgi_param COFFEESTATS_RECAPTCHA_PRIVATEKEY yourcustomrecaptchaprivatekey;
         fastcgi_param COFFEESTATS_PIWIK_SITEID piwiksiteid;
-        fastcgi_param COFFEESTATS_PIWIK_HTTP_URL http://piwik.example.org/;
-        fastcgi_param COFFEESTATS_PIWIK_HTTPS_URL https://piwik.example.org/;
+        fastcgi_param COFFEESTATS_PIWIK_HOST piwik.example.org;
         fastcgi_param COFFEESTATS_MAIL_FROM_ADDRESS no-reply@coffeestats.org;
         fastcgi_param COFFEESTATS_SITE_SECRET somerandomstring;
         fastcgi_param COFFEESTATS_SITE_NAME coffeestats.org development;
       }
 
       # for php files with GET parameters
-      location ~ (profile|public|ontherun|action)$ {
+      location ~ (profile|public|ontherun|action|delete)$ {
         root           /htdocs/$server_name;
         fastcgi_pass   unix:/var/run/php-fastcgi/php-fastcgi.socket;
         fastcgi_index  index.php;
@@ -110,30 +157,34 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_param COFFEESTATS_RECAPTCHA_PUBLICKEY yourcustomrecaptchapublickey;
         fastcgi_param COFFEESTATS_RECAPTCHA_PRIVATEKEY yourcustomrecaptchaprivatekey;
         fastcgi_param COFFEESTATS_PIWIK_SITEID piwiksiteid;
-        fastcgi_param COFFEESTATS_PIWIK_HTTP_URL http://piwik.example.org/;
-        fastcgi_param COFFEESTATS_PIWIK_HTTPS_URL https://piwik.example.org/;
+        fastcgi_param COFFEESTATS_PIWIK_HOST piwik.example.org;
         fastcgi_param COFFEESTATS_MAIL_FROM_ADDRESS no-reply@coffeestats.org;
         fastcgi_param COFFEESTATS_SITE_SECRET somerandomstring;
         fastcgi_param COFFEESTATS_SITE_NAME coffeestats.org development;
       }
-
     }
 
-#. Enable virtualhost and restart nginx::
+#. Enable virtualhost and restart nginx:
 
-    sh> cd /etc/nginx/sites-enabled
-    sh> ln -s ../sites-available/coffeestats .
-    sh> /etc/init.d/nginx restart
+    .. code-block:: sh
 
-#. Make fastcgi-script executable and start it::
+        cd /etc/nginx/sites-enabled
+        ln -s ../sites-available/coffeestats .
+        /etc/init.d/nginx restart
 
-    sh> chmod +x /srv/www/bin/php-fastcgi
-    sh> /srv/www/bin/php-fastcgi
+#. Make fastcgi-script executable and start it:
+
+    .. code-block:: sh
+
+        chmod +x /srv/www/bin/php-fastcgi
+        /srv/www/bin/php-fastcgi
 
 #. Grant access to /home/dev/projects/coffeestats to the www-data user
-#. Setup DNS or a /etc/hosts entry to point local.coffeestats.org to the local host::
+#. Setup DNS or a /etc/hosts entry to point local.coffeestats.org to the local host:
 
-    sh> echo '127.0.0.1 local.coffeestats.org' >> /etc/hosts
+    .. code-block:: sh
+
+        echo '127.0.0.1 local.coffeestats.org' >> /etc/hosts
 
 #. Open http://local.coffeestats.org/ in a browser of your choice
 
@@ -242,3 +293,52 @@ report in ``devdocs/tests/testdocs/``.
 
 
 .. _PHPUnit: http://phpunit.de/
+
+Database migrations
+===================
+
+Coffeestats uses a database schema migration tool that is based on
+php-database-migration_ by Alexandre GUIDET. If a database change is required
+you have to perform the following steps:
+
+#. Move to devdocs directory:
+
+    .. code-block:: sh
+
+        cd devdocs
+
+#. Generate a new change SQL script:
+
+    .. code-block:: sh
+
+        ./php-database-migration/migrate --generate "My change description"
+
+    This command generates the SQL script and writes the name of the generated
+    file to the terminal, i.e.::
+
+        migration: migrations/20130517145814_My change description.sql
+
+#. Edit the generated SQL file using your editor of choice. Put forward and
+   backward migration SQL code into the file. If no backward migration is
+   possible you should write an appropriate SQL comment into the file
+
+#. Make sure that your migration SQL works properly. It is suggested to test
+   your SQL statements on a copy of your real development database
+
+#. Run the migration against your database (requires the database environment
+   variables to be set like shown above):
+
+    .. code-block:: sh
+
+        ./php-database-migration/migrate --up
+
+#. Commit your new migration code to git and provide a meaningful commit
+   comment:
+
+    .. code-block:: sh
+
+        git add migrations
+        git commit
+
+
+.. _php-database-migration: https://github.com/alwex/php-database-migration

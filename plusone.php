@@ -1,15 +1,16 @@
 <?php
 include('auth/lock.php');
 include_once('includes/common.php');
+include_once('includes/queries.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include_once('includes/validation.php');
 
     if (isset($_POST['coffeetime']) && (($coffeetime = sanitize_datetime($_POST['coffeetime'])) !== FALSE)) {
-        register_coffee($_SESSION['login_id'], $coffeetime);
+        register_coffee($_SESSION['login_id'], $coffeetime, $_SESSION['timezone']);
     }
     elseif (isset($_POST['matetime']) && (($matetime = sanitize_datetime($_POST['matetime'])) !== FALSE)) {
-        register_mate($_SESSION['login_id'], $matetime);
+        register_mate($_SESSION['login_id'], $matetime, $_SESSION['timezone']);
     }
     else {
         errorpage(
@@ -17,7 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             'Your request contained bad data',
             '400 Bad Request');
     }
+    redirect_to($_SERVER['REQUEST_URI']);
 }
+
+$entries = latest_entries($_SESSION['login_id']);
 
 include_once('includes/jsvalidation.php');
 include("header.php");
@@ -43,6 +47,22 @@ include("header.php");
         </div>
     </form>
 </div>
+
+<?php if (count($entries) > 0): ?>
+<div class="white-box">
+    <h2>Your latest entries</h2>
+    <table>
+        <?php foreach ($entries as $entry) { ?>
+        <tr><td><?php
+printf(
+    "%s at %s%s",
+    get_entrytype($entry['ctype']), $entry['cdate'],
+    format_timezone($entry['ctimezone']));
+?></td><td><a href="delete?c=<?php echo $entry['cid']; ?>" data-cid="<?php echo $entry['cid']; ?>" class="deletecaffeine"> <img src="images/nope.png"></a></td></tr>
+        <?php } ?>
+    </table>
+</div>
+<?php endif; ?>
 <script type="text/javascript" src="../lib/jquery.min.js"></script>
 <?php js_sanitize_datetime(); ?>
 <script type="text/javascript">

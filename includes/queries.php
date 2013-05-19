@@ -16,15 +16,25 @@ function total_caffeine_for_profile($profileid) {
     global $dbconn;
     $retval = array('coffees' => 0, 'mate' => 0);
     $sql = sprintf(
-        "SELECT 'coffees' AS label, COUNT(cid) AS value FROM cs_coffees WHERE cuid = %d
-         UNION
-         SELECT 'mate' AS label, COUNT(mid) AS value FROM cs_mate WHERE cuid = %d",
-        $profileid, $profileid);
+        "SELECT ctype, COUNT(cid) AS value
+         FROM cs_caffeine WHERE cuid = %d
+         GROUP BY ctype",
+        $profileid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[$row['label']] = $row['value'];
+        switch ($row['ctype']) {
+        case 0:
+            $retval['coffees'] = $row['value'];
+            break;
+        case 1:
+            $retval['mate'] = $row['value'];
+            break;
+        default:
+            error_log(sprintf("Unexpected caffeine type %d", $row['ctype']));
+            errorpage("Unexpected error", "Unknown caffeine type");
+        }
     }
     $result->close();
     return $retval;
@@ -37,14 +47,23 @@ function total_caffeine() {
     global $dbconn;
     $retval = array('coffees' => 0, 'mate' => 0);
     $sql =
-        "SELECT 'coffees' AS label, COUNT(cid) AS value FROM cs_coffees
-         UNION
-         SELECT 'mate' AS label, COUNT(mid) AS value FROM cs_mate";
+        "SELECT ctype, COUNT(cid) AS value
+         FROM cs_caffeine GROUP BY ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[$row['label']] = $row['value'];
+        switch ($row['ctype']) {
+        case 0:
+            $retval['coffees'] = $row['value'];
+            break;
+        case 1:
+            $retval['mate'] = $row['value'];
+            break;
+        default:
+            error_log(sprintf("Unexpected caffeine type %d", $row['ctype']));
+            errorpage("Unexpected error", "Unknown caffeine type");
+        }
     }
     $result->close();
     return $retval;
@@ -60,24 +79,17 @@ function hourly_caffeine_for_profile($profileid) {
         $retval[$counter] = array(0, 0);
     }
     $sql = sprintf(
-        "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%H') AS hour
-         FROM cs_coffees
+        "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%H') AS hour
+         FROM cs_caffeine
          WHERE DATE_FORMAT(CURRENT_TIMESTAMP, '%%Y-%%m-%%d') = DATE_FORMAT(cdate, '%%Y-%%m-%%d')
            AND cuid = %d
-         GROUP BY hour
-         UNION
-         SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%%H') AS hour
-         FROM cs_mate
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP, '%%Y-%%m-%%d') = DATE_FORMAT(mdate, '%%Y-%%m-%%d')
-           AND cuid = %d
-         GROUP BY hour",
-        $profileid,
+         GROUP BY hour, ctype",
         $profileid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['hour'])][$row['label']] = $row['value'];
+        $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -92,20 +104,15 @@ function hourly_caffeine_overall() {
     for ($counter = 0; $counter <= 23; $counter++) {
         $retval[$counter] = array(0, 0);
     }
-    $sql = "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate, '%H') AS hour
-            FROM cs_coffees
+    $sql = "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%H') AS hour
+            FROM cs_caffeine
             WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(cdate, '%Y-%m-%d')
-            GROUP BY hour
-            UNION
-            SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%H') AS hour
-            FROM cs_mate
-            WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(mdate, '%Y-%m-%d')
-            GROUP BY hour";
+            GROUP BY hour, ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['hour'])][$row['label']] = $row['value'];
+        $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -123,24 +130,17 @@ function daily_caffeine_for_profile($profileid) {
         $retval[$counter] = array(0, 0);
     }
     $sql = sprintf(
-        "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%d') AS day
-         FROM cs_coffees
+        "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%d') AS day
+         FROM cs_caffeine
          WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m') = DATE_FORMAT(cdate, '%%Y-%%m')
            AND cuid = %d
-         GROUP BY day
-         UNION
-         SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%%d') AS day
-         FROM cs_mate
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%%Y-%%m') = DATE_FORMAT(mdate, '%%Y-%%m')
-           AND cuid = %d
-         GROUP BY day",
-        $profileid,
+         GROUP BY day, ctype",
         $profileid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['day'])][$row['label']] = $row['value'];
+        $retval[intval($row['day'])][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -157,20 +157,15 @@ function daily_caffeine_overall() {
     for ($counter = 1; $counter <= $maxdays; $counter++) {
         $retval[$counter] = array(0, 0);
     }
-    $sql = "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate, '%d') AS day
-            FROM cs_coffees
+    $sql = "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%d') AS day
+            FROM cs_caffeine
             WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(cdate, '%Y-%m')
-            GROUP BY day
-            UNION
-            SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%d') AS day
-            FROM cs_mate
-            WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(mdate, '%Y-%m')
-            GROUP BY day";
+            GROUP BY day, ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['day'])][$row['label']] = $row['value'];
+        $retval[intval($row['day'])][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -186,24 +181,17 @@ function monthly_caffeine_for_profile($profileid) {
         $retval[$counter] = array(0, 0);
     }
     $sql = sprintf(
-        "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate,'%%m') AS month
-         FROM cs_coffees
+        "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate,'%%m') AS month
+         FROM cs_caffeine
          WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%%Y') = DATE_FORMAT(cdate, '%%Y')
            AND cuid = %d
-         GROUP BY month
-         UNION
-         SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%%m') AS month
-         FROM cs_mate
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(),'%%Y') = DATE_FORMAT(mdate, '%%Y')
-           AND cuid = %d
-         GROUP BY month",
-        $profileid,
+         GROUP BY month, ctype",
         $profileid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['month'])][$row['label']] = $row['value'];
+        $retval[intval($row['month'])][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -219,20 +207,15 @@ function monthly_caffeine_overall() {
         $retval[$counter] = array(0, 0);
     }
     $sql =
-        "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate,'%m') AS month
-         FROM cs_coffees
+        "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate,'%m') AS month
+         FROM cs_caffeine
          WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(cdate, '%Y')
-         GROUP BY month
-         UNION
-         SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%m') AS month
-         FROM cs_mate
-         WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(mdate, '%Y')
-         GROUP BY month";
+         GROUP BY month, ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['month'])][$row['label']] = $row['value'];
+        $retval[intval($row['month'])][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -249,22 +232,16 @@ function hourly_caffeine_for_profile_overall($profileid) {
         $retval[$counter] = array(0, 0);
     }
     $sql = sprintf(
-        "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%H') AS hour
-         FROM cs_coffees
+        "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%H') AS hour
+         FROM cs_caffeine
          WHERE cuid = %d
-         GROUP BY hour
-         UNION
-         SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%%H') AS hour
-         FROM cs_mate
-         WHERE cuid = %d
-         GROUP BY hour",
-        $profileid,
+         GROUP BY hour, ctype",
         $profileid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['hour'])][$row['label']] = $row['value'];
+        $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -280,18 +257,14 @@ function hourly_caffeine_alltime() {
         $retval[$counter] = array(0, 0);
     }
     $sql =
-        "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate, '%H') AS hour
-         FROM cs_coffees
-         GROUP BY hour
-         UNION
-         SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%H') AS hour
-         FROM cs_mate
-         GROUP BY hour";
+        "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%H') AS hour
+         FROM cs_caffeine
+         GROUP BY hour, ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['hour'])][$row['label']] = $row['value'];
+        $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -309,22 +282,16 @@ function weekdaily_caffeine_for_profile_overall($profileid) {
         $retval[$weekdays[$counter]] = array(0, 0);
     }
     $sql=sprintf(
-        "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%a') AS wday
-         FROM cs_coffees
+        "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%a') AS wday
+         FROM cs_caffeine
          WHERE cuid = %d
-         GROUP BY wday
-         UNION
-         SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%%a') AS wday
-         FROM cs_mate
-         WHERE cuid = %d
-         GROUP BY wday",
-        $profileid,
+         GROUP BY wday, ctype",
         $profileid);
     if (($result=$dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
     }
     while ($row=$result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[$row['wday']][$row['label']] = $row['value'];
+        $retval[$row['wday']][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -341,18 +308,14 @@ function weekdaily_caffeine_alltime() {
         $retval[$weekdays[$counter]] = array(0, 0);
     }
     $sql =
-        "SELECT 0 AS label, COUNT(cid) AS value, DATE_FORMAT(cdate, '%a') AS wday
-         FROM cs_coffees
-         GROUP BY wday
-         UNION
-         SELECT 1 AS label, COUNT(mid) AS value, DATE_FORMAT(mdate, '%a') AS wday
-         FROM cs_mate
-         GROUP BY wday";
+        "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%a') AS wday
+         FROM cs_caffeine
+         GROUP BY wday, ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[$row['wday']][$row['label']] = $row['value'];
+        $retval[$row['wday']][$row['ctype']] = $row['value'];
     }
     $result->close();
     return $retval;
@@ -365,8 +328,8 @@ function random_users($count) {
     global $dbconn;
     $sql = sprintf(
         "SELECT ulogin, ufname, uname, ulocation,
-         (SELECT COUNT(cid) FROM cs_coffees WHERE cuid=uid) AS coffees,
-         (SELECT COUNT(mid) FROM cs_mate WHERE cuid=uid) AS mate
+         (SELECT COUNT(cid) FROM cs_caffeine WHERE cuid=uid AND ctype=0) AS coffees,
+         (SELECT COUNT(cid) FROM cs_caffeine WHERE cuid=uid AND ctype=1) AS mate
          FROM cs_users ORDER BY RAND() LIMIT %d",
         $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
@@ -387,15 +350,9 @@ function random_users($count) {
 function latest_caffeine_activity($count) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT label, ulogin, date
-         FROM (
-             SELECT 0 AS label, ulogin, cdate AS date
-             FROM cs_coffees JOIN cs_users ON cuid=uid
-             UNION
-             SELECT 1 AS label, ulogin, mdate AS date
-             FROM cs_mate JOIN cs_users ON cuid=uid
-         ) AS x
-         ORDER BY date DESC LIMIT %d",
+        "SELECT cid, ctype, ulogin, cdate, ctimezone
+         FROM cs_caffeine JOIN cs_users ON cuid=uid
+         ORDER BY cdate DESC LIMIT %d",
         $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
@@ -410,17 +367,16 @@ function latest_caffeine_activity($count) {
 
 /**
  * Returns the top caffeine consumers.
- *
- * TODO: handle mate too
  */
-function top_caffeine_consumers_total($count) {
+function top_caffeine_consumers_total($count, $ctype=0) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT COUNT(cid) AS total, cs_users.ulogin AS ulogin
-         FROM cs_coffees,cs_users
-         WHERE cs_coffees.cuid = cs_users.uid
-         GROUP BY cs_users.ulogin ORDER BY COUNT(cid) DESC LIMIT %d",
-        $count);
+        "SELECT COUNT(cid) AS total, ulogin
+         FROM cs_caffeine JOIN cs_users ON cuid=uid
+         WHERE ctype=%d
+         GROUP BY ulogin
+         ORDER BY COUNT(cid) DESC LIMIT %d",
+        $ctype, $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
@@ -434,16 +390,36 @@ function top_caffeine_consumers_total($count) {
 
 /**
  * Returns the top average caffeine consumers.
- *
- * TODO: handle mate too
  */
-function top_caffeine_consumers_average($count) {
+function top_caffeine_consumers_average($count, $ctype=0) {
     global $dbconn;
     $sql = sprintf(
         "SELECT ulogin, COUNT(cid) / (DATEDIFF(CURRENT_DATE, MIN(cdate)) + 1) AS average
-         FROM cs_users JOIN cs_coffees ON cuid=uid
-         GROUP BY cuid LIMIT %d",
-        $count);
+         FROM cs_caffeine JOIN cs_users ON cuid=uid
+         WHERE ctype=%d
+         GROUP BY ulogin
+         ORDER BY average DESC LIMIT %d",
+        $ctype, $count);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Return latest $count users ordered by ujoined in the given direction.
+ */
+function _fetch_users_by_jointime($count, $direction) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ulogin, DATEDIFF(CURRENT_TIMESTAMP, ujoined) AS days
+         FROM cs_users ORDER BY ujoined %s LIMIT %d",
+        $direction, $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
@@ -459,10 +435,24 @@ function top_caffeine_consumers_average($count) {
  * Returns the most recently joined users.
  */
 function recently_joined_users($count) {
+    return _fetch_users_by_jointime($count, 'DESC');
+}
+
+/**
+ * Returns the earliest users.
+ */
+function longest_joined_users($count) {
+    return _fetch_users_by_jointime($count, 'ASC');
+}
+
+/**
+ * Return the latest entries for the given user.
+ */
+function latest_entries($profileid, $count=10) {
     global $dbconn;
     $sql = sprintf(
-        "SELECT ulogin FROM cs_users ORDER BY ujoined DESC LIMIT %d",
-        $count);
+        "SELECT cid, cdate, ctype, ctimezone FROM cs_caffeine WHERE cuid=%d ORDER BY centrytime DESC LIMIT %d",
+        $profileid, $count);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
@@ -470,6 +460,65 @@ function recently_joined_users($count) {
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         array_push($retval, $row);
     }
+    $result->close();
     return $retval;
+}
+
+/**
+ * Fetch the entry with the given id if it matches the given user.
+ */
+function fetch_entry($cid, $profileid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT cid, ctype, cdate, ctimezone FROM cs_caffeine
+         WHERE cid=%d AND cuid=%d",
+        $cid, $profileid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    return $retval;
+}
+
+/**
+ * Delete the given entry if it matches the given user.
+ */
+function delete_caffeine_entry($cid, $profileid) {
+    global $dbconn;
+    $sql = sprintf(
+        "DELETE FROM cs_caffeine WHERE cid=%d AND cuid=%d",
+        $cid, $profileid);
+    if (($result = $dbconn->query($sql)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return (($dbconn->affected_rows) === 1);
+}
+
+/**
+ * Set the user's time zone information.
+ */
+function set_user_timezone($profileid, $tzname) {
+    global $dbconn;
+    $sql = sprintf(
+        "UPDATE cs_users SET utimezone='%s' WHERE uid=%d",
+        $dbconn->real_escape_string($tzname),
+        $profileid);
+    if (($result = $dbconn->query($sql)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $success = (($dbconn->affected_rows) === 1);
+    // set existing entries without timezone to the selected timezone
+    $sql = sprintf(
+        "UPDATE cs_caffeine SET ctimezone='%s'
+         WHERE cuid=%d AND ctimezone IS NULL",
+        $dbconn->real_escape_string($tzname),
+        $profileid);
+    if (($result = $dbconn->query($sql)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return $success;
 }
 ?>

@@ -7,8 +7,11 @@ if (isset($_GET['t']) && isset($_GET['u'])) {
     if ((($user = sanitize_username($_GET['u'])) !== FALSE) &&
         (($token = sanitize_md5value($_GET['t'], 'Token')) !== FALSE))
     {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
         $sql = sprintf(
-            "SELECT uid, utoken, ulogin FROM cs_users
+            "SELECT uid, utoken, ulogin, utimezone FROM cs_users
              WHERE ulogin='%s' AND utoken='%s'",
             $dbconn->real_escape_string($user),
             $dbconn->real_escape_string($token));
@@ -19,6 +22,14 @@ if (isset($_GET['t']) && isset($_GET['u'])) {
             $token = $row['utoken'];
             $user = $row['ulogin'];
             $profileid = $row['uid'];
+            $timezone = $row['utimezone'];
+            if ($timezone == NULL) {
+                flash(
+                    'Your timezone is not set, you should ' .
+                    '<a href="auth/login">login</a> ' .
+                    'and define a timezone!',
+                    FLASH_WARNING);
+            }
         }
         else {
             flash('Invalid token or username', FLASH_ERROR);
@@ -37,11 +48,12 @@ else {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['coffeetime']) && (($coffeetime = sanitize_datetime($_POST['coffeetime'])) !== FALSE)) {
-        register_coffee($profileid, $coffeetime);
+        register_coffee($profileid, $coffeetime, $timezone);
     }
     elseif (isset($_POST['matetime']) && (($matetime = sanitize_datetime($_POST['matetime'])) !== FALSE)) {
-        register_mate($profileid, $matetime);
+        register_mate($profileid, $matetime, $timezone);
     }
+    redirect_to($_SERVER['REQUEST_URI']);
 }
 
 include_once('includes/jsvalidation.php');

@@ -24,8 +24,7 @@ define('MYSQL_HOSTNAME', 'COFFEESTATS_MYSQL_HOSTNAME');
 define('MYSQL_PASSWORD', 'COFFEESTATS_MYSQL_PASSWORD');
 define('MYSQL_USER', 'COFFEESTATS_MYSQL_USER');
 
-define('PIWIK_HTTPS_URL', 'COFFEESTATS_PIWIK_HTTPS_URL');
-define('PIWIK_HTTP_URL', 'COFFEESTATS_PIWIK_HTTP_URL');
+define('PIWIK_HOST', 'COFFEESTATS_PIWIK_HOST');
 define('PIWIK_SITE_ID', 'COFFEESTATS_PIWIK_SITEID');
 
 define('RECAPTCHA_PRIVATEKEY', 'COFFEESTATS_RECAPTCHA_PRIVATEKEY');
@@ -33,6 +32,11 @@ define('RECAPTCHA_PUBLICKEY', 'COFFEESTATS_RECAPTCHA_PUBLICKEY');
 
 define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
 define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
+
+$ENTRY_TYPES = array(
+    0 => 'coffee',
+    1 => 'mate',
+);
 
 /**
  * Store a flash message in the flash message stack.
@@ -146,7 +150,14 @@ function baseurl() {
     if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strcmp($_SERVER['HTTPS'], 'off') != 0)) {
         $protocol = 'https';
     }
-    return sprintf("%s://%s", $protocol, $_SERVER['SERVER_NAME']);
+    $appendport = (
+        (($protocol === 'https') && ($_SERVER['SERVER_PORT'] !== '443')) ||
+        (($protocol === 'http') && ($_SERVER['SERVER_PORT'] !== '80'))
+    );
+    return sprintf(
+        "%s://%s%s",
+        $protocol, $_SERVER['SERVER_NAME'],
+        $appendport ? ":" . $_SERVER['SERVER_PORT'] : "");
 }
 
 /**
@@ -321,9 +332,7 @@ function clean_inactive_users() {
     global $dbconn;
     $sql = "DELETE FROM cs_users
         WHERE uactive=0 AND NOT EXISTS (
-          SELECT mid FROM cs_mate WHERE cuid=uid
-          UNION
-          SELECT cid FROM cs_coffees WHERE cuid=uid)
+          SELECT cid FROM cs_caffeine WHERE cuid=uid)
         AND ujoined < (CURRENT_TIMESTAMP - INTERVAL 30 DAY)";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
@@ -331,14 +340,25 @@ function clean_inactive_users() {
 }
 
 /**
+ * Unified formatting for timezone information.
+ */
+function format_timezone($timezone) {
+    if ($timezone === NULL) {
+        return "";
+    }
+    return sprintf(" %s", $timezone);
+}
+
+/**
  * Register a new coffee for the given user at the given time.
  */
-function register_coffee($uid, $coffeetime) {
+function register_coffee($uid, $coffeetime, $timezone) {
     global $dbconn;
     $sql = sprintf(
-        'SELECT cid, cdate
-         FROM cs_coffees
-         WHERE cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
+        'SELECT cid, cdate, ctimezone
+         FROM cs_caffeine
+         WHERE ctype = 0
+           AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
            AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
            AND cuid = %2$d',
         $dbconn->real_escape_string($coffeetime), $uid);
@@ -348,21 +368,22 @@ function register_coffee($uid, $coffeetime) {
     if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $result->close();
         flash(sprintf(
-            'Error: Your last coffee was less than 5 minutes ago at %s. O_o',
-            $row['cdate']),
+            'Error: Your last coffee was less than 5 minutes ago at %s %s. O_o',
+            $row['cdate'], ($row['ctimezone'] != NULL) ? $row['ctimezone'] : ""),
             FLASH_WARNING);
     }
     else {
         $result->close();
         $sql = sprintf(
-            "INSERT INTO cs_coffees (cuid, cdate)
-             VALUES (%d, '%s')",
-            $uid, $dbconn->real_escape_string($coffeetime));
+            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime, ctimezone)
+             SELECT uid, 0, '%s', UTC_TIMESTAMP, utimezone FROM cs_users WHERE uid=%d",
+            $dbconn->real_escape_string($coffeetime), $uid);
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
             handle_mysql_error();
         }
         flash(sprintf(
-            'Your coffee at %s has been registered!', $coffeetime),
+            'Your coffee at %s%s has been registered!',
+            $coffeetime, format_timezone($timezone)),
             FLASH_SUCCESS);
     }
 }
@@ -370,13 +391,14 @@ function register_coffee($uid, $coffeetime) {
 /**
  * Register a new mate for the given user at the given time.
  */
-function register_mate($uid, $matetime) {
+function register_mate($uid, $matetime, $timezone) {
     global $dbconn;
     $sql = sprintf(
-        'SELECT mid, mdate
-         FROM cs_mate
-         WHERE mdate > (\'%1$s\' - INTERVAL 5 MINUTE)
-           AND mdate < (\'%1$s\' + INTERVAL 5 MINUTE)
+        'SELECT cid, cdate, ctimezone
+         FROM cs_caffeine
+         WHERE ctype = 1
+           AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
+           AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
            AND cuid = %2$d',
         $dbconn->real_escape_string($matetime), $uid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
@@ -385,22 +407,34 @@ function register_mate($uid, $matetime) {
     if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $result->close();
         flash(sprintf(
-            "Error: Your last mate was less than 5 minutes ago at %s. O_o",
-            $row['mdate']),
+            "Error: Your last mate was less than 5 minutes ago at %s %s. O_o",
+            $row['cdate'], ($row['ctimezone'] != NULL) ? $row['ctimezone'] : ""),
             FLASH_WARNING);
     }
     else {
         $result->close();
         $sql=sprintf(
-            "INSERT INTO cs_mate (cuid, mdate)
-             VALUES (%d, '%s')",
-            $uid, $dbconn->real_escape_string($matetime));
+            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime, ctimezone)
+             SELECT uid, 1, '%s', UTC_TIMESTAMP, utimezone FROM cs_users WHERE uid=%d",
+            $dbconn->real_escape_string($matetime), $uid);
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
             handle_mysql_error();
         }
         flash(sprintf(
-            'Your mate at %s has been registered!', $matetime),
+            'Your mate at %s%s has been registered!',
+            $matetime, format_timezone($timezone)),
             FLASH_SUCCESS);
     }
+}
+
+/**
+ * Return a name for the given numeric entry type.
+ */
+function get_entrytype($entrytype) {
+    global $ENTRY_TYPES;
+    if (array_key_exists($entrytype, $ENTRY_TYPES)) {
+        return $ENTRY_TYPES[$entrytype];
+    }
+    return "unknown";
 }
 ?>
