@@ -3,30 +3,15 @@ include("auth/lock.php");
 include_once('includes/common.php');
 
 // Export Function
-function export_csv($type) {
+function export_csv() {
     global $dbconn;
     // TODO: use an absolute base path from configuration for export files
-    switch ($type) {
-    case 'coffee':
-        $file = tempnam(sys_get_temp_dir(), sprintf('coffees-%s', $_SESSION['login_user']));
-        $sql = sprintf(
-            "SELECT cdate AS thedate
-             FROM cs_coffees
-             WHERE cuid = %d",
-            $dbconn->real_escape_string($_SESSION['login_id']));
-        break;
-    case 'mate':
-        $file = tempnam(sys_get_temp_dir(), sprintf('mate-%s', $_SESSION['login_user']));
-        $sql = sprintf(
-            "SELECT mdate AS thedate
-             FROM cs_mate
-             WHERE cuid = %d",
-            $dbconn->real_escape_string($_SESSION['login_id']));
-        break;
-    default:
-        error_log(sprintf('Invalid call to export_csv with type %s', $type));
-        return NULL;
-    }
+    $file = tempnam(sys_get_temp_dir(), sprintf('caffeine-%s', $_SESSION['login_user']));
+    $sql = sprintf(
+         "SELECT cdate AS thedate
+          FROM cs_caffeine
+          WHERE cuid = %d",
+         $dbconn->real_escape_string($_SESSION['login_id']));
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error();
     }
@@ -96,9 +81,8 @@ function update_user($uuserid) {
 if (isset($_POST['action'])) {
     switch ($_POST['action']) {
     case 'export':
-        $coffeefile = export_csv('coffee');
-        $matefile = export_csv('mate');
-        // TODO: mail CSV files to profile email address
+        $caffeinefile = export_csv();
+        multi_attach_mail($, $files, $sendermail)
         flash('Your data has been exported. You will receive an email with two CSV files with your coffee and mate registrations attached.', FLASH_INFO);
         break;
     case 'update':
@@ -106,7 +90,9 @@ if (isset($_POST['action'])) {
         update_user($_SESSION['login_id']);
         break;
     case 'delete':
-        flash('Deleting ...', FLASH_INFO);
+      flash('We recieved your deletion request. Your account will be deleted with all its information within the next week.
+             If you change your mind, feel free to mail us at '.get_setting(SITE_ADMINMAIL), FLASH_INFO);
+        send_user_deletion($_SESSION['login_user'],$_SESSION['login_id']);
         break;
     default:
         error_log(sprintf('Invalid call wrong POST action %s', $_POST['action']));
