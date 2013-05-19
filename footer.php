@@ -16,31 +16,25 @@ $siteid = get_setting(PIWIK_SITE_ID, FALSE);
 
 <?php
 if ($siteid !== NULL) {
-    $http_url = get_setting(PIWIK_HTTP_URL);
-    $https_url = get_setting(PIWIK_HTTPS_URL);
+    $piwikhost = get_setting(PIWIK_HOST);
 ?>
 <!-- Piwik -->
 <script type="text/javascript">
-    var pkBaseURL = (("https:" == document.location.protocol) ? "<?php echo $https_url; ?>" : "<?php echo $http_url; ?>");
-    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+  var _paq = _paq || [];
+  _paq.push(["trackPageView"]);
+  _paq.push(["enableLinkTracking"]);
 
-    try {
-        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", <?php echo $siteid; ?>);
-        piwikTracker.trackPageView();
-        piwikTracker.enableLinkTracking();
-    } catch( err ) {}
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://<?php echo $piwikhost; ?>/";
+    _paq.push(["setTrackerUrl", u+"piwik.php"]);
+    _paq.push(["setSiteId", "6"]);
+    var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+    g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+  })();
 </script>
-<noscript><p><img src="<?php
-    if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strcmp($_SERVER['HTTPS'], 'off') != 0)) {
-        printf("%spiwik.php?idsite=%s", $https_url, $siteid);
-    }
-    else {
-        printf("%spiwik.php?idsite=%s", $http_url, $siteid);
-    }
-?>" style="border:0" alt="" /></p></noscript>
-<!-- End Piwik Tracking Code -->
+<!-- End Piwik Code -->
 <?php
-}
+    }
 ?>
 
 </body>
