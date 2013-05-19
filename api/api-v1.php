@@ -35,7 +35,6 @@ function check_authentication() {
     // TODO: implement some API key mechanism for non-interactive users
     header('Status: 403 Forbidden');
     header('Content-Type: text/plain; charset=utf8');
-    print_r($_SESSION);
     print('You need to authenticate to use this service.');
     exit();
 }
