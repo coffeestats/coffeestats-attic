@@ -8,13 +8,13 @@ include_once(sprintf('%s/common.php', dirname(__FILE__)));
  * Validate a single password or a pair of passwords and return a sanitized
  * version of the password.
  */
-function sanitize_password($password, $repeat=NULL) {
+function sanitize_password($password, $repeat=NULL, $allowempty=FALSE) {
     $password = trim($password);
-    if (empty($password)) {
+    if (!$allowempty && empty($password)) {
         flash('Password must not be empty!', FLASH_ERROR);
         return FALSE;
     }
-    if (strlen($password) < 8) {
+    if (!empty($password) && (strlen($password) < 8)) {
         flash('Password must be at least 8 characters long', FLASH_ERROR);
         return FALSE;
     }
