@@ -538,4 +538,62 @@ function unique_email($email, $uid) {
     }
     return $email;
 }
+
+/**
+ * Find the data for the given action code.
+ */
+function find_action_data($actioncode) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT cuid, atype, adata FROM cs_actions WHERE acode='%s'",
+        $dbconn->real_escape_string($actioncode));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Delete the action with the given action code.
+ */
+function delete_action($actioncode) {
+    global $dbconn;
+    $sql = sprintf(
+        "DELETE FROM cs_actions WHERE acode='%s'",
+        $dbconn->real_escape_string($actioncode));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+}
+
+/**
+ * Set the user with the given user id to active.
+ */
+function set_user_active($uid) {
+    global $dbconn;
+    $sql = sprintf("UPDATE cs_users SET uactive=1 WHERE uid=%d", $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return (($dbconn->affected_rows) === 1);
+}
+
+/**
+ * Set the email address of the given user.
+ */
+function set_user_email($uid, $email) {
+    global $dbconn;
+    $sql = sprintf(
+        "UPDATE cs_users SET uemail='%s' WHERE uid=%d",
+        $dbconn->real_escape_string($email), $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return (($dbconn->affected_rows) === 1);
+}
 ?>

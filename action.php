@@ -1,5 +1,6 @@
 <?php
 include('auth/config.php');
+include_once('includes/queries.php');
 
 if (!isset($_GET['code']) || empty($_GET['code'])) {
     errorpage(
@@ -8,45 +9,23 @@ if (!isset($_GET['code']) || empty($_GET['code'])) {
         '400 Bad Request');
 }
 
-$sql = sprintf(
-    "SELECT cuid, atype, adata FROM cs_actions WHERE acode='%s'",
-    $dbconn->real_escape_string($_GET['code']));
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $cuid = $row['cuid'];
-    $atype = $row['atype'];
-    $adata = $row['adata'];
-}
-else {
+$actiondata = find_action_data($_GET['code']);
+if ($actiondata === NULL) {
     errorpage(
         'Invalid action code',
         'The action code in the URL you tried to access is not valid. ' .
         'Maybe you entered a wrong code or the code has expired.',
         '404 Not Found');
 }
-$result->close();
 
-function delete_action($actioncode) {
-    global $dbconn;
-    $sql = sprintf(
-        "DELETE FROM cs_actions WHERE acode='%s'",
-        $dbconn->real_escape_string($actioncode));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-}
+$cuid = $actiondata['cuid'];
+$atype = $actiondata['atype'];
+$adata = $actiondata['adata'];
 
 function activate_account($cuid) {
-    global $dbconn;
-    $sql = sprintf(
-        "UPDATE cs_users SET uactive=1 WHERE uid=%d",
-        $cuid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
+    if (set_user_active($cuid)) {
+        flash("Your account has been activated successfully.", FLASH_SUCCESS);
     }
-    flash("Your account has been activated successfully.", FLASH_SUCCESS);
 }
 
 function reset_password($cuid) {
@@ -58,14 +37,9 @@ function reset_password($cuid) {
 }
 
 function change_email($cuid, $email) {
-    global $dbconn;
-    $sql = sprintf(
-        "UPDATE cs_users SET uemail='%s' WHERE uid=%d",
-        $dbconn->real_escape_string($email), $cuid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
+    if (set_user_email($cuid, $email)) {
+        flash("Your email address has been changed successfully.", FLASH_SUCCESS);
     }
-    flash("Your email address has been changed successfully.", FLASH_SUCCESS);
 }
 
 switch ($atype) {
