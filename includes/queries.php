@@ -5,6 +5,23 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     exit();
 }
 
+include_once(sprintf('%s/common.php', dirname(__FILE__)));
+
+/**
+ * Handle a MySQL error, log to error log and show an error page to the user.
+ */
+function handle_mysql_error($sql=NULL) {
+    global $dbconn;
+    if ($dbconn->errno !== 0) {
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        error_log(sprintf(
+            "%s line %d: MySQL error %d: %s%s",
+            $backtrace[0]['file'], $backtrace[0]['line'],
+            $dbconn->errno, $dbconn->error, ($sql === NULL) ? "" : "\n" . $sql));
+        errorpage("Error", "Sorry, we have a problem.", "500 Internal Server Error");
+    }
+}
+
 /*
  * Bundle common queries.
  */
@@ -559,6 +576,27 @@ function find_action_data($actioncode) {
 }
 
 /**
+ * Create an entry in the cs_actions table.
+ */
+function create_action($uid, $action_type, $actioncode, $data) {
+    global $dbconn;
+    $sql = sprintf(
+        "INSERT INTO cs_actions
+         (cuid, acode,
+          created, validuntil,
+          atype, adata)
+         VALUES
+         (%d, '%s',
+          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL 24 HOUR,
+          %d, '%s')",
+        $uid, $dbconn->real_escape_string($actioncode),
+        $action_type, $dbconn->real_escape_string($data));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+}
+
+/**
  * Delete the action with the given action code.
  */
 function delete_action($actioncode) {
@@ -717,5 +755,129 @@ function create_user(
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
+}
+
+/**
+ * Find user information (firstname, login and uid) for a given email address.
+ */
+function find_user_firstname_login_uid_by_email($email) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ufname, ulogin, uid FROM cs_users WHERE uemail='%s'",
+        $dbconn->real_escape_string($email));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Find user information (firstname, login, uid, email) for a given uid.
+ */
+function find_user_firstname_login_uid_email_by_uid($uid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ufname, ulogin, uid, uemail FROM cs_users WHERE uid=%d",
+        $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Performs a cleanup of the action table.
+ */
+function clean_expired_actions() {
+    global $dbconn;
+    $sql = "DELETE FROM cs_actions WHERE validuntil < CURRENT_TIMESTAMP";
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+}
+
+/**
+ * Perform a cleanup of inactive users that have no coffee or mate registered
+ * yet.
+ */
+function clean_inactive_users() {
+    global $dbconn;
+    $sql = "DELETE FROM cs_users
+        WHERE uactive=0 AND NOT EXISTS (
+          SELECT cid FROM cs_caffeine WHERE cuid=uid)
+        AND ujoined < (CURRENT_TIMESTAMP - INTERVAL 30 DAY)";
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+}
+
+/**
+ * Find caffeine dose with the given type for the given user in a five minute
+ * interval around the given point of time.
+ */
+function find_recent_caffeine($regtime, $uid, $ctype) {
+    global $dbconn;
+    $sql = sprintf(
+        'SELECT cid, cdate, ctimezone
+         FROM cs_caffeine
+         WHERE ctype = %3$d
+           AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
+           AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
+           AND cuid = %2$d',
+        $dbconn->real_escape_string($regtime), $uid, $ctype);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Create an entry in the cs_caffeine table.
+ */
+function create_caffeine($regtime, $uid, $ctype) {
+    global $dbconn;
+    $sql = sprintf(
+        "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime, ctimezone)
+         SELECT uid, %d, '%s', UTC_TIMESTAMP, utimezone
+         FROM cs_users WHERE uid=%d",
+        $ctype, $dbconn->real_escape_string($regtime), $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+}
+
+/**
+ * Find information about the user with the given uid.
+ */
+function find_user_by_uid($uid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ulogin, ufname, uname, ulocation, uemail, utimezone
+         FROM cs_users WHERE uid=%d",
+        $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    $result->close();
+    return $retval;
 }
 ?>
