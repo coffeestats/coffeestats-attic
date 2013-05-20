@@ -521,4 +521,21 @@ function set_user_timezone($profileid, $tzname) {
     }
     return $success;
 }
+
+/**
+ * Check whether the given email address is unique.
+ */
+function unique_email($email, $uid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT uid FROM cs_users WHERE uemail='%s' AND uid <> %d",
+        $dbconn->real_escape_string($email), $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        return FALSE;
+    }
+    return $email;
+}
 ?>
