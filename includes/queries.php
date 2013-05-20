@@ -596,4 +596,37 @@ function set_user_email($uid, $email) {
     }
     return (($dbconn->affected_rows) === 1);
 }
+
+/**
+ * Find the uid of the user with the given login.
+ */
+function find_user_uid_by_login($login) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT uid FROM cs_users WHERE ulogin='%s'",
+        $dbconn->real_escape_string($login));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $uid = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $uid = $row['uid'];
+    }
+    $result->close();
+    return $uid;
+}
+
+/**
+ * Set the given user's password hash value.
+ */
+function set_user_password($uid, $password) {
+    global $dbconn;
+    $sql = sprintf(
+        "UPDATE cs_users SET ucryptsum='%s' WHERE uid=%d",
+        hash_password($password), $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    return (($dbconn->affected_rows) === 1);
+}
 ?>
