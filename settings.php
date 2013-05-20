@@ -88,7 +88,7 @@ function update_user($uuserid, &$profile) {
 
     if (!empty($password)) {
         $sql = sprintf(
-            "UPDATE cs_users SET ucryptsum='%s WHERE uid = %d",
+            "UPDATE cs_users SET ucryptsum='%s' WHERE uid = %d",
             $dbconn->real_escape_string(hash_password($password)),
             $dbconn->real_escape_string($uuserid));
         if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
