@@ -140,8 +140,7 @@ $(document).ready(function() {
             && sanitize_email('input#email')
             && sanitize_string('input#firstname', false, 'Firstname')
             && sanitize_string('input#lastname', false, 'Lastname')
-            && sanitize_string('input#location', false, 'Location')
-            && sanitize_string('input#recaptcha_response_field', true);
+            && sanitize_string('input#location', false, 'Location');
     });
 });
 </script>

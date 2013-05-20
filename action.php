@@ -34,7 +34,7 @@ function delete_action($actioncode) {
         "DELETE FROM cs_actions WHERE acode='%s'",
         $dbconn->real_escape_string($actioncode));
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
 }
 
@@ -44,7 +44,7 @@ function activate_account($cuid) {
         "UPDATE cs_users SET uactive=1 WHERE uid=%d",
         $cuid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     flash("Your account has been activated successfully.", FLASH_SUCCESS);
 }
@@ -57,15 +57,31 @@ function reset_password($cuid) {
     redirect_to('auth/changepassword');
 }
 
+function change_email($cuid, $email) {
+    global $dbconn;
+    $sql = sprintf(
+        "UPDATE cs_users SET uemail='%s' WHERE uid=%d",
+        $dbconn->real_escape_string($email), $cuid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    flash("Your email address has been changed successfully.", FLASH_SUCCESS);
+}
+
 switch ($atype) {
 case $ACTION_TYPES['activate_mail']:
-    activate_account($cuid);
     delete_action($_GET['code']);
+    activate_account($cuid);
     redirect_to('index');
     break;
 case $ACTION_TYPES['reset_password']:
     delete_action($_GET['code']);
     reset_password($cuid);
+    break;
+case $ACTION_TYPES['change_email']:
+    delete_action($_GET['code']);
+    change_email($cuid, $adata);
+    redirect_to('index');
     break;
 default:
     errorpage(

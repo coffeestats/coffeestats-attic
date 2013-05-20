@@ -1,3 +1,4 @@
 .*.swp
 devdocs/*.pdf
 devdocs/tests/testdocs/
+tmp/*.csv

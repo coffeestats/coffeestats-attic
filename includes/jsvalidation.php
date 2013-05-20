@@ -142,7 +142,8 @@ function js_sanitize_datetime() {
 function js_sanitize_password() {
 ?>
 <script type="text/javascript">
-    function sanitize_password(pwfieldspec, repfieldspec) {
+    function sanitize_password(pwfieldspec, repfieldspec, allowempty) {
+        allowempty = typeof allowempty !== 'undefined' ? allowempty : false;
         var pwfield = $(pwfieldspec);
         var repfield = $(repfieldspec);
         var pwval = $.trim(pwfield.val());
@@ -151,7 +152,13 @@ function js_sanitize_password() {
         pwfield.val(pwval);
         repfield.val(repval);
 
-        if (pwval.length < 8) {
+        if (!allowempty && (pwval.length == 0)) {
+            alert('Password must not be empty!');
+            pwfield.focus();
+            return false;
+        }
+
+        if ((pwval.length > 0) && (pwval.length < 8)) {
             alert('Password must be at least 8 characters long!');
             pwfield.focus();
             return false;

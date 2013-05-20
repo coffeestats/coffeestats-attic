@@ -32,6 +32,7 @@ define('RECAPTCHA_PUBLICKEY', 'COFFEESTATS_RECAPTCHA_PUBLICKEY');
 
 define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
 define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
+define('SITE_ADMINMAIL', 'COFFEESTATS_SITE_ADMINMAIL');
 
 $ENTRY_TYPES = array(
     0 => 'coffee',
@@ -201,12 +202,85 @@ function hash_password($password) {
 }
 
 /**
- * Send a system mail to a given mail address.
+ * Send a system mail (potentialy a multipart mail) to a given mail address.
+ *
+ * Partly ripoff from http://www.php.net/manual/de/function.mail.php#105661
+ * for sending multiple attachments via mail
+ *
+ * The $files array must have an array with the fields 'content-type', 
+ * 'description', 'realfile', 'filename' for each file.
  */
-function send_system_mail($to, $subject, $body) {
-    $from = sprintf('From: %s', get_setting(MAIL_FROM_ADDRESS));
-    mail($to, $subject, $body, $from);
+function send_system_mail($to, $subject, $body, &$files=NULL) {
+    $sendermail = get_setting(MAIL_FROM_ADDRESS);
+    $from = sprintf(
+        "From: %s <%s>",
+        get_setting(SITE_NAME), $sendermail);
+
+    $headers = array($from);
+
+    if (($files !== NULL) && (count($files) > 0)) {
+        $mime_boundary = sprintf(
+            "==Multipart_Boundary_x(%sx",
+            md5(time() + mt_rand()));
+        array_push($headers, "MIME-Version: 1.0");
+        array_push($headers, sprintf(
+            'Content-Type: multipart/mixed; boundary="%s"',
+            $mime_boundary));
+
+        $message = sprintf("--%s\r\n", $mime_boundary);
+        $message .= "Content-Type: text/plain; charset=\"utf-8\"\r\n";
+        $message .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+        $message .= quoted_printable_encode($body);
+        $message .= "\r\n";
+
+        foreach ($files as $filepart) {
+            if (is_file($filepart['realfile'])) {
+                $message .= sprintf("--%s\r\n", $mime_boundary);
+                $message .= sprintf(
+                    "Content-Type: %s; name=\"%s\"\r\n",
+                    $filepart['content-type'],
+                    $filepart['filename']);
+                $message .= sprintf(
+                    "Content-Description: %s\r\n", $filepart['description']);
+                $message .= sprintf(
+                    "Content-Disposition: attachment; filename=\"%s\";".
+                    " size=%d\r\n",
+                    $filepart['filename'],
+                    filesize($filepart['realfile']));
+                $message .= "Content-Transfer-Encoding: base64\r\n\r\n";
+                $message .= chunk_split(
+                    base64_encode(file_get_contents($filepart['realfile'])));
+            }
+            else {
+                error_log(sprintf(
+                    "%s is no file.", $filepart['filename']));
+            }
+        }
+        // $message .= sprintf("--%s\r\n", $mime_boundary);
+    }
+    else {
+        array_push($headers, "Content-Type: text/plain; charset=\"utf-8\"");
+        array_push($headers, "Content-Transfer-Encoding: quoted-printable");
+        $message = quoted_printable_encode($body);
+    }
+
+    $returnpath = "-f" . $sendermail;
+    $ok = @mail($to, $subject, $message, implode("\r\n", $headers), $returnpath);
+
+    return $ok;
 }
+
+
+/**
+ * Send the caffeine track record mail with the attached files.
+ */
+function send_caffeine_mail($to, &$files) {
+    $subject = "Your caffeine records";
+    $body = "Attached is your caffeine track record.";
+
+    return send_system_mail($to, $subject, $body, $files);
+}
+
 
 /**
  * Generates an action code for the cs_actions table.
@@ -218,10 +292,18 @@ function generate_actioncode($data) {
 $ACTION_TYPES = array(
     'activate_mail' => 1,
     'reset_password' => 2,
+    'change_email' => 3,
 );
 
+/**
+ * Create an entry in the cs_actions table.
+ */
 function create_action_entry($cuid, $action_type, $data) {
     global $dbconn, $ACTION_TYPES;
+    if (!array_key_exists($action_type, $ACTION_TYPES)) {
+        error_log(sprintf("Invalid action code %s", $action_type));
+        return FALSE;
+    }
     $actioncode = generate_actioncode($data);
     $sql = sprintf(
         "INSERT INTO cs_actions
@@ -240,6 +322,9 @@ function create_action_entry($cuid, $action_type, $data) {
     return $actioncode;
 }
 
+/**
+ * Get the absolute URL for the given action code.
+ */
 function get_action_url($actioncode) {
     return sprintf('%s/action?code=%s', baseurl(), urlencode($actioncode));
 }
@@ -267,6 +352,11 @@ function send_mail_activation_link($email) {
     $result->close();
 
     $actioncode = create_action_entry($cuid, 'activate_mail', $email);
+    if ($actioncode === FALSE) {
+        errorpage(
+            'Failure', 'Action creation failed.',
+            '500 Internal Server Error');
+    }
 
     $subject = sprintf(
         "Please activate your account at %s",
@@ -288,7 +378,7 @@ function send_reset_password_link($email) {
         "SELECT ufname, ulogin, uid FROM cs_users WHERE uemail='%s'",
         $dbconn->real_escape_string($email));
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $firstname = $row['ufname'];
@@ -301,6 +391,11 @@ function send_reset_password_link($email) {
     }
 
     $actioncode = create_action_entry($cuid, 'reset_password', $email);
+    if ($actioncode === FALSE) {
+        errorpage(
+            'Failure', 'Action creation failed.',
+            '500 Internal Server Error');
+    }
 
     $subject = sprintf(
         "Reset your password for %s",
@@ -311,6 +406,72 @@ function send_reset_password_link($email) {
         file_get_contents(
             sprintf('%s/../templates/reset_password.txt', dirname(__FILE__))));
     send_system_mail($email, $subject, $body);
+}
+
+/**
+ * Send an email to confirm the change of a user's email address.
+ */
+function send_change_email_link($email, $uid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ufname, ulogin, uid, uemail FROM cs_users WHERE uid=%d",
+        $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $firstname = $row['ufname'];
+        $login = $row['ulogin'];
+        $oldemail = $row['uemail'];
+        $cuid = $row['uid'];
+    }
+    $result->close();
+    if (!isset($cuid)) {
+        return;
+    }
+
+    $actioncode = create_action_entry($cuid, 'change_email', $email);
+    if ($actioncode === FALSE) {
+        errorpage(
+            'Failure', 'Action creation failed.',
+            '500 Internal Server Error');
+    }
+
+    $subject = sprintf(
+        "Change your email address for %s",
+        get_setting(SITE_NAME));
+    $body = str_replace(
+        array(
+            '@firstname@',
+            '@login@',
+            '@actionurl@',
+            '@oldemail@',
+            '@email@'),
+        array(
+            $firstname,
+            $login,
+            get_action_url($actioncode),
+            $oldemail,
+            $email),
+        file_get_contents(
+            sprintf('%s/../templates/change_email.txt', dirname(__FILE__))));
+    send_system_mail($email, $subject, $body);
+}
+
+/**
+ * Send an email to the site administrator with a user's request to delete his
+ * account.
+ */
+function send_user_deletion($user, $id) {
+    $subject = sprintf(
+        "User %s requested his deletion",
+        $user);
+    $body = str_replace(
+        array('@user@','@id@'),
+        array($user,$id),
+        file_get_contents(
+            sprintf('%s/../templates/delete_user.txt', dirname(__FILE__))));
+    send_system_mail(get_setting(SITE_ADMINMAIL), $subject, $body);
 }
 
 /**
@@ -436,5 +597,32 @@ function get_entrytype($entrytype) {
         return $ENTRY_TYPES[$entrytype];
     }
     return "unknown";
+}
+
+
+/**
+ * Load the profile information of the given user.
+ */
+function load_user_profile($loginid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ulogin, ufname, uname, ulocation, uemail, utimezone
+         FROM cs_users WHERE uid=%d",
+        $loginid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = array(
+            'login' => $row['ulogin'],
+            'firstname' => $row['ufname'],
+            'lastname' => $row['uname'],
+            'location' => $row['ulocation'],
+            'email' => $row['uemail'],
+            'timezone' => $row['utimezone']);
+    }
+    $result->close();
+    return $retval;
 }
 ?>

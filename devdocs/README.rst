@@ -139,6 +139,7 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_param COFFEESTATS_PIWIK_HOST piwik.example.org;
         fastcgi_param COFFEESTATS_MAIL_FROM_ADDRESS no-reply@coffeestats.org;
         fastcgi_param COFFEESTATS_SITE_SECRET somerandomstring;
+        fastcgi_param COFFEESTATS_SITE_ADMINMAIL team@coffeestats.org;
         fastcgi_param COFFEESTATS_SITE_NAME "coffeestats.org development";
       }
     }
