@@ -262,10 +262,18 @@ function generate_actioncode($data) {
 $ACTION_TYPES = array(
     'activate_mail' => 1,
     'reset_password' => 2,
+    'change_email' => 3,
 );
 
+/**
+ * Create an entry in the cs_actions table.
+ */
 function create_action_entry($cuid, $action_type, $data) {
     global $dbconn, $ACTION_TYPES;
+    if (!array_key_exists($action_type, $ACTION_TYPES)) {
+        error_log(sprintf("Invalid action code %s", $action_type));
+        return FALSE;
+    }
     $actioncode = generate_actioncode($data);
     $sql = sprintf(
         "INSERT INTO cs_actions
@@ -284,6 +292,9 @@ function create_action_entry($cuid, $action_type, $data) {
     return $actioncode;
 }
 
+/**
+ * Get the absolute URL for the given action code.
+ */
 function get_action_url($actioncode) {
     return sprintf('%s/action?code=%s', baseurl(), urlencode($actioncode));
 }
@@ -311,6 +322,11 @@ function send_mail_activation_link($email) {
     $result->close();
 
     $actioncode = create_action_entry($cuid, 'activate_mail', $email);
+    if ($actioncode === FALSE) {
+        errorpage(
+            'Failure', 'Action creation failed.',
+            '500 Internal Server Error');
+    }
 
     $subject = sprintf(
         "Please activate your account at %s",
@@ -332,7 +348,7 @@ function send_reset_password_link($email) {
         "SELECT ufname, ulogin, uid FROM cs_users WHERE uemail='%s'",
         $dbconn->real_escape_string($email));
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $firstname = $row['ufname'];
@@ -345,6 +361,11 @@ function send_reset_password_link($email) {
     }
 
     $actioncode = create_action_entry($cuid, 'reset_password', $email);
+    if ($actioncode === FALSE) {
+        errorpage(
+            'Failure', 'Action creation failed.',
+            '500 Internal Server Error');
+    }
 
     $subject = sprintf(
         "Reset your password for %s",
@@ -358,7 +379,58 @@ function send_reset_password_link($email) {
 }
 
 /**
- * Send an email with a password reset link if there is an account with the given email address.
+ * Send an email to confirm the change of a user's email address.
+ */
+function send_change_email_link($email, $uid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ufname, ulogin, uid, uemail FROM cs_users WHERE uid=%d",
+        $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $firstname = $row['ufname'];
+        $login = $row['ulogin'];
+        $oldemail = $row['uemail'];
+        $cuid = $row['uid'];
+    }
+    $result->close();
+    if (!isset($cuid)) {
+        return;
+    }
+
+    $actioncode = create_action_entry($cuid, 'change_email', $email);
+    if ($actioncode === FALSE) {
+        errorpage(
+            'Failure', 'Action creation failed.',
+            '500 Internal Server Error');
+    }
+
+    $subject = sprintf(
+        "Change your email address for %s",
+        get_setting(SITE_NAME));
+    $body = str_replace(
+        array(
+            '@firstname@',
+            '@login@',
+            '@actionurl@',
+            '@oldemail@',
+            '@email@'),
+        array(
+            $firstname,
+            $login,
+            get_action_url($actioncode),
+            $oldemail,
+            $email),
+        file_get_contents(
+            sprintf('%s/../templates/change_email.txt', dirname(__FILE__))));
+    send_system_mail($email, $subject, $body);
+}
+
+/**
+ * Send an email to the site administrator with a user's request to delete his
+ * account.
  */
 function send_user_deletion($user, $id) {
     $subject = sprintf(
@@ -371,6 +443,7 @@ function send_user_deletion($user, $id) {
             sprintf('%s/../templates/delete_user.txt', dirname(__FILE__))));
     send_system_mail(get_setting(SITE_ADMINMAIL), $subject, $body);
 }
+
 /**
  * Performs a cleanup of the action table.
  */
@@ -519,6 +592,7 @@ function load_user_profile($loginid) {
             'email' => $row['uemail'],
             'timezone' => $row['utimezone']);
     }
+    $result->close();
     return $retval;
 }
 ?>
