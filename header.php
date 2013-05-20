@@ -20,7 +20,7 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 <?php
 if (isset($login_session)) {
 ?>
-        <div id="account"><a href="settings">Settings</a> / <a href="auth/logout">Logout</a></div>
+        <div id="account" class="rightfloated"><a href="settings">Settings</a> / <a href="auth/logout">Logout</a></div>
 <?php
 }
 ?>
@@ -40,7 +40,6 @@ if (isset($login_session)) {
                         <li id="navexplore"><a href="explore">Explore</a></li>
                         <li id="navoverall"><a href="overall">Overall Stats</a></li>
                         <li id="navabout"><a href="about">About</a></li>
-                        <!-- <li id="navlogout"><a href="auth/logout">Logout</a></li> -->
                     </ul>
                 </div>
             </div>
