@@ -330,6 +330,30 @@ function get_action_url($actioncode) {
 }
 
 /**
+ * Fill a mail template.
+ */
+function fill_mail_template($templatename, $placeholders) {
+    $templatefile = sprintf('%s/../templates/%s.txt', dirname(__FILE__), $templatename);
+    if (!file_exists($templatefile)) {
+        error_log(sprintf(
+            'Invalid mail template name %s, file %s does not exist.',
+            $templatename, $templatefile));
+        errorpage(
+            'Error', 'Error, could not create mail.',
+            '500 Internal Server Error');
+    }
+    $keys = array();
+    $values = array();
+    foreach ($placeholders as $key => $value) {
+        array_push($keys, sprintf('@%s@', $key));
+        array_push($values, $value);
+    }
+
+    return str_replace(
+        $keys, $values, file_get_contents($templatefile));
+}
+
+/**
  * Sends a mail to activate an account.
  */
 function send_mail_activation_link($email) {
@@ -361,11 +385,9 @@ function send_mail_activation_link($email) {
     $subject = sprintf(
         "Please activate your account at %s",
         get_setting(SITE_NAME));
-    $body = str_replace(
-        array('@firstname@', '@actionurl@'),
-        array($firstname, get_action_url($actioncode)),
-        file_get_contents(
-            sprintf('%s/../templates/activate_mail.txt', dirname(__FILE__))));
+    $body = fill_mail_template('activate_mail', array(
+        'firstname' => $firstname,
+        'actionurl' => get_action_url($actioncode)));
     send_system_mail($email, $subject, $body);
 }
 
@@ -400,11 +422,10 @@ function send_reset_password_link($email) {
     $subject = sprintf(
         "Reset your password for %s",
         get_setting(SITE_NAME));
-    $body = str_replace(
-        array('@firstname@', '@login@', '@actionurl@'),
-        array($firstname, $login, get_action_url($actioncode)),
-        file_get_contents(
-            sprintf('%s/../templates/reset_password.txt', dirname(__FILE__))));
+    $body = fill_mail_template(
+        'reset_password', array(
+            'firstname' => $firstname, 'login' => $login,
+            'actionurl' => get_action_url($actioncode)));
     send_system_mail($email, $subject, $body);
 }
 
@@ -440,21 +461,11 @@ function send_change_email_link($email, $uid) {
     $subject = sprintf(
         "Change your email address for %s",
         get_setting(SITE_NAME));
-    $body = str_replace(
-        array(
-            '@firstname@',
-            '@login@',
-            '@actionurl@',
-            '@oldemail@',
-            '@email@'),
-        array(
-            $firstname,
-            $login,
-            get_action_url($actioncode),
-            $oldemail,
-            $email),
-        file_get_contents(
-            sprintf('%s/../templates/change_email.txt', dirname(__FILE__))));
+    $body = fill_mail_template(
+        'change_email', array(
+            'firstname' => $firstname, 'login' => $login,
+            'actionurl' => get_action_url($actioncode),
+            'oldemail' => $oldemail, 'email' => $email));
     send_system_mail($email, $subject, $body);
 }
 
@@ -466,11 +477,8 @@ function send_user_deletion($user, $id) {
     $subject = sprintf(
         "User %s requested his deletion",
         $user);
-    $body = str_replace(
-        array('@user@','@id@'),
-        array($user,$id),
-        file_get_contents(
-            sprintf('%s/../templates/delete_user.txt', dirname(__FILE__))));
+    $body = fill_mail_template(
+        'delete_user', array('user' => $user, 'id' => $id));
     send_system_mail(get_setting(SITE_ADMINMAIL), $subject, $body);
 }
 
