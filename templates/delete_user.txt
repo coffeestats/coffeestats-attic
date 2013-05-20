@@ -1,0 +1,12 @@
+Hello Team,
+
+coffeestats.org account @user@ (ID @id@) wants to be deleted.
+
+The following SQL Queries could be useful. Always be careful!
+
+DELETE FROM cs_users WHERE uid = @id@ ;
+DELETE FROM cs_caffeine WHERE cuid = @id@ ; 
+DELETE FROM cs_actions WHERE cuid = @id@ ; 
+
+Best regards,
+your coffeestats.org team
