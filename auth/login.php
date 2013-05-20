@@ -1,6 +1,7 @@
 <?php
 include_once("config.php");
 include_once("../includes/common.php");
+include_once("../includes/queries.php");
 
 session_start();
 
@@ -21,26 +22,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // authentication
         $validpassword = FALSE;
-        $username = $dbconn->real_escape_string($username);
-        $sql = sprintf(
-            "SELECT uid, ucryptsum, utimezone FROM cs_users WHERE ulogin='%s' AND uactive=1",
-            $username);
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error();
-        }
-        if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $userinfo = find_user_information_for_login($username);
+        if ($userinfo !== NULL) {
             // password check
-            if (strcmp($row['ucryptsum'], crypt($dbconn->real_escape_string($password), $row['ucryptsum'])) === 0) {
-                $uid = $row['uid'];
+            if (strcmp(
+                $userinfo['ucryptsum'],
+                crypt($password, $userinfo['ucryptsum'])) === 0) {
+                $uid = $userinfo['uid'];
                 $validpassword = TRUE;
             }
         }
-        $result->close();
         if (($validpassword === TRUE) && isset($uid)) {
             $_SESSION['login_user'] = $username;
             $_SESSION['login_id'] = $uid;
-            $_SESSION['timezone'] = $row['utimezone'];
-            if ($row['utimezone'] === NULL) {
+            $_SESSION['timezone'] = $userinfo['utimezone'];
+            if ($userinfo['utimezone'] === NULL) {
                 flash('You have not set your timezone yet.', FLASH_INFO);
                 redirect_to('../selecttimezone');
             }

@@ -649,4 +649,25 @@ function get_login_for_user_with_login($login) {
     $result->close();
     return $retval;
 }
+
+/**
+ * Find the user information required for login (uid, password hash and
+ * timezone). for the give user name.
+ */
+function find_user_information_for_login($login) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT uid, ucryptsum, utimezone FROM cs_users
+         WHERE ulogin='%s' AND uactive=1",
+        $dbconn->real_escape_string($login));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    $result->close();
+    return $retval;
+}
 ?>
