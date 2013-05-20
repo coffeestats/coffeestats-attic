@@ -670,4 +670,52 @@ function find_user_information_for_login($login) {
     $result->close();
     return $retval;
 }
+
+/**
+ * Check whether a user with either the given login or the given email address
+ * exists.
+ */
+function find_user_exist_for_login_or_email($login, $email) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT uid FROM cs_users WHERE ulogin='%s' OR uemail='%s'",
+        $dbconn->real_escape_string($login),
+        $dbconn->real_escape_string($email));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = FALSE;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = TRUE;
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Create a user with the given data.
+ */
+function create_user(
+    $login, $email, $firstname, $lastname, $passwordhash, $location,
+    $otrtoken)
+{
+    global $dbconn;
+    $sql = sprintf(
+        "INSERT INTO cs_users (
+            ulogin, uemail, ufname, uname, ucryptsum, ujoined,
+            ulocation, upublic, utoken, uactive)
+         VALUES (
+            '%s', '%s', '%s', '%s', '%s', NOW(),
+            '%s', 1, '%s', 0)",
+        $dbconn->real_escape_string($login),
+        $dbconn->real_escape_string($email),
+        $dbconn->real_escape_string($firstname),
+        $dbconn->real_escape_string($lastname),
+        $dbconn->real_escape_string($passwordhash),
+        $dbconn->real_escape_string($location),
+        $dbconn->real_escape_string($otrtoken));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+}
 ?>
