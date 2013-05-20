@@ -3,35 +3,57 @@ include("auth/lock.php");
 include_once('includes/common.php');
 include_once('includes/queries.php');
 
-// Export Function
-function export_csv() {
+/**
+ * Export a user's coffee and mate history.
+ */
+function export_csv($uid) {
     global $dbconn;
-    // TODO: use an absolute base path from configuration for export files
-    $file = tempnam(sys_get_temp_dir(), sprintf('caffeine-%s', $_SESSION['login_user']));
-    $sql = sprintf(
-         "SELECT cdate AS thedate
-          FROM cs_caffeine
-          WHERE cuid = %d",
-         $dbconn->real_escape_string($_SESSION['login_id']));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-    if (($csvfile = fopen($file, 'w')) !== FALSE) {
-        fputcsv($csvfile, array("Timestamp"));
-        while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-            fputcsv($csvfile, array($row['thedate']));
-        }
-        $result->close();
-        fclose($csvfile);
-        return $file;
-    }
-    else {
-        flash("Problem during export", FLASH_ERROR);
-        return NULL;
-    }
 
+    $files = array();
+
+    $iterate = array(
+        array('coffee', 0),
+        array('mate', 1));
+
+    foreach ($iterate as $current) {
+        $file = tempnam(sys_get_temp_dir(), 'coffeestats');
+        $nowstr = date('Y-m-d H:i');
+        $filename = sprintf("%s-%s.csv", $current[0], $nowstr);
+        $filepart = array(
+            'content-type' => 'text/csv; charset=utf-8',
+            'description' => sprintf('Your coffee history until %s', $nowstr),
+            'realfile' => $file,
+            'filename' => $filename);
+
+        $sql = sprintf(
+             "SELECT cdate AS thedate
+              FROM cs_caffeine
+              WHERE cuid = %d AND ctype=%d",
+             $uid, $current[1]);
+        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+            handle_mysql_error();
+        }
+        if (($csvfile = fopen($file, 'w')) !== FALSE) {
+            fputcsv($csvfile, array("Timestamp"));
+            while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+                fputcsv($csvfile, array($row['thedate']));
+            }
+            $result->close();
+            fclose($csvfile);
+        }
+        else {
+            $result->close();
+            flash("Problem during export", FLASH_ERROR);
+            return NULL;
+        }
+        array_push($files, $filepart);
+    }
+    return $files;
 }
 
+/**
+ * Update a user's profile from submitted form data.
+ */
 function update_user($uuserid, &$profile) {
     global $dbconn;
     if (!isset($_POST['email']) ||
@@ -112,13 +134,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
         case 'export':
-            $caffeinefile = export_csv();
-            multi_attach_mail($profile['email'], $caffeinefile, $sendermail);
+            $caffeinefiles = &export_csv($_SESSION['login_id']);
+            $sendermail = get_setting(MAIL_FROM_ADDRESS);
+            send_caffeine_mail($profile['email'], $caffeinefiles);
+            // delete temporary files
+            foreach ($caffeinefiles as $cfile) {
+                unlink($cfile['realfile']);
+            }
             flash(
                 'Your data has been exported. You will receive an email ' .
                 'with two CSV files with your coffee and mate ' .
                 'registrations attached.',
                 FLASH_INFO);
+            redirect_to($_SERVER['REQUEST_URI']);
             break;
         case 'update':
             update_user($_SESSION['login_id'], $profile);
@@ -145,6 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 include('includes/jsvalidation.php');
+
+// TODO: add timezone selection (see https://bugs.n0q.org/view.php?id=19#c114)
 include("header.php");
 ?>
 <div class="white-box">

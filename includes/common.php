@@ -202,55 +202,85 @@ function hash_password($password) {
 }
 
 /**
- * Send a system mail to a given mail address.
+ * Send a system mail (potentialy a multipart mail) to a given mail address.
+ *
+ * Partly ripoff from http://www.php.net/manual/de/function.mail.php#105661
+ * for sending multiple attachments via mail
+ *
+ * The $files array must have an array with the fields 'content-type', 
+ * 'description', 'realfile', 'filename' for each file.
  */
-function send_system_mail($to, $subject, $body) {
-    $from = sprintf('From: %s', get_setting(MAIL_FROM_ADDRESS));
-    mail($to, $subject, $body, $from);
+function send_system_mail($to, $subject, $body, &$files=NULL) {
+    $sendermail = get_setting(MAIL_FROM_ADDRESS);
+    $from = sprintf(
+        "From: %s <%s>",
+        get_setting(SITE_NAME), $sendermail);
+
+    $headers = array($from);
+
+    if (($files !== NULL) && (count($files) > 0)) {
+        $mime_boundary = sprintf(
+            "==Multipart_Boundary_x(%sx",
+            md5(time() + mt_rand()));
+        array_push($headers, "MIME-Version: 1.0");
+        array_push($headers, sprintf(
+            'Content-Type: multipart/mixed; boundary="%s"',
+            $mime_boundary));
+
+        $message = sprintf("--%s\r\n", $mime_boundary);
+        $message .= "Content-Type: text/plain; charset=\"utf-8\"\r\n";
+        $message .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+        $message .= quoted_printable_encode($body);
+        $message .= "\r\n";
+
+        foreach ($files as $filepart) {
+            if (is_file($filepart['realfile'])) {
+                $message .= sprintf("--%s\r\n", $mime_boundary);
+                $message .= sprintf(
+                    "Content-Type: %s; name=\"%s\"\r\n",
+                    $filepart['content-type'],
+                    $filepart['filename']);
+                $message .= sprintf(
+                    "Content-Description: %s\r\n", $filepart['description']);
+                $message .= sprintf(
+                    "Content-Disposition: attachment; filename=\"%s\";".
+                    " size=%d\r\n",
+                    $filepart['filename'],
+                    filesize($filepart['realfile']));
+                $message .= "Content-Transfer-Encoding: base64\r\n\r\n";
+                $message .= chunk_split(
+                    base64_encode(file_get_contents($filepart['realfile'])));
+            }
+            else {
+                error_log(sprintf(
+                    "%s is no file.", $filepart['filename']));
+            }
+        }
+        // $message .= sprintf("--%s\r\n", $mime_boundary);
+    }
+    else {
+        array_push($headers, "Content-Type: text/plain; charset=\"utf-8\"");
+        array_push($headers, "Content-Transfer-Encoding: quoted-printable");
+        $message = quoted_printable_encode($body);
+    }
+
+    $returnpath = "-f" . $sendermail;
+    $ok = @mail($to, $subject, $message, implode("\r\n", $headers), $returnpath);
+
+    return $ok;
 }
 
 
 /**
- * Shameless ripoff from http://www.php.net/manual/de/function.mail.php#105661
- * for sending multiple attachments via mail
+ * Send the caffeine track record mail with the attached files.
  */
-function multi_attach_mail($to, $files, $sendermail){
-    // email fields: to, from, subject, and so on
-    $from = "Files attach <".$sendermail.">";
-    $subject = date("d.M H:i")." F=".count($files);
-    $message = date("Y.m.d H:i:s")."\n".count($files)." attachments";
-    $headers = "From: $from";
+function send_caffeine_mail($to, &$files) {
+    $subject = "Your caffeine records";
+    $body = "Attached is your caffeine track record.";
 
-    // boundary
-    $semi_rand = md5(time());
-    $mime_boundary = "==Multipart_Boundary_x{$semi_rand}x";
+    return send_system_mail($to, $subject, $body, $files);
+}
 
-    // headers for attachment
-    $headers .= "\nMIME-Version: 1.0\n" . "Content-Type: multipart/mixed;\n" . " boundary=\"{$mime_boundary}\"";
-
-    // multipart boundary
-    $message = "--{$mime_boundary}\n" . "Content-Type: text/plain; charset=\"iso-8859-1\"\n" .
-    "Content-Transfer-Encoding: 7bit\n\n" . $message . "\n\n";
-
-    // preparing attachments
-    for($i=0;$i<count($files);$i++){
-        if(is_file($files[$i])){
-            $message .= "--{$mime_boundary}\n";
-            $fp =    @fopen($files[$i],"rb");
-        $data =    @fread($fp,filesize($files[$i]));
-                    @fclose($fp);
-            $data = chunk_split(base64_encode($data));
-            $message .= "Content-Type: application/octet-stream; name=\"".basename($files[$i])."\"\n" .
-            "Content-Description: ".basename($files[$i])."\n" .
-            "Content-Disposition: attachment;\n" . " filename=\"".basename($files[$i])."\"; size=".filesize($files[$i]).";\n" .
-            "Content-Transfer-Encoding: base64\n\n" . $data . "\n\n";
-            }
-        }
-    $message .= "--{$mime_boundary}--";
-    $returnpath = "-f" . $sendermail;
-    $ok = @mail($to, $subject, $message, $headers, $returnpath);
-    if($ok){ return $i; } else { return 0; }
-    }
 
 /**
  * Generates an action code for the cs_actions table.
