@@ -629,4 +629,24 @@ function set_user_password($uid, $password) {
     }
     return (($dbconn->affected_rows) === 1);
 }
+
+/**
+ * Existance check for a user with the given login. This function returns the
+ * user login if a matching row exists.
+ */
+function get_login_for_user_with_login($login) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ulogin FROM cs_users WHERE ulogin='%s'",
+        $dbconn->real_escape_string($login));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row['ulogin'];
+    }
+    $result->close();
+    return $retval;
+}
 ?>
