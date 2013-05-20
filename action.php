@@ -34,7 +34,7 @@ function delete_action($actioncode) {
         "DELETE FROM cs_actions WHERE acode='%s'",
         $dbconn->real_escape_string($actioncode));
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
 }
 
@@ -44,7 +44,7 @@ function activate_account($cuid) {
         "UPDATE cs_users SET uactive=1 WHERE uid=%d",
         $cuid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     flash("Your account has been activated successfully.", FLASH_SUCCESS);
 }
@@ -70,8 +70,8 @@ function change_email($cuid, $email) {
 
 switch ($atype) {
 case $ACTION_TYPES['activate_mail']:
-    activate_account($cuid);
     delete_action($_GET['code']);
+    activate_account($cuid);
     redirect_to('index');
     break;
 case $ACTION_TYPES['reset_password']:
