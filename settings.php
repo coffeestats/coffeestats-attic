@@ -153,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect_to($_SERVER['REQUEST_URI']);
             break;
         case 'delete':
+            // TODO: make deletion a user self service
             send_user_deletion($_SESSION['login_user'],$_SESSION['login_id']);
             flash(
                 sprintf(
@@ -161,6 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'week. If you change your mind, feel free to mail us at %s',
                     get_setting(SITE_ADMINMAIL)),
                 FLASH_INFO);
+            redirect_to($_SERVER['REQUEST_URI']);
             break;
         default:
             error_log(sprintf('Invalid call wrong POST action %s', 
