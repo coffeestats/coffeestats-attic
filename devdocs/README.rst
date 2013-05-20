@@ -106,7 +106,7 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
       location / {
         root   /htdocs/$server_name;
         index  index index.php;
-        try_files $uri $uri/ $uri.php;
+        try_files $uri $uri/ $uri.php?$args;
         #auth_basic "Restricted";
         #auth_basic_user_file  /var/www/htdocs/dev.coffeestats.org/htpasswd;
       }
@@ -139,30 +139,8 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
         fastcgi_param COFFEESTATS_PIWIK_HOST piwik.example.org;
         fastcgi_param COFFEESTATS_MAIL_FROM_ADDRESS no-reply@coffeestats.org;
         fastcgi_param COFFEESTATS_SITE_SECRET somerandomstring;
-        fastcgi_param COFFEESTATS_SITE_NAME coffeestats.org-development;
         fastcgi_param COFFEESTATS_SITE_ADMINMAIL team@coffeestats.org;
-      }
-
-      # for php files with GET parameters
-      location ~ (profile|public|ontherun|action|delete)$ {
-        root           /htdocs/$server_name;
-        fastcgi_pass   unix:/var/run/php-fastcgi/php-fastcgi.socket;
-        fastcgi_index  index.php;
-        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name.php;
-        include        fastcgi_params;
-
-        fastcgi_param COFFEESTATS_MYSQL_HOSTNAME localhost;
-        fastcgi_param COFFEESTATS_MYSQL_USER coffeestats;
-        fastcgi_param COFFEESTATS_MYSQL_PASSWORD mysqls3cRet;
-        fastcgi_param COFFEESTATS_MYSQL_DATABASE coffeestats;
-        fastcgi_param COFFEESTATS_RECAPTCHA_PUBLICKEY yourcustomrecaptchapublickey;
-        fastcgi_param COFFEESTATS_RECAPTCHA_PRIVATEKEY yourcustomrecaptchaprivatekey;
-        fastcgi_param COFFEESTATS_PIWIK_SITEID piwiksiteid;
-        fastcgi_param COFFEESTATS_PIWIK_HOST piwik.example.org;
-        fastcgi_param COFFEESTATS_MAIL_FROM_ADDRESS no-reply@coffeestats.org;
-        fastcgi_param COFFEESTATS_SITE_SECRET somerandomstring;
-        fastcgi_param COFFEESTATS_SITE_NAME coffeestats.org-development;
-        fastcgi_param COFFEESTATS_SITE_ADMINMAIL team@coffeestats.org;
+        fastcgi_param COFFEESTATS_SITE_NAME "coffeestats.org development";
       }
     }
 
