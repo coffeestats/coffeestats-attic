@@ -495,4 +495,30 @@ function get_entrytype($entrytype) {
     }
     return "unknown";
 }
+
+
+/**
+ * Load the profile information of the given user.
+ */
+function load_user_profile($loginid) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT ulogin, ufname, uname, ulocation, uemail, utimezone
+         FROM cs_users WHERE uid=%d",
+        $loginid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = array(
+            'login' => $row['ulogin'],
+            'firstname' => $row['ufname'],
+            'lastname' => $row['uname'],
+            'location' => $row['ulocation'],
+            'email' => $row['uemail'],
+            'timezone' => $row['utimezone']);
+    }
+    return $retval;
+}
 ?>
