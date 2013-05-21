@@ -880,4 +880,28 @@ function find_user_by_uid($uid) {
     $result->close();
     return $retval;
 }
+
+/**
+ * Find information about the user (uid, token, login, timezone) identified by
+ * the given login and token.
+ */
+function find_user_uid_token_login_and_timezone_by_login_and_token(
+    $login, $token)
+{
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT uid, utoken, ulogin, utimezone FROM cs_users
+         WHERE ulogin='%s' AND utoken='%s'",
+        $dbconn->real_escape_string($login),
+        $dbconn->real_escape_string($token));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    $result->close();
+    return $retval;
+}
 ?>
