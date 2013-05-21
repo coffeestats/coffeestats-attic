@@ -126,7 +126,7 @@ function hourly_caffeine_overall() {
             WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(cdate, '%Y-%m-%d')
             GROUP BY hour, ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
@@ -179,7 +179,7 @@ function daily_caffeine_overall() {
             WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(cdate, '%Y-%m')
             GROUP BY day, ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $retval[intval($row['day'])][$row['ctype']] = $row['value'];
@@ -278,7 +278,7 @@ function hourly_caffeine_alltime() {
          FROM cs_caffeine
          GROUP BY hour, ctype";
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
@@ -298,14 +298,14 @@ function weekdaily_caffeine_for_profile_overall($profileid) {
     for ($counter = 0; $counter < count($weekdays); $counter++) {
         $retval[$weekdays[$counter]] = array(0, 0);
     }
-    $sql=sprintf(
+    $sql = sprintf(
         "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%%a') AS wday
          FROM cs_caffeine
          WHERE cuid = %d
          GROUP BY wday, ctype",
         $profileid);
     if (($result=$dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     while ($row=$result->fetch_array(MYSQLI_ASSOC)) {
         $retval[$row['wday']][$row['ctype']] = $row['value'];
@@ -836,7 +836,7 @@ function find_recent_caffeine($regtime, $uid, $ctype) {
            AND cuid = %2$d',
         $dbconn->real_escape_string($regtime), $uid, $ctype);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
     $retval = NULL;
     if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
@@ -857,7 +857,7 @@ function create_caffeine($regtime, $uid, $ctype) {
          FROM cs_users WHERE uid=%d",
         $ctype, $dbconn->real_escape_string($regtime), $uid);
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
+        handle_mysql_error($sql);
     }
 }
 
