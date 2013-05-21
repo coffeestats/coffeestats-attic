@@ -882,6 +882,26 @@ function find_user_by_uid($uid) {
 }
 
 /**
+ * Find information about the user with the given login.
+ */
+function find_user_by_login($login) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT uid, ufname, uname, ulocation, utoken
+         FROM cs_users WHERE ulogin = '%s'",
+        $dbconn->real_escape_string($login));
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
  * Find information about the user (uid, token, login, timezone) identified by
  * the given login and token.
  */

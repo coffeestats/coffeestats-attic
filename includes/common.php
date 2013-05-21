@@ -156,6 +156,15 @@ function public_url($username) {
 }
 
 /**
+ * Return a user's on-the-run URL.
+ */
+function on_the_run_url($profileuser, $profiletoken) {
+    return sprintf(
+        "%s/ontherun?u=%s&t=%s",
+        baseurl(), urlencode($profileuser), urlencode($profiletoken));
+}
+
+/**
  * Generate HTML code for a user's public profile link.
  */
 function profilelink($username) {
