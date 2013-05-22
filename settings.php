@@ -7,8 +7,6 @@ include_once('includes/queries.php');
  * Export a user's coffee and mate history.
  */
 function export_csv($uid) {
-    global $dbconn;
-
     $files = array();
 
     $iterate = array(
@@ -25,24 +23,15 @@ function export_csv($uid) {
             'realfile' => $file,
             'filename' => $filename);
 
-        $sql = sprintf(
-             "SELECT cdate AS thedate
-              FROM cs_caffeine
-              WHERE cuid = %d AND ctype=%d",
-             $uid, $current[1]);
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error();
-        }
+        $caffeinerows = find_caffeine_by_uid_and_type($uid, $current[1]);
         if (($csvfile = fopen($file, 'w')) !== FALSE) {
             fputcsv($csvfile, array("Timestamp"));
-            while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+            foreach ($caffeinerows as $row) {
                 fputcsv($csvfile, array($row['thedate']));
             }
-            $result->close();
             fclose($csvfile);
         }
         else {
-            $result->close();
             flash("Problem during export", FLASH_ERROR);
             return NULL;
         }
@@ -55,7 +44,6 @@ function export_csv($uid) {
  * Update a user's profile from submitted form data.
  */
 function update_user($uuserid, &$profile) {
-    global $dbconn;
     if (!isset($_POST['email']) ||
         !isset($_POST['password']) ||
         !isset($_POST['password2']) ||
@@ -87,13 +75,7 @@ function update_user($uuserid, &$profile) {
     }
 
     if (!empty($password)) {
-        $sql = sprintf(
-            "UPDATE cs_users SET ucryptsum='%s' WHERE uid = %d",
-            $dbconn->real_escape_string(hash_password($password)),
-            $dbconn->real_escape_string($uuserid));
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error($sql);
-        }
+        set_user_password($uuserid, $password);
         flash("Successfully changed your password!", FLASH_SUCCESS);
     }
 
@@ -101,16 +83,7 @@ function update_user($uuserid, &$profile) {
         ($profile['lastname'] != $lastname) ||
         ($profile['location'] != $location))
     {
-        $sql = sprintf(
-            "UPDATE cs_users SET ufname='%s', uname='%s', ulocation='%s'
-             WHERE uid = %d",
-            $dbconn->real_escape_string($firstname),
-            $dbconn->real_escape_string($lastname),
-            $dbconn->real_escape_string($location),
-            $dbconn->real_escape_string($uuserid));
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error($sql);
-        }
+        set_user_information($uuserid, $firstname, $lastname, $location);
         flash(
             "Successfully updated your profile information!", FLASH_SUCCESS);
     }
@@ -177,6 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include('includes/jsvalidation.php');
 
 // TODO: add timezone selection (see https://bugs.n0q.org/view.php?id=19#c114)
+// TODO: add public flag (see https://bugs.n0q.org/view.php?id=7)
 include("header.php");
 ?>
 <div class="white-box">

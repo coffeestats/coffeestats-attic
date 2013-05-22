@@ -540,6 +540,23 @@ function set_user_timezone($profileid, $tzname) {
 }
 
 /**
+ * Sets the user's optional information to the given values.
+ */
+function set_user_information($uid, $firstname, $lastname, $location) {
+    global $dbconn;
+    $sql = sprintf(
+        "UPDATE cs_users SET ufname='%s', uname='%s', ulocation='%s'
+         WHERE uid = %d",
+        $dbconn->real_escape_string($firstname),
+        $dbconn->real_escape_string($lastname),
+        $dbconn->real_escape_string($location),
+        $uid);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($sql);
+    }
+}
+
+/**
  * Check whether the given email address is unique.
  */
 function unique_email($email, $uid) {
@@ -859,6 +876,29 @@ function create_caffeine($regtime, $uid, $ctype) {
     if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
         handle_mysql_error($sql);
     }
+}
+
+/**
+ * Find the caffeine entries of a given type for a given user.
+ */
+function find_caffeine_by_uid_and_type($uid, $ctype) {
+    global $dbconn;
+    $sql = sprintf(
+        "SELECT cdate AS thedate
+         FROM cs_caffeine
+         WHERE cuid = %d AND ctype=%d",
+         $uid, $ctype);
+    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error();
+    }
+    // reevaluate whether it would be better to return $result instead if we
+    // get into huge dataset sizes
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    $result->close();
+    return $retval;
 }
 
 /**
