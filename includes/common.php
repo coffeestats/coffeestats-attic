@@ -5,12 +5,13 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     exit();
 }
 
-include_once(sprintf('%s/queries.php', dirname(__FILE__)));
-
 /*
  * Provide commonly usable code to implement DRY principle.
  */
 
+/**
+ * Constants for flash message severities.
+ */
 define('FLASH_INFO', "info");
 define('FLASH_SUCCESS', "success");
 define('FLASH_ERROR', "error");
@@ -291,6 +292,8 @@ $ACTION_TYPES = array(
 
 /**
  * Create an entry in the cs_actions table.
+ *
+ * TODO: move somewhere else, common.php should not require code from queries.php
  */
 function create_action_entry($cuid, $action_type, $data) {
     global $ACTION_TYPES;
@@ -336,6 +339,8 @@ function fill_mail_template($templatename, $placeholders) {
 
 /**
  * Sends a mail to activate an account.
+ *
+ * TODO: move somewhere else, common.php should not require code from queries.php
  */
 function send_mail_activation_link($email) {
     if (($userinfo = find_user_firstname_login_uid_by_email($email)) === NULL)
@@ -365,6 +370,8 @@ function send_mail_activation_link($email) {
 
 /**
  * Send an email with a password reset link if there is an account with the given email address.
+ *
+ * TODO: move somewhere else, common.php should not require code from queries.php
  */
 function send_reset_password_link($email) {
     if (($userinfo = find_user_firstname_login_uid_by_email($email)) === NULL) {
@@ -393,6 +400,8 @@ function send_reset_password_link($email) {
 
 /**
  * Send an email to confirm the change of a user's email address.
+ *
+ * TODO: move somewhere else, common.php should not require code from queries.php
  */
 function send_change_email_link($email, $uid) {
     if (($userinfo = find_user_firstname_login_uid_email_by_uid($uid)) == NULL)
@@ -447,6 +456,8 @@ function format_timezone($timezone) {
 
 /**
  * Register a new coffee for the given user at the given time.
+ *
+ * TODO: move somewhere else, common.php should not require code from queries.php
  */
 function register_coffee($uid, $coffeetime, $timezone) {
     if (($cafinfo = find_recent_caffeine($coffeetime, $uid, 0)) !== NULL) {
@@ -466,6 +477,8 @@ function register_coffee($uid, $coffeetime, $timezone) {
 
 /**
  * Register a new mate for the given user at the given time.
+ *
+ * TODO: move somewhere else, common.php should not require code from queries.php
  */
 function register_mate($uid, $matetime, $timezone) {
     if (($cafinfo = find_recent_caffeine($matetime, $uid, 1)) !== NULL) {
@@ -496,6 +509,8 @@ function get_entrytype($entrytype) {
 
 /**
  * Load the profile information of the given user.
+ *
+ * TODO: move somewhere else, common.php should not require code from queries.php
  */
 function load_user_profile($loginid) {
     if (($userinfo = find_user_by_uid($loginid)) === NULL) {

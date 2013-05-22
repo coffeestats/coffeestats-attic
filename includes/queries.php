@@ -10,8 +10,25 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
  * handling of query results.
  */
 
-// TODO: remove circular dependency with common.php
 include_once(sprintf('%s/common.php', dirname(__FILE__)));
+
+// initialize the database connection
+$dbconn = new mysqli(
+    get_setting(MYSQL_HOSTNAME),
+    get_setting(MYSQL_USER),
+    get_setting(MYSQL_PASSWORD),
+    get_setting(MYSQL_DATABASE));
+if ($dbconn->connect_errno !== 0) {
+    error_log(sprintf(
+        "Error connecting to the database: %d %s",
+        $dbconn->connect_errno, $dbconn->connect_error));
+        errorpage(
+            "Ooops", "Something went terribly wrong",
+            "500 Internal Server Error");
+}
+if (($dbconn->set_charset("utf8")) === FALSE) {
+    handle_mysql_error();
+}
 
 /**
  * Handle a MySQL error, log to error log and show an error page to the user.

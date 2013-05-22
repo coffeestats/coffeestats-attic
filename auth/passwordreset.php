@@ -2,7 +2,6 @@
 /*
  * Password reset request page.
  */
-include('config.php');
 include_once('../includes/common.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

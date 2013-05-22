@@ -1,5 +1,4 @@
 <?php
-include('config.php');
 include_once('../includes/common.php');
 include_once('../includes/queries.php');
 

@@ -18,7 +18,6 @@ function format_output($object) {
     print json_encode($object);
 }
 
-include_once('../auth/config.php');
 include_once('../includes/queries.php');
 include_once('../includes/common.php');
 

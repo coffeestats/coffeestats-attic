@@ -5,7 +5,6 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     redirect_to('../index', TRUE);
 }
 
-include_once('config.php');
 include_once(sprintf('%s/../includes/queries.php', dirname(__FILE__)));
 
 if (!isset($_SESSION)) {

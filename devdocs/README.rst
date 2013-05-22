@@ -23,7 +23,7 @@ Setup database
 Coffeestats uses MySQL, with a separate database.
 
 #. Install MySQL from operating system packages or from source.
-#. Create a MySQL database with the credentials in auth/config.php:
+#. Create a MySQL database and grant permissions to a user:
 
     .. code-block:: sh
 

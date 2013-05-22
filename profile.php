@@ -2,8 +2,6 @@
 session_start();
 if (isset($_SESSION['login_user'])) {
     include("auth/lock.php");
-} else {
-    include("auth/config.php");
 }
 include_once("includes/common.php");
 include_once("includes/validation.php");

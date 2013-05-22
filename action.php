@@ -1,5 +1,4 @@
 <?php
-include('auth/config.php');
 include_once('includes/queries.php');
 
 if (!isset($_GET['code']) || empty($_GET['code'])) {
