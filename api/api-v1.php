@@ -59,12 +59,7 @@ function get_random_users($count) {
 
 switch ($resource) {
 case "random-users":
-    if (count($query) > 1) {
-        $count = intval($query[1]);
-    }
-    else {
-        $count = 5;
-    }
+    $count = isset($_GET['count']) ? intval($_GET['count']) : 5;
     format_output(get_random_users($count));
     break;
 default:

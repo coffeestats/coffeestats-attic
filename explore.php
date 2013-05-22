@@ -105,7 +105,7 @@ include("header.php");
 <script type="text/javascript">
 $(document).ready(function() {
     $('#more-users').click(function(event) {
-        $.getJSON('<?php echo baseurl(); ?>/api/v1/random-users/4', function(data) {
+        $.getJSON('<?php echo baseurl(); ?>/api/v1/random-users?count=4', function(data) {
             $('#random_users > div').remove();
             for (var i=0; i < data.length; i++) {
                 $('#random_users').append(
