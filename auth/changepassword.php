@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (($password = sanitize_password(
         $_POST['password'], $_POST['password2'])) !== FALSE)
     {
-        if (set_user_password($uid, hash_password($password))) {
+        if (set_user_password($uid, $password)) {
             flash(
                 'Your password has been changed successfully!',
                 FLASH_SUCCESS);
