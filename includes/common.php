@@ -266,7 +266,6 @@ function send_system_mail($to, $subject, $body, &$files=NULL) {
     return $ok;
 }
 
-
 /**
  * Send the caffeine track record mail with the attached files.
  */
@@ -276,7 +275,6 @@ function send_caffeine_mail($to, &$files) {
 
     return send_system_mail($to, $subject, $body, $files);
 }
-
 
 /**
  * Generates an action code for the cs_actions table.

@@ -5,26 +5,122 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     exit();
 }
 
+/*
+ * This file bundles the SQL queries and provides some functions to ease the 
+ * handling of query results.
+ */
+
+// TODO: remove circular dependency with common.php
 include_once(sprintf('%s/common.php', dirname(__FILE__)));
 
 /**
  * Handle a MySQL error, log to error log and show an error page to the user.
  */
-function handle_mysql_error($sql=NULL) {
+function handle_mysql_error($sql=NULL, $stackdepth=0) {
     global $dbconn;
     if ($dbconn->errno !== 0) {
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         error_log(sprintf(
             "%s line %d: MySQL error %d: %s%s",
-            $backtrace[0]['file'], $backtrace[0]['line'],
+            $backtrace[$stackdepth]['file'], $backtrace[$stackdepth]['line'],
             $dbconn->errno, $dbconn->error, ($sql === NULL) ? "" : "\n" . $sql));
         errorpage("Error", "Sorry, we have a problem.", "500 Internal Server Error");
     }
 }
 
-/*
- * Bundle common queries.
+/**
+ * Handle a query for a statistics row and return the result properly filled
+ * into the passed return value array. Results in $valuecol are grouped by
+ * $groupcol (casted to int) and $typecol.
  */
+function _handle_stats_query($query, &$retval, $groupcol, $typecol, $valuecol) {
+    global $dbconn;
+    if (($result = $dbconn->query($query, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($query, 1);
+    }
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval[intval($row[$groupcol])][$row[$typecol]] = $row[$valuecol];
+    }
+    $result->close();
+}
+
+/**
+ * Handle a query for a statistics row and return the result properly filled
+ * into the passed return value array. Results in $valuecol are grouped by
+ * $groupcol and $typecol.
+ */
+function _handle_string_indexed_stats_query($query, &$retval, $groupcol, $typecol, $valuecol) {
+    global $dbconn;
+    if (($result=$dbconn->query($query, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($query, 1);
+    }
+    while ($row=$result->fetch_array(MYSQLI_ASSOC)) {
+        $retval[$row[$groupcol]][$row[$typecol]] = $row[$valuecol];
+    }
+    $result->close();
+}
+
+/**
+ * Handle the given SQL query and return an array with the result rows or an
+ * empty array.
+ */
+function _handle_multirow_query($query) {
+    global $dbconn;
+    if (($result = $dbconn->query($query, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($query, 1);
+    }
+    $retval = array();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        array_push($retval, $row);
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Handle the given SQL query and return the single expected result row or
+ * NULL.
+ */
+function _handle_singlerow_query($query) {
+    global $dbconn;
+    if (($result = $dbconn->query($query, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($query, 1);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row;
+    }
+    return $retval;
+}
+
+/**
+ * Handle the given SQL query and return the specified field in the single
+ * expected result row or NULL.
+ */
+function _handle_singlefield_query($query, $fieldname) {
+    global $dbconn;
+    if (($result = $dbconn->query($query, MYSQLI_USE_RESULT)) === FALSE) {
+        handle_mysql_error($query, 1);
+    }
+    $retval = NULL;
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+        $retval = $row[$fieldname];
+    }
+    $result->close();
+    return $retval;
+}
+
+/**
+ * Handle the given SQL DML (Data Modification Language, i.e. INSERT, UPDATE)
+ * query and return the count of rows affected by the query execution.
+ */
+function _handle_dml_query($query) {
+    global $dbconn;
+    if (($result = $dbconn->query($query)) === FALSE) {
+        handle_mysql_error($query, 1);
+    }
+    return $dbconn->affected_rows;
+}
 
 /**
  * Return total coffees for user profile.
@@ -90,7 +186,6 @@ function total_caffeine() {
  * Return series of hourly coffees and mate on current day for user profile.
  */
 function hourly_caffeine_for_profile($profileid) {
-    global $dbconn;
     $retval = array();
     for ($counter = 0; $counter <= 23; $counter++) {
         $retval[$counter] = array(0, 0);
@@ -102,13 +197,7 @@ function hourly_caffeine_for_profile($profileid) {
            AND cuid = %d
          GROUP BY hour, ctype",
         $profileid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_stats_query($sql, $retval, 'hour', 'ctype', 'value');
     return $retval;
 }
 
@@ -116,7 +205,6 @@ function hourly_caffeine_for_profile($profileid) {
  * Return series of hourly coffees and mate.
  */
 function hourly_caffeine_overall() {
-    global $dbconn;
     $retval = array();
     for ($counter = 0; $counter <= 23; $counter++) {
         $retval[$counter] = array(0, 0);
@@ -125,13 +213,7 @@ function hourly_caffeine_overall() {
             FROM cs_caffeine
             WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m-%d') = DATE_FORMAT(cdate, '%Y-%m-%d')
             GROUP BY hour, ctype";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_stats_query($sql, $retval, 'hour', 'ctype', 'value');
     return $retval;
 }
 
@@ -139,7 +221,6 @@ function hourly_caffeine_overall() {
  * Return series of daily coffees and mate in current month for user profile.
  */
 function daily_caffeine_for_profile($profileid) {
-    global $dbconn;
     $now = getdate();
     $maxdays = cal_days_in_month(CAL_GREGORIAN, $now['mon'], $now['year']);
     $retval = array();
@@ -153,13 +234,7 @@ function daily_caffeine_for_profile($profileid) {
            AND cuid = %d
          GROUP BY day, ctype",
         $profileid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['day'])][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_stats_query($sql, $retval, 'day', 'ctype', 'value');
     return $retval;
 }
 
@@ -167,7 +242,6 @@ function daily_caffeine_for_profile($profileid) {
  * Return a series of daily coffees and mate in current month.
  */
 function daily_caffeine_overall() {
-    global $dbconn;
     $retval = array();
     $now = getdate();
     $maxdays = cal_days_in_month(CAL_GREGORIAN, $now['mon'], $now['year']);
@@ -178,13 +252,7 @@ function daily_caffeine_overall() {
             FROM cs_caffeine
             WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y-%m') = DATE_FORMAT(cdate, '%Y-%m')
             GROUP BY day, ctype";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['day'])][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_stats_query($sql, $retval, 'day', 'ctype', 'value');
     return $retval;
 }
 
@@ -192,7 +260,6 @@ function daily_caffeine_overall() {
  * Return a series of monthly coffees and mate in current month for user profile.
  */
 function monthly_caffeine_for_profile($profileid) {
-    global $dbconn;
     $retval = array();
     for ($counter = 1; $counter <= 12; $counter++) {
         $retval[$counter] = array(0, 0);
@@ -204,13 +271,7 @@ function monthly_caffeine_for_profile($profileid) {
            AND cuid = %d
          GROUP BY month, ctype",
         $profileid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['month'])][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_stats_query($sql, $retval, 'month', 'ctype', 'value');
     return $retval;
 }
 
@@ -218,7 +279,6 @@ function monthly_caffeine_for_profile($profileid) {
  * Return a series of monthly coffees and mate in current month.
  */
 function monthly_caffeine_overall() {
-    global $dbconn;
     $retval = array();
     for ($counter = 1; $counter <= 12; $counter++) {
         $retval[$counter] = array(0, 0);
@@ -228,13 +288,7 @@ function monthly_caffeine_overall() {
          FROM cs_caffeine
          WHERE DATE_FORMAT(CURRENT_TIMESTAMP(), '%Y') = DATE_FORMAT(cdate, '%Y')
          GROUP BY month, ctype";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['month'])][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_stats_query($sql, $retval, 'month', 'ctype', 'value');
     return $retval;
 }
 
@@ -243,7 +297,6 @@ function monthly_caffeine_overall() {
  * user's membership.
  */
 function hourly_caffeine_for_profile_overall($profileid) {
-    global $dbconn;
     $retval = array();
     for ($counter = 0; $counter <= 23; $counter++) {
         $retval[$counter] = array(0, 0);
@@ -254,13 +307,7 @@ function hourly_caffeine_for_profile_overall($profileid) {
          WHERE cuid = %d
          GROUP BY hour, ctype",
         $profileid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_stats_query($sql, $retval, 'hour', 'ctype', 'value');
     return $retval;
 }
 
@@ -268,7 +315,6 @@ function hourly_caffeine_for_profile_overall($profileid) {
  * Return a series of coffees and mate for all time.
  */
 function hourly_caffeine_alltime() {
-    global $dbconn;
     $retval = array();
     for ($counter = 0; $counter <= 23; $counter++) {
         $retval[$counter] = array(0, 0);
@@ -277,13 +323,7 @@ function hourly_caffeine_alltime() {
         "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%H') AS hour
          FROM cs_caffeine
          GROUP BY hour, ctype";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[intval($row['hour'])][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_stats_query($sql, $retval, 'hour', 'ctype', 'value');
     return $retval;
 }
 
@@ -292,7 +332,6 @@ function hourly_caffeine_alltime() {
  * user's membership.
  */
 function weekdaily_caffeine_for_profile_overall($profileid) {
-    global $dbconn;
     $retval = array();
     $weekdays = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
     for ($counter = 0; $counter < count($weekdays); $counter++) {
@@ -304,13 +343,7 @@ function weekdaily_caffeine_for_profile_overall($profileid) {
          WHERE cuid = %d
          GROUP BY wday, ctype",
         $profileid);
-    if (($result=$dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row=$result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[$row['wday']][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_string_indexed_stats_query($sql, $retval, 'wday', 'ctype', 'value');
     return $retval;
 }
 
@@ -318,7 +351,6 @@ function weekdaily_caffeine_for_profile_overall($profileid) {
  * Return a series of coffees and mate per weekday for all time.
  */
 function weekdaily_caffeine_alltime() {
-    global $dbconn;
     $retval = array();
     $weekdays = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
     for ($counter = 0; $counter < count($weekdays); $counter++) {
@@ -328,13 +360,7 @@ function weekdaily_caffeine_alltime() {
         "SELECT ctype, COUNT(cid) AS value, DATE_FORMAT(cdate, '%a') AS wday
          FROM cs_caffeine
          GROUP BY wday, ctype";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval[$row['wday']][$row['ctype']] = $row['value'];
-    }
-    $result->close();
+    _handle_string_indexed_stats_query($sql, $retval, 'wday', 'ctype', 'value');
     return $retval;
 }
 
@@ -342,51 +368,31 @@ function weekdaily_caffeine_alltime() {
  * Returns a set of random users.
  */
 function random_users($count) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT ulogin, ufname, uname, ulocation,
          (SELECT COUNT(cid) FROM cs_caffeine WHERE cuid=uid AND ctype=0) AS coffees,
          (SELECT COUNT(cid) FROM cs_caffeine WHERE cuid=uid AND ctype=1) AS mate
          FROM cs_users ORDER BY RAND() LIMIT %d",
         $count);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = array();
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        array_push($retval, $row);
-    }
-    $result->close();
-
-    return $retval;
+    return _handle_multirow_query($sql);
 }
 
 /**
  * Returns the latest caffeine activity.
  */
 function latest_caffeine_activity($count) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT cid, ctype, ulogin, cdate, ctimezone
          FROM cs_caffeine JOIN cs_users ON cuid=uid
          ORDER BY cdate DESC LIMIT %d",
-        $count);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = array();
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        array_push($retval, $row);
-    }
-    $result->close();
-    return $retval;
+         $count);
+    return _handle_multirow_query($sql);
 }
 
 /**
  * Returns the top caffeine consumers.
  */
 function top_caffeine_consumers_total($count, $ctype=0) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT COUNT(cid) AS total, ulogin
          FROM cs_caffeine JOIN cs_users ON cuid=uid
@@ -394,22 +400,13 @@ function top_caffeine_consumers_total($count, $ctype=0) {
          GROUP BY ulogin
          ORDER BY COUNT(cid) DESC LIMIT %d",
         $ctype, $count);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = array();
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        array_push($retval, $row);
-    }
-    $result->close();
-    return $retval;
+    return _handle_multirow_query($sql);
 }
 
 /**
  * Returns the top average caffeine consumers.
  */
 function top_caffeine_consumers_average($count, $ctype=0) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT ulogin, COUNT(cid) / (DATEDIFF(CURRENT_DATE, MIN(cdate)) + 1) AS average
          FROM cs_caffeine JOIN cs_users ON cuid=uid
@@ -417,35 +414,18 @@ function top_caffeine_consumers_average($count, $ctype=0) {
          GROUP BY ulogin
          ORDER BY average DESC LIMIT %d",
         $ctype, $count);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = array();
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        array_push($retval, $row);
-    }
-    $result->close();
-    return $retval;
+    return _handle_multirow_query($sql);
 }
 
 /**
  * Return latest $count users ordered by ujoined in the given direction.
  */
 function _fetch_users_by_jointime($count, $direction) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT ulogin, DATEDIFF(CURRENT_TIMESTAMP, ujoined) AS days
          FROM cs_users ORDER BY ujoined %s LIMIT %d",
         $direction, $count);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = array();
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        array_push($retval, $row);
-    }
-    $result->close();
-    return $retval;
+    return _handle_multirow_query($sql);
 }
 
 /**
@@ -466,52 +446,32 @@ function longest_joined_users($count) {
  * Return the latest entries for the given user.
  */
 function latest_entries($profileid, $count=10) {
-    global $dbconn;
     $sql = sprintf(
-        "SELECT cid, cdate, ctype, ctimezone FROM cs_caffeine WHERE cuid=%d ORDER BY centrytime DESC LIMIT %d",
+        "SELECT cid, cdate, ctype, ctimezone
+         FROM cs_caffeine WHERE cuid=%d ORDER BY centrytime DESC LIMIT %d",
         $profileid, $count);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = array();
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        array_push($retval, $row);
-    }
-    $result->close();
-    return $retval;
+    return _handle_multirow_query($sql);
 }
 
 /**
  * Fetch the entry with the given id if it matches the given user.
  */
 function fetch_entry($cid, $profileid) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT cid, ctype, cdate, ctimezone FROM cs_caffeine
          WHERE cid=%d AND cuid=%d",
         $cid, $profileid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 
 /**
  * Delete the given entry if it matches the given user.
  */
 function delete_caffeine_entry($cid, $profileid) {
-    global $dbconn;
     $sql = sprintf(
         "DELETE FROM cs_caffeine WHERE cid=%d AND cuid=%d",
         $cid, $profileid);
-    if (($result = $dbconn->query($sql)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    return (($dbconn->affected_rows) === 1);
+    return (_handle_dml_query($sql) === 1);
 }
 
 /**
@@ -523,19 +483,14 @@ function set_user_timezone($profileid, $tzname) {
         "UPDATE cs_users SET utimezone='%s' WHERE uid=%d",
         $dbconn->real_escape_string($tzname),
         $profileid);
-    if (($result = $dbconn->query($sql)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $success = (($dbconn->affected_rows) === 1);
+    $success = (_handle_dml_query($sql) === 1);
     // set existing entries without timezone to the selected timezone
     $sql = sprintf(
         "UPDATE cs_caffeine SET ctimezone='%s'
          WHERE cuid=%d AND ctimezone IS NULL",
         $dbconn->real_escape_string($tzname),
         $profileid);
-    if (($result = $dbconn->query($sql)) === FALSE) {
-        handle_mysql_error($sql);
-    }
+    _handle_dml_query($sql);
     return $success;
 }
 
@@ -551,9 +506,7 @@ function set_user_information($uid, $firstname, $lastname, $location) {
         $dbconn->real_escape_string($lastname),
         $dbconn->real_escape_string($location),
         $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
+    _handle_dml_query($sql);
 }
 
 /**
@@ -564,10 +517,7 @@ function unique_email($email, $uid) {
     $sql = sprintf(
         "SELECT uid FROM cs_users WHERE uemail='%s' AND uid <> %d",
         $dbconn->real_escape_string($email), $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+    if (_handle_singlerow_query($sql) !== NULL) {
         return FALSE;
     }
     return $email;
@@ -581,15 +531,7 @@ function find_action_data($actioncode) {
     $sql = sprintf(
         "SELECT cuid, atype, adata FROM cs_actions WHERE acode='%s'",
         $dbconn->real_escape_string($actioncode));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 
 /**
@@ -608,9 +550,7 @@ function create_action($uid, $action_type, $actioncode, $data) {
           %d, '%s')",
         $uid, $dbconn->real_escape_string($actioncode),
         $action_type, $dbconn->real_escape_string($data));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
+    _handle_dml_query($sql);
 }
 
 /**
@@ -621,21 +561,15 @@ function delete_action($actioncode) {
     $sql = sprintf(
         "DELETE FROM cs_actions WHERE acode='%s'",
         $dbconn->real_escape_string($actioncode));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
+    _handle_dml_query($sql);
 }
 
 /**
  * Set the user with the given user id to active.
  */
 function set_user_active($uid) {
-    global $dbconn;
     $sql = sprintf("UPDATE cs_users SET uactive=1 WHERE uid=%d", $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    return (($dbconn->affected_rows) === 1);
+    return (_handle_dml_query($sql) === 1);
 }
 
 /**
@@ -646,10 +580,7 @@ function set_user_email($uid, $email) {
     $sql = sprintf(
         "UPDATE cs_users SET uemail='%s' WHERE uid=%d",
         $dbconn->real_escape_string($email), $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    return (($dbconn->affected_rows) === 1);
+    return (_handle_dml_query($sql) === 1);
 }
 
 /**
@@ -660,15 +591,7 @@ function find_user_uid_by_login($login) {
     $sql = sprintf(
         "SELECT uid FROM cs_users WHERE ulogin='%s'",
         $dbconn->real_escape_string($login));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $uid = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $uid = $row['uid'];
-    }
-    $result->close();
-    return $uid;
+    return _handle_singlefield_query($sql, 'uid');
 }
 
 /**
@@ -678,11 +601,8 @@ function set_user_password($uid, $password) {
     global $dbconn;
     $sql = sprintf(
         "UPDATE cs_users SET ucryptsum='%s' WHERE uid=%d",
-        hash_password($password), $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    return (($dbconn->affected_rows) === 1);
+        $dbconn->real_escape_string(hash_password($password)), $uid);
+    return (_handle_dml_query($sql) === 1);
 }
 
 /**
@@ -694,15 +614,7 @@ function get_login_for_user_with_login($login) {
     $sql = sprintf(
         "SELECT ulogin FROM cs_users WHERE ulogin='%s'",
         $dbconn->real_escape_string($login));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row['ulogin'];
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlefield_query($sql, 'ulogin');
 }
 
 /**
@@ -715,15 +627,7 @@ function find_user_information_for_login($login) {
         "SELECT uid, ucryptsum, utimezone FROM cs_users
          WHERE ulogin='%s' AND uactive=1",
         $dbconn->real_escape_string($login));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 
 /**
@@ -736,15 +640,7 @@ function find_user_exist_for_login_or_email($login, $email) {
         "SELECT uid FROM cs_users WHERE ulogin='%s' OR uemail='%s'",
         $dbconn->real_escape_string($login),
         $dbconn->real_escape_string($email));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = FALSE;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = TRUE;
-    }
-    $result->close();
-    return $retval;
+    return (_handle_singlerow_query($sql) !== NULL);
 }
 
 /**
@@ -769,9 +665,7 @@ function create_user(
         $dbconn->real_escape_string($passwordhash),
         $dbconn->real_escape_string($location),
         $dbconn->real_escape_string($otrtoken));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
+    _handle_dml_query($sql);
 }
 
 /**
@@ -782,45 +676,25 @@ function find_user_firstname_login_uid_by_email($email) {
     $sql = sprintf(
         "SELECT ufname, ulogin, uid FROM cs_users WHERE uemail='%s'",
         $dbconn->real_escape_string($email));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 
 /**
  * Find user information (firstname, login, uid, email) for a given uid.
  */
 function find_user_firstname_login_uid_email_by_uid($uid) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT ufname, ulogin, uid, uemail FROM cs_users WHERE uid=%d",
         $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 
 /**
  * Performs a cleanup of the action table.
  */
 function clean_expired_actions() {
-    global $dbconn;
     $sql = "DELETE FROM cs_actions WHERE validuntil < CURRENT_TIMESTAMP";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
+    _handle_dml_query($sql);
 }
 
 /**
@@ -828,14 +702,11 @@ function clean_expired_actions() {
  * yet.
  */
 function clean_inactive_users() {
-    global $dbconn;
     $sql = "DELETE FROM cs_users
         WHERE uactive=0 AND NOT EXISTS (
           SELECT cid FROM cs_caffeine WHERE cuid=uid)
         AND ujoined < (CURRENT_TIMESTAMP - INTERVAL 30 DAY)";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
+    _handle_dml_query($sql);
 }
 
 /**
@@ -852,15 +723,7 @@ function find_recent_caffeine($regtime, $uid, $ctype) {
            AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
            AND cuid = %2$d',
         $dbconn->real_escape_string($regtime), $uid, $ctype);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 
 /**
@@ -873,52 +736,32 @@ function create_caffeine($regtime, $uid, $ctype) {
          SELECT uid, %d, '%s', UTC_TIMESTAMP, utimezone
          FROM cs_users WHERE uid=%d",
         $ctype, $dbconn->real_escape_string($regtime), $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
+    _handle_dml_query($sql);
 }
 
 /**
  * Find the caffeine entries of a given type for a given user.
  */
 function find_caffeine_by_uid_and_type($uid, $ctype) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT cdate AS thedate
          FROM cs_caffeine
          WHERE cuid = %d AND ctype=%d",
          $uid, $ctype);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-    // reevaluate whether it would be better to return $result instead if we
-    // get into huge dataset sizes
-    $retval = array();
-    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        array_push($retval, $row);
-    }
-    $result->close();
-    return $retval;
+    // reevaluate whether it would be better to return $result from query
+    // instead if we get into huge dataset sizes
+    return _handle_multirow_query($sql);
 }
 
 /**
  * Find information about the user with the given uid.
  */
 function find_user_by_uid($uid) {
-    global $dbconn;
     $sql = sprintf(
         "SELECT ulogin, ufname, uname, ulocation, uemail, utimezone
          FROM cs_users WHERE uid=%d",
         $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 
 /**
@@ -930,15 +773,7 @@ function find_user_by_login($login) {
         "SELECT uid, ufname, uname, ulocation, utoken
          FROM cs_users WHERE ulogin = '%s'",
         $dbconn->real_escape_string($login));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 
 /**
@@ -954,14 +789,6 @@ function find_user_uid_token_login_and_timezone_by_login_and_token(
          WHERE ulogin='%s' AND utoken='%s'",
         $dbconn->real_escape_string($login),
         $dbconn->real_escape_string($token));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = $row;
-    }
-    $result->close();
-    return $retval;
+    return _handle_singlerow_query($sql);
 }
 ?>
