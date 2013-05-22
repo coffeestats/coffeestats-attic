@@ -16,28 +16,18 @@ if (!isset($profileuser)) {
     errorpage('Error', 'Invalid request!', '400 Bad Request');
 }
 
-$sql = sprintf(
-    "SELECT uid FROM cs_users WHERE ulogin='%s'",
-    $dbconn->real_escape_string($profileuser));
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $profileid = $row['uid'];
-}
-$result->close();
+$profileid = find_user_uid_by_login($profileuser);
 
 // TODO: handle similarly to profile.php
-if (isset($profileid)) {
-    if ($profileid == $_SESSION['login_id']) {
-        $headline = 'Your Profile';
-    }
-    else {
-        $headline = sprintf("%s's Profile", htmlspecialchars($profileuser));
-    }
+if ($profileid === NULL) {
+    errorpage('Profile not found', 'No user with the given username exists.', '404 Not Found');
+}
+
+if ($profileid == $_SESSION['login_id']) {
+    $headline = 'Your Profile';
 }
 else {
-    errorpage('Profile not found', 'No user with the given username exists.', '404 Not Found');
+    $headline = sprintf("%s's Profile", htmlspecialchars($profileuser));
 }
 
 // total

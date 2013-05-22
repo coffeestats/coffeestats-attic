@@ -10,33 +10,25 @@ if (isset($_GET['t']) && isset($_GET['u'])) {
         if (!isset($_SESSION)) {
             session_start();
         }
-        $sql = sprintf(
-            "SELECT uid, utoken, ulogin, utimezone FROM cs_users
-             WHERE ulogin='%s' AND utoken='%s'",
-            $dbconn->real_escape_string($user),
-            $dbconn->real_escape_string($token));
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error();
-        }
-        if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-            $token = $row['utoken'];
-            $user = $row['ulogin'];
-            $profileid = $row['uid'];
-            $timezone = $row['utimezone'];
-            if ($timezone == NULL) {
-                flash(
-                    'Your timezone is not set, you should ' .
-                    '<a href="auth/login">login</a> ' .
-                    'and define a timezone!',
-                    FLASH_WARNING);
-            }
-        }
-        else {
+        if (($userinfo =
+            find_user_uid_token_login_and_timezone_by_login_and_token(
+                $user, $token)) === NULL)
+        {
             flash('Invalid token or username', FLASH_ERROR);
             $result->close();
             redirect_to('index');
         }
-        $result->close();
+        $token = $userinfo['utoken'];
+        $user = $userinfo['ulogin'];
+        $profileid = $userinfo['uid'];
+        $timezone = $userinfo['utimezone'];
+        if ($timezone == NULL) {
+            flash(
+                'Your timezone is not set, you should ' .
+                '<a href="auth/login">login</a> ' .
+                'and define a timezone!',
+                FLASH_WARNING);
+        }
     }
     else {
         redirect_to('index');

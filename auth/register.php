@@ -1,6 +1,7 @@
 <?php
 include('config.php');
 include_once('../includes/common.php');
+include_once('../includes/queries.php');
 require_once('../lib/recaptchalib.php');
 
 // Get a key from https://www.google.com/recaptcha/admin/create
@@ -49,20 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $error = $resp->error;
         }
         else {
-            $sql = sprintf(
-                "SELECT uid FROM cs_users WHERE ulogin='%s' OR uemail='%s'",
-                $dbconn->real_escape_string($username),
-                $dbconn->real_escape_string($email));
-            if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-                handle_mysql_error();
-            }
-            if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-                $userexists = TRUE;
-            }
-            else {
-                $userexists = FALSE;
-            }
-            $result->close();
+            $userexists = find_user_exist_for_login_or_email($username, $email);
 
             if ($userexists) {
                 flash("Error: Sorry. Username already taken.", FLASH_ERROR);
@@ -71,26 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $password = hash_password($password);
                 $otrtoken = md5($password . $username);
 
-                $sql = sprintf(
-                    "INSERT INTO cs_users (
-                        ulogin, uemail, ufname, uname, ucryptsum, ujoined,
-                        ulocation, upublic, utoken, uactive)
-                     VALUES (
-                        '%s', '%s', '%s', '%s', '%s', NOW(),
-                        '%s', 1, '%s', 0)",
-                    $dbconn->real_escape_string($username),
-                    $dbconn->real_escape_string($email),
-                    $dbconn->real_escape_string($firstname),
-                    $dbconn->real_escape_string($lastname),
-                    $dbconn->real_escape_string($password),
-                    $dbconn->real_escape_string($location),
-                    $dbconn->real_escape_string($otrtoken));
-                if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-                    handle_mysql_error();
-                }
+                create_user(
+                    $username, $email, $firstname, $lastname, $password,
+                    $location, $otrtoken);
                 flash("You got it! Yes we hate CAPTCHAs too.", FLASH_SUCCESS);
                 send_mail_activation_link($email);
-                flash("We have sent you an email with a link to activate your account.", FLASH_INFO);
+                flash(
+                    "We have sent you an email with a link to activate " .
+                    "your account.", FLASH_INFO);
                 redirect_to("../index");
             }
         }

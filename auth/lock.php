@@ -6,24 +6,17 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 }
 
 include_once('config.php');
+include_once(sprintf('%s/../includes/queries.php', dirname(__FILE__)));
+
 if (!isset($_SESSION)) {
     session_start();
 }
 if (isset($_SESSION['login_user'])) {
-    $user_check=$_SESSION['login_user'];
-    $sql = sprintf(
-        "SELECT ulogin FROM cs_users WHERE ulogin='%s'",
-        $user_check);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-    elseif ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $login_session = $row['ulogin'];
-    }
-    $result->close();
+    $user_check = $_SESSION['login_user'];
+    $login_session = get_login_for_user_with_login($_SESSION['login_user']);
 }
 
-if (!isset($login_session)) {
+if (!isset($login_session) || ($login_session === NULL)) {
     redirect_to('auth/login');
 }
 ?>

@@ -5,6 +5,8 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     exit();
 }
 
+include_once(sprintf('%s/queries.php', dirname(__FILE__)));
+
 /*
  * Provide commonly usable code to implement DRY principle.
  */
@@ -104,21 +106,6 @@ function errorpage($title, $text, $http_status=NULL) {
 }
 
 /**
- * Handle a MySQL error, log to error log and show an error page to the user.
- */
-function handle_mysql_error($sql=NULL) {
-    global $dbconn;
-    if ($dbconn->errno !== 0) {
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        error_log(sprintf(
-            "%s line %d: MySQL error %d: %s%s",
-            $backtrace[0]['file'], $backtrace[0]['line'],
-            $dbconn->errno, $dbconn->error, ($sql === NULL) ? "" : "\n" . $sql));
-        errorpage("Error", "Sorry, we have a problem.", "500 Internal Server Error");
-    }
-}
-
-/**
  * Get a configuration setting from the environment and create an appropriate
  * error page if it is missing.
  */
@@ -166,6 +153,15 @@ function baseurl() {
  */
 function public_url($username) {
     return sprintf("%s/profile?u=%s", baseurl(), urlencode($username));
+}
+
+/**
+ * Return a user's on-the-run URL.
+ */
+function on_the_run_url($profileuser, $profiletoken) {
+    return sprintf(
+        "%s/ontherun?u=%s&t=%s",
+        baseurl(), urlencode($profileuser), urlencode($profiletoken));
 }
 
 /**
@@ -270,7 +266,6 @@ function send_system_mail($to, $subject, $body, &$files=NULL) {
     return $ok;
 }
 
-
 /**
  * Send the caffeine track record mail with the attached files.
  */
@@ -280,7 +275,6 @@ function send_caffeine_mail($to, &$files) {
 
     return send_system_mail($to, $subject, $body, $files);
 }
-
 
 /**
  * Generates an action code for the cs_actions table.
@@ -299,26 +293,13 @@ $ACTION_TYPES = array(
  * Create an entry in the cs_actions table.
  */
 function create_action_entry($cuid, $action_type, $data) {
-    global $dbconn, $ACTION_TYPES;
+    global $ACTION_TYPES;
     if (!array_key_exists($action_type, $ACTION_TYPES)) {
         error_log(sprintf("Invalid action code %s", $action_type));
         return FALSE;
     }
     $actioncode = generate_actioncode($data);
-    $sql = sprintf(
-        "INSERT INTO cs_actions
-         (cuid, acode,
-          created, validuntil,
-          atype, adata)
-         VALUES
-         (%d, '%s',
-          CURRENT_TIMESTAMP, CURRENT_TIMESTAMP + INTERVAL 24 HOUR,
-          %d, '%s')",
-        $cuid, $dbconn->real_escape_string($actioncode),
-        $ACTION_TYPES[$action_type], $dbconn->real_escape_string($data));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
+    create_action($cuid, $ACTION_TYPES[$action_type], $actioncode, $data);
     return $actioncode;
 }
 
@@ -357,23 +338,14 @@ function fill_mail_template($templatename, $placeholders) {
  * Sends a mail to activate an account.
  */
 function send_mail_activation_link($email) {
-    global $dbconn;
-    $sql = sprintf(
-        "SELECT ufname, uid FROM cs_users WHERE uemail='%s'",
-        $dbconn->real_escape_string($email));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $firstname = $row['ufname'];
-        $cuid = $row['uid'];
-    }
-    else {
+    if (($userinfo = find_user_firstname_login_uid_by_email($email)) === NULL)
+    {
         errorpage(
             'Invalid data', 'Invalid data was sent',
             '500 Internal Server Error');
     }
-    $result->close();
+    $firstname = $userinfo['ufname'];
+    $cuid = $userinfo['uid'];
 
     $actioncode = create_action_entry($cuid, 'activate_mail', $email);
     if ($actioncode === FALSE) {
@@ -395,22 +367,12 @@ function send_mail_activation_link($email) {
  * Send an email with a password reset link if there is an account with the given email address.
  */
 function send_reset_password_link($email) {
-    global $dbconn;
-    $sql = sprintf(
-        "SELECT ufname, ulogin, uid FROM cs_users WHERE uemail='%s'",
-        $dbconn->real_escape_string($email));
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $firstname = $row['ufname'];
-        $login = $row['ulogin'];
-        $cuid = $row['uid'];
-    }
-    $result->close();
-    if (!isset($cuid)) {
+    if (($userinfo = find_user_firstname_login_uid_by_email($email)) === NULL) {
         return;
     }
+    $firstname = $userinfo['ufname'];
+    $login = $userinfo['ulogin'];
+    $cuid = $userinfo['uid'];
 
     $actioncode = create_action_entry($cuid, 'reset_password', $email);
     if ($actioncode === FALSE) {
@@ -433,23 +395,14 @@ function send_reset_password_link($email) {
  * Send an email to confirm the change of a user's email address.
  */
 function send_change_email_link($email, $uid) {
-    global $dbconn;
-    $sql = sprintf(
-        "SELECT ufname, ulogin, uid, uemail FROM cs_users WHERE uid=%d",
-        $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
-    }
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $firstname = $row['ufname'];
-        $login = $row['ulogin'];
-        $oldemail = $row['uemail'];
-        $cuid = $row['uid'];
-    }
-    $result->close();
-    if (!isset($cuid)) {
+    if (($userinfo = find_user_firstname_login_uid_email_by_uid($uid)) == NULL)
+    {
         return;
     }
+    $firstname = $userinfo['ufname'];
+    $login = $userinfo['ulogin'];
+    $oldemail = $userinfo['uemail'];
+    $cuid = $userinfo['uid'];
 
     $actioncode = create_action_entry($cuid, 'change_email', $email);
     if ($actioncode === FALSE) {
@@ -483,32 +436,6 @@ function send_user_deletion($user, $id) {
 }
 
 /**
- * Performs a cleanup of the action table.
- */
-function clean_expired_actions() {
-    global $dbconn;
-    $sql = "DELETE FROM cs_actions WHERE validuntil < CURRENT_TIMESTAMP";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-}
-
-/**
- * Perform a cleanup of inactive users that have no coffee or mate registered
- * yet.
- */
-function clean_inactive_users() {
-    global $dbconn;
-    $sql = "DELETE FROM cs_users
-        WHERE uactive=0 AND NOT EXISTS (
-          SELECT cid FROM cs_caffeine WHERE cuid=uid)
-        AND ujoined < (CURRENT_TIMESTAMP - INTERVAL 30 DAY)";
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-}
-
-/**
  * Unified formatting for timezone information.
  */
 function format_timezone($timezone) {
@@ -522,78 +449,38 @@ function format_timezone($timezone) {
  * Register a new coffee for the given user at the given time.
  */
 function register_coffee($uid, $coffeetime, $timezone) {
-    global $dbconn;
-    $sql = sprintf(
-        'SELECT cid, cdate, ctimezone
-         FROM cs_caffeine
-         WHERE ctype = 0
-           AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
-           AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
-           AND cuid = %2$d',
-        $dbconn->real_escape_string($coffeetime), $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $result->close();
+    if (($cafinfo = find_recent_caffeine($coffeetime, $uid, 0)) !== NULL) {
         flash(sprintf(
-            'Error: Your last coffee was less than 5 minutes ago at %s %s. O_o',
-            $row['cdate'], ($row['ctimezone'] != NULL) ? $row['ctimezone'] : ""),
+            'Error: Your last coffee was less than 5 minutes ago at %s%s. O_o',
+            $cafinfo['cdate'], format_timezone($cafinfo['ctimezone'])),
             FLASH_WARNING);
+        return;
     }
-    else {
-        $result->close();
-        $sql = sprintf(
-            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime, ctimezone)
-             SELECT uid, 0, '%s', UTC_TIMESTAMP, utimezone FROM cs_users WHERE uid=%d",
-            $dbconn->real_escape_string($coffeetime), $uid);
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error();
-        }
-        flash(sprintf(
-            'Your coffee at %s%s has been registered!',
-            $coffeetime, format_timezone($timezone)),
-            FLASH_SUCCESS);
-    }
+    create_caffeine($coffeetime, $uid, 0);
+    flash(
+        sprintf(
+           'Your coffee at %s%s has been registered!',
+           $coffeetime, format_timezone($timezone)),
+        FLASH_SUCCESS);
 }
 
 /**
  * Register a new mate for the given user at the given time.
  */
 function register_mate($uid, $matetime, $timezone) {
-    global $dbconn;
-    $sql = sprintf(
-        'SELECT cid, cdate, ctimezone
-         FROM cs_caffeine
-         WHERE ctype = 1
-           AND cdate > (\'%1$s\' - INTERVAL 5 MINUTE)
-           AND cdate < (\'%1$s\' + INTERVAL 5 MINUTE)
-           AND cuid = %2$d',
-        $dbconn->real_escape_string($matetime), $uid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error();
-    }
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $result->close();
+    if (($cafinfo = find_recent_caffeine($matetime, $uid, 1)) !== NULL) {
         flash(sprintf(
-            "Error: Your last mate was less than 5 minutes ago at %s %s. O_o",
-            $row['cdate'], ($row['ctimezone'] != NULL) ? $row['ctimezone'] : ""),
+            "Error: Your last mate was less than 5 minutes ago at %s%s. O_o",
+            $cafinfo['cdate'], format_timezone($cafinfo['ctimezone'])),
             FLASH_WARNING);
+        return;
     }
-    else {
-        $result->close();
-        $sql=sprintf(
-            "INSERT INTO cs_caffeine (cuid, ctype, cdate, centrytime, ctimezone)
-             SELECT uid, 1, '%s', UTC_TIMESTAMP, utimezone FROM cs_users WHERE uid=%d",
-            $dbconn->real_escape_string($matetime), $uid);
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error();
-        }
-        flash(sprintf(
+    create_caffeine($matetime, $uid, 1);
+    flash(
+        sprintf(
             'Your mate at %s%s has been registered!',
             $matetime, format_timezone($timezone)),
-            FLASH_SUCCESS);
-    }
+        FLASH_SUCCESS);
 }
 
 /**
@@ -607,30 +494,19 @@ function get_entrytype($entrytype) {
     return "unknown";
 }
 
-
 /**
  * Load the profile information of the given user.
  */
 function load_user_profile($loginid) {
-    global $dbconn;
-    $sql = sprintf(
-        "SELECT ulogin, ufname, uname, ulocation, uemail, utimezone
-         FROM cs_users WHERE uid=%d",
-        $loginid);
-    if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-        handle_mysql_error($sql);
+    if (($userinfo = find_user_by_uid($loginid)) === NULL) {
+        return NULL;
     }
-    $retval = NULL;
-    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $retval = array(
-            'login' => $row['ulogin'],
-            'firstname' => $row['ufname'],
-            'lastname' => $row['uname'],
-            'location' => $row['ulocation'],
-            'email' => $row['uemail'],
-            'timezone' => $row['utimezone']);
-    }
-    $result->close();
-    return $retval;
+    return array(
+        'login' => $userinfo['ulogin'],
+        'firstname' => $userinfo['ufname'],
+        'lastname' => $userinfo['uname'],
+        'location' => $userinfo['ulocation'],
+        'email' => $userinfo['uemail'],
+        'timezone' => $userinfo['utimezone']);
 }
 ?>

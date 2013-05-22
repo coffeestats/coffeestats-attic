@@ -1,6 +1,6 @@
 <?php
 include("auth/lock.php");
-include('includes/queries.php');
+include_once('includes/queries.php');
 
 $total = total_caffeine();
 $todayrows = hourly_caffeine_overall();

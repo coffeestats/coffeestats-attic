@@ -1,6 +1,7 @@
 <?php
 include('config.php');
 include_once('../includes/common.php');
+include_once('../includes/queries.php');
 
 if (!isset($_SESSION)) {
     session_start();
@@ -21,16 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!isset($uid)) {
-        $sql = sprintf(
-            "SELECT uid FROM cs_users WHERE ulogin='%s'",
-            $dbconn->real_escape_string($login_session));
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error();
-        }
-        if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-            $uid = $row['uid'];
-        }
-        $result->close();
+        $uid = find_user_uid_by_login($login_session);
         if (!isset($uid)) {
             errorpage(
                 'Illegal state',
@@ -41,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     include_once('../includes/validation.php');
 
-    if (($password = sanitize_password($_POST['password'], $_POST['password2'])) !== FALSE) {
-        $sql = sprintf(
-            "UPDATE cs_users SET ucryptsum='%s' WHERE uid=%d",
-            hash_password($password), $uid);
-        if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-            handle_mysql_error();
+    if (($password = sanitize_password(
+        $_POST['password'], $_POST['password2'])) !== FALSE)
+    {
+        if (set_user_password($uid, $password)) {
+            flash(
+                'Your password has been changed successfully!',
+                FLASH_SUCCESS);
         }
-        flash('Your password has been changed successfully!', FLASH_SUCCESS);
         redirect_to('../index');
     }
 }

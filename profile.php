@@ -25,28 +25,15 @@ else {
     errorpage('Error', 'Invalid request!', '400 Bad Request');
 }
 
-$sql = sprintf(
-    "SELECT uid, ufname, uname, ulocation, utoken FROM cs_users WHERE ulogin = '%s'",
-    $dbconn->real_escape_string($profileuser));
-if (($result = $dbconn->query($sql, MYSQLI_USE_RESULT)) === FALSE) {
-    handle_mysql_error();
-}
-if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $profileid = $row['uid'];
-    $profilename = $row['uname'];
-    $profileforename = $row['ufname'];
-    $profilelocation = $row['ulocation'];
-    $profiletoken = $row['utoken'];
-}
-else {
+if (($userinfo = find_user_by_login($profileuser)) === NULL) {
     // no result found
     errorpage('Error', 'No profile found', '404 No Profile Found');
 }
-$result->close();
-
-function on_the_run_url($profileuser, $profiletoken) {
-    return sprintf("%s/ontherun?u=%s&t=%s", baseurl(), urlencode($profileuser), urlencode($profiletoken));
-}
+$profileid = $userinfo['uid'];
+$profilename = $userinfo['uname'];
+$profileforename = $userinfo['ufname'];
+$profilelocation = $userinfo['ulocation'];
+$profiletoken = $userinfo['utoken'];
 
 $total = total_caffeine_for_profile($profileid);
 
@@ -56,7 +43,9 @@ if ($ownprofile) {
     $info = array(
         'title' => 'Your Profile',
         'data' => array(
-            'Name' => sprintf('%s %s', htmlspecialchars($profileforename), htmlspecialchars($profilename)),
+            'Name' => sprintf(
+                '%s %s', htmlspecialchars($profileforename),
+                htmlspecialchars($profilename)),
             'Location' => htmlspecialchars($profilelocation),
             'Your Coffees total' => $total['coffees'],
             'Your Mate total' => $total['mate'],
@@ -79,7 +68,9 @@ else {
     $info = array(
         'title' => sprintf("%s's Profile", htmlspecialchars($profileuser)),
         'data' => array(
-            'Name' => sprintf('%s %s', htmlspecialchars($profileforename), htmlspecialchars($profilename)),
+            'Name' => sprintf(
+                '%s %s', htmlspecialchars($profileforename),
+                htmlspecialchars($profilename)),
             'Location' => htmlspecialchars($profilelocation),
             'Coffees total' => $total['coffees'],
             'Mate total' => $total['mate'],
