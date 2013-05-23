@@ -65,13 +65,16 @@ button {
   line-height: 22px;
   border: 1px solid #615a4f;
   box-shadow: 0 1px 0 #9e9482 inset;
+  cursor: pointer;
+
 }
 
 input[type=text] {
   padding: 10px;
   font-size: 1.35em;
   border: 1px solid #d8ccb3;
-  background-color: #e6e0cb;
+  background-color: #f7f3e5;
+  box-shadow: 0 1px 0 #fff inset;
   color: #4f4b42;
   min-height: 22px;
   line-height: 22px;
@@ -108,7 +111,7 @@ input[type=text] {
 }
 
 .white-box form {
-  margin: 20px 0;
+  margin: 24px 0;
 
   &#coffeeform,
   &#mateform {
@@ -241,7 +244,7 @@ strong {
 
 #navigation {
   margin: 0 auto 18px;
-  width:65%;
+  width:50%;
   ul {
     padding: 0;
     margin: 0;

@@ -34,7 +34,6 @@ if (isset($login_session)) {
                 <div id="navigation">
                     <ul>
                         <li><a href="index" class="navindex">Home</a></li>
-                        <li><a href="plusone" class="navplusone">Update</a></li>
                         <li><a href="profile" class="navprofile">Profile</a></li>
                         <li><a href="explore" class="navexplore">Explore</a></li>
                         <li><a href="overall" class="navoverall">Overall Stats</a></li>
