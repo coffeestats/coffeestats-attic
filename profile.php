@@ -104,7 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $entries = latest_entries($_SESSION['login_id']);
 
 include_once('includes/jsvalidation.php');
-include('includes/charting.php');
 include("header.php");
 ?>
 <div class="white-box">
@@ -192,7 +191,6 @@ printf(
     <canvas id="coffeebyweekday" width="590" height="240" ></canvas>
 </div>
 
-<script type="text/javascript" src="lib/Chart.min.js"></script>
 <?php if ($ownprofile) { ?>
 <script type="text/javascript" src="lib/jsqr-0.2-min.js"></script>
 <script type="text/javascript">
@@ -221,7 +219,9 @@ function drawQR(data, canvasid) {
 
 drawQR('<?php echo $otr_url; ?>', 'ontherunqrcode');
 </script>
-<?php } ?>
+<?php }
+include('includes/charting.php');
+?>
 <script type="text/javascript">
 var todaycolor = "#E64545";
 var monthcolor = "#FF9900";
@@ -260,7 +260,7 @@ barChartData = {
         },
     ]
 }
-new Chart(document.getElementById("coffeetoday").getContext("2d")).Bar(barChartData);
+drawBarChart('coffeetoday', barChartData, <?php scalesteps($todayrows); ?>);
 
 lineChartData = {
     labels: [<?php extractlabels($monthrows); ?>],
@@ -281,7 +281,7 @@ lineChartData = {
         },
     ]
 }
-new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
+drawLineChart('coffeemonth', lineChartData, <?php scalesteps($monthrows); ?>);
 
 barChartData = {
     labels: [<?php extractlabels($yearrows); ?>],
@@ -298,7 +298,7 @@ barChartData = {
         },
     ]
 }
-new Chart(document.getElementById("coffeeyear").getContext("2d")).Bar(barChartData);
+drawBarChart('coffeeyear', barChartData, <?php scalesteps($yearrows); ?>);
 
 lineChartData = {
     labels: [<?php extractlabels($byhourrows); ?>],
@@ -319,7 +319,7 @@ lineChartData = {
         },
     ]
 }
-new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
+drawLineChart('coffeebyhour', lineChartData, <?php scalesteps($byhourrows); ?>);
 
 lineChartData = {
     labels: [<?php extractlabels($byweekdayrows); ?>],
@@ -340,9 +340,9 @@ lineChartData = {
         },
     ]
 }
-new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
+drawLineChart('coffeebyweekday', lineChartData, <?php scalesteps($byweekdayrows); ?>);
 </script>
-<script type="text/javascript" src="../lib/jquery.min.js"></script>
+<script type="text/javascript" src="lib/jquery.min.js"></script>
 <?php js_sanitize_datetime(); ?>
 <script type="text/javascript">
 $(document).ready(function() {

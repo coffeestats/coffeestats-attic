@@ -32,4 +32,40 @@ function extractdata(&$assocarray, $field) {
     }
     print(implode(',', $data));
 }
+
+/**
+ * Return the maximum value from the values of the given associative array.
+ */
+function scalesteps(&$dataarray) {
+    $max = 1;
+    foreach ($dataarray as $key => $valuearray) {
+        foreach ($valuearray as $item) {
+            if ($item > $max) {
+                $max = $item;
+            }
+        }
+    }
+    print($max);
+}
+
 ?>
+<script type="text/javascript" src="lib/Chart.min.js"></script>
+<script type="text/javascript">
+function drawBarChart(canvasid, data, scaleSteps) {
+    new Chart(document.getElementById(canvasid).getContext("2d")).Bar(data, {
+        scaleOverride: true,
+        scaleSteps: Math.ceil(scaleSteps / Math.ceil(scaleSteps / 10)),
+        scaleStepWidth: Math.ceil(scaleSteps / 10),
+        scaleStartValue: 0,
+    });
+}
+
+function drawLineChart(canvasid, data, scaleSteps) {
+    new Chart(document.getElementById(canvasid).getContext("2d")).Line(data, {
+        scaleOverride: true,
+        scaleSteps: Math.ceil(scaleSteps / Math.ceil(scaleSteps / 10)),
+        scaleStepWidth: Math.ceil(scaleSteps / 10),
+        scaleStartValue: 0,
+    });
+}
+</script>

@@ -9,7 +9,6 @@ $yearrows = monthly_caffeine_overall();
 $byhourrows = hourly_caffeine_alltime();
 $byweekdayrows = weekdaily_caffeine_alltime();
 
-include('includes/charting.php');
 include("header.php");
 ?>
 <div class="white-box">
@@ -45,127 +44,128 @@ include("header.php");
   <canvas id="coffeebyweekday" width="590" height="240" ></canvas>
 </div>
 
-<script src="./lib/Chart.min.js"></script>
-
+<?php
+include('includes/charting.php');
+?>
 <script>
-    var todaycolor = "#E64545"
-    var monthcolor = "#FF9900"
-    var yearcolor = "#3399FF"
-    var hourcolor = "#FF6666"
-    var weekdaycolor = "#A3CC52"
-    var matecolor = "#FFCC00"
-    var matelightcolor = "#FFE066"
-    var barChartData;
-    var lineChartData;
+var todaycolor = "#E64545"
+var monthcolor = "#FF9900"
+var yearcolor = "#3399FF"
+var hourcolor = "#FF6666"
+var weekdaycolor = "#A3CC52"
+var matecolor = "#FFCC00"
+var matelightcolor = "#FFE066"
+var barChartData;
+var lineChartData;
 
-    var doughnutData = [
+var doughnutData = [
+    {
+        value: <?php echo($total['coffees']); ?>,
+        color: todaycolor
+    },
+    {
+        value: <?php echo($total['mate']); ?>,
+        color : matecolor
+    }
+];
+new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
+
+barChartData = {
+    labels: [<?php extractlabels($todayrows); ?>],
+    datasets : [
         {
-            value: <?php echo($total['coffees']); ?>,
-            color: todaycolor
+            fillColor: todaycolor,
+            strokeColor: todaycolor,
+            data: [<?php extractdata($todayrows, 0); ?>],
         },
         {
-            value: <?php echo($total['mate']); ?>,
-            color : matecolor
-        }
-    ];
-    new Chart(document.getElementById("coffeevsmate").getContext("2d")).Doughnut(doughnutData);
+            fillColor: matecolor,
+            strokeColor: matecolor,
+            data: [<?php extractdata($todayrows, 1); ?>],
+        },
+    ]
+}
+drawBarChart('coffeetoday', barChartData, <?php scalesteps($todayrows); ?>);
 
-    barChartData = {
-        labels: [<?php extractlabels($todayrows); ?>],
-        datasets : [
-            {
-                fillColor: todaycolor,
-                strokeColor: todaycolor,
-                data: [<?php extractdata($todayrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matecolor,
-                data: [<?php extractdata($todayrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeetoday").getContext("2d")).Bar(barChartData);
+lineChartData = {
+    labels: [<?php extractlabels($monthrows); ?>],
+    datasets : [
+        {
+            fillColor: monthcolor,
+            strokeColor: "#FFB84D",
+            pointColor: "#FFB84D",
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($monthrows, 0); ?>],
+        },
+        {
+            fillColor: matecolor,
+            strokeColor: matelightcolor,
+            pointColor: matelightcolor,
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($monthrows, 1); ?>],
+        },
+    ]
+}
+drawLineChart('coffeemonth', lineChartData, <?php scalesteps($monthrows); ?>);
 
-    lineChartData = {
-        labels: [<?php extractlabels($monthrows); ?>],
-        datasets : [
-            {
-                fillColor: monthcolor,
-                strokeColor: "#FFB84D",
-                pointColor: "#FFB84D",
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($monthrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matelightcolor,
-                pointColor: matelightcolor,
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($monthrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeemonth").getContext("2d")).Line(lineChartData);
+barChartData = {
+    labels: [<?php extractlabels($yearrows); ?>],
+    datasets : [
+        {
+            fillColor: yearcolor,
+            strokeColor: yearcolor,
+            data: [<?php extractdata($yearrows, 0); ?>],
+        },
+        {
+            fillColor: matecolor,
+            strokeColor: matecolor,
+            data: [<?php extractdata($yearrows, 1); ?>],
+        },
+    ]
+}
+drawBarChart('coffeeyear', barChartData, <?php scalesteps($yearrows); ?>);
 
-    barChartData = {
-        labels: [<?php extractlabels($yearrows); ?>],
-        datasets : [
-            {
-                fillColor: yearcolor,
-                strokeColor: yearcolor,
-                data: [<?php extractdata($yearrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matecolor,
-                data: [<?php extractdata($yearrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeeyear").getContext("2d")).Bar(barChartData);
+lineChartData = {
+    labels: [<?php extractlabels($byhourrows); ?>],
+    datasets : [
+        {
+            fillColor: hourcolor,
+            strokeColor: "#FF9999",
+            pointColor: "#FF9999",
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($byhourrows, 0); ?>],
+        },
+        {
+            fillColor: matecolor,
+            strokeColor: matelightcolor,
+            pointColor: matelightcolor,
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($byhourrows, 1); ?>],
+        },
+    ]
+}
+drawLineChart('coffeebyhour', lineChartData, <?php scalesteps($byhourrows); ?>);
 
-    lineChartData = {
-        labels: [<?php extractlabels($byhourrows); ?>],
-        datasets : [
-            {
-                fillColor: hourcolor,
-                strokeColor: "#FF9999",
-                pointColor: "#FF9999",
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($byhourrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matelightcolor,
-                pointColor: matelightcolor,
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($byhourrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeebyhour").getContext("2d")).Line(lineChartData);
-
-    lineChartData = {
-        labels: [<?php extractlabels($byweekdayrows); ?>],
-        datasets: [
-            {
-                fillColor: weekdaycolor,
-                strokeColor: "#99FF99",
-                pointColor: "#99FF99",
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($byweekdayrows, 0); ?>],
-            },
-            {
-                fillColor: matecolor,
-                strokeColor: matelightcolor,
-                pointColor: matelightcolor,
-                pointStrokeColor: "#fff",
-                data: [<?php extractdata($byweekdayrows, 1); ?>],
-            },
-        ]
-    }
-    new Chart(document.getElementById("coffeebyweekday").getContext("2d")).Line(lineChartData);
+lineChartData = {
+    labels: [<?php extractlabels($byweekdayrows); ?>],
+    datasets: [
+        {
+            fillColor: weekdaycolor,
+            strokeColor: "#99FF99",
+            pointColor: "#99FF99",
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($byweekdayrows, 0); ?>],
+        },
+        {
+            fillColor: matecolor,
+            strokeColor: matelightcolor,
+            pointColor: matelightcolor,
+            pointStrokeColor: "#fff",
+            data: [<?php extractdata($byweekdayrows, 1); ?>],
+        },
+    ]
+}
+drawLineChart('coffeebyweekday', lineChartData, <?php scalesteps($byweekdayrows);?>);
 </script>
 
 <?php
