@@ -44,21 +44,41 @@ a {
   color: #584a4a !important; }
 
 input[type=submit],
-button {
+button,
+a.btn {
   background: #7f7665;
   padding: 10px;
   font-size: 1.35em;
-  color: #FFF;
+  color: #FFF !important;
   text-shadow: 1px 1px 0 #524c42;
   min-width: 100px;
   min-height: 22px;
   line-height: 22px;
   border: 1px solid #615a4f;
   box-shadow: 0 1px 0 #9e9482 inset;
-  cursor: pointer; }
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none !important; }
   input[type=submit]:hover,
-  button:hover {
+  button:hover,
+  a.btn:hover {
     background: #5a5348; }
+  input[type=submit].secondary,
+  button.secondary,
+  a.btn.secondary {
+    color: #b6aa97 !important;
+    text-shadow: 1px 1px 0 #fff;
+    background: #f7f3e5;
+    box-shadow: 0 1px 0 #fff inset;
+    border: 1px solid #b6aa97; }
+    input[type=submit].secondary:hover,
+    button.secondary:hover,
+    a.btn.secondary:hover {
+      background: #5a5348 !important;
+      box-shadow: 0 1px 0 #9e9482 inset;
+      text-shadow: 1px 1px 0 #524c42 !important;
+      color: #fff !important; }
 
 input[type=text],
 input[type=password] {
@@ -106,13 +126,16 @@ input[type=password] {
   .white-box form#coffeeform input[type=password], .white-box form#mateform input[type=text], .white-box form#mateform input[type=password], .white-box form#login input[type=text], .white-box form#login input[type=password] {
     min-width: 184px;
     width: 44%; }
-  .white-box form#coffeeform input[type=submit], .white-box form#mateform input[type=submit], .white-box form#login input[type=submit] {
+  .white-box form#coffeeform input[type=submit],
+  .white-box form#coffeeform a.btn, .white-box form#mateform input[type=submit], .white-box form#mateform a.btn, .white-box form#login input[type=submit], .white-box form#login a.btn {
     width: 50%; }
   .white-box form#coffeeform p, .white-box form#mateform p, .white-box form#login p {
     clear: both; }
   .white-box form#login input[type=text],
   .white-box form#login input[type=password] {
     width: 44.56% !important; }
+  .white-box form#login a.btn {
+    width: 44%; }
 
 .usercard, .rankbox {
   width: 45%;

@@ -58,11 +58,12 @@ a {
 }
 
 input[type=submit],
-button {
+button,
+a.btn {
   background: #7f7665;
   padding: 10px;
   font-size: 1.35em;
-  color: #FFF;
+  color: #FFF !important;
   text-shadow: 1px 1px 0 #524c42;
   min-width: 100px;
   min-height: 22px;
@@ -70,9 +71,27 @@ button {
   border: 1px solid #615a4f;
   box-shadow: 0 1px 0 #9e9482 inset;
   cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  text-decoration:none !important;
 
   &:hover {
     background: #5a5348;
+  }
+
+  &.secondary {
+    color: #b6aa97 !important;
+    text-shadow: 1px 1px 0 #fff;
+    background: #f7f3e5;
+    box-shadow: 0 1px 0 #fff inset;
+    border: 1px solid #b6aa97;
+
+    &:hover {
+      background: #5a5348 !important;
+      box-shadow: 0 1px 0 #9e9482 inset;
+      text-shadow: 1px 1px 0 #524c42 !important;
+      color: #fff !important;
+    }
   }
 }
 
@@ -137,7 +156,8 @@ input[type=password] {
       min-width: 184px;
       width: 44%;
     }
-    input[type=submit] {
+    input[type=submit],
+    a.btn {
       width: 50%;
     }
     p {
@@ -149,6 +169,9 @@ input[type=password] {
     input[type=text],
     input[type=password] {
       width: 44.56% !important;
+    }
+    a.btn {
+      width: 44%;
     }
   }
 }

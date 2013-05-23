@@ -63,7 +63,8 @@ include("../header.php");
     <form action="<?php echo($_SERVER['REQUEST_URI']); ?>" method="post" class="inlineform" id="login">
         <input type="text" name="username" id="username" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>placeholder="Username" />
         <input type="password" name="password" id="password" placeholder="Password"/>
-        <input type="submit" name="submit" value="Login" class="right" />
+        <input type="submit" name="submit" value="Login"/>
+        <a href="register" class="btn secondary">register</a>
         <p>Forgot your password? <a href="passwordreset">Request a password reset</a>.</p>
         <p>Oh, you don't have an account yet?<br/>
         Simply register one <a href="register">here</a>.</p>
