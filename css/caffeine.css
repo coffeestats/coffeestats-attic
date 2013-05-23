@@ -105,11 +105,14 @@ input[type=password] {
   .white-box form#coffeeform input[type=text],
   .white-box form#coffeeform input[type=password], .white-box form#mateform input[type=text], .white-box form#mateform input[type=password], .white-box form#login input[type=text], .white-box form#login input[type=password] {
     min-width: 184px;
-    width: 44.56%; }
+    width: 44%; }
   .white-box form#coffeeform input[type=submit], .white-box form#mateform input[type=submit], .white-box form#login input[type=submit] {
     width: 50%; }
   .white-box form#coffeeform p, .white-box form#mateform p, .white-box form#login p {
     clear: both; }
+  .white-box form#login input[type=text],
+  .white-box form#login input[type=password] {
+    width: 44.56% !important; }
 
 .usercard, .rankbox {
   width: 45%;
@@ -225,7 +228,7 @@ strong {
         background-position: 8px 9px; }
         #navigation ul li a:hover {
           text-decoration: none;
-          background-color: #7f7665; }
+          background-color: #ece7dd; }
         #navigation ul li a.navindex {
           background-image: url("/images/home.png"); }
         #navigation ul li a.navplusone {

@@ -135,13 +135,20 @@ input[type=password] {
     input[type=text],
     input[type=password] {
       min-width: 184px;
-      width: 44.56%;
+      width: 44%;
     }
     input[type=submit] {
       width: 50%;
     }
     p {
       clear: both;
+    }
+  }
+
+  &#login {
+    input[type=text],
+    input[type=password] {
+      width: 44.56% !important;
     }
   }
 }
