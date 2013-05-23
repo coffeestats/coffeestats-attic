@@ -1,0 +1,488 @@
+/*
+    caffeine.css: Cascading Style Sheet for coffeestats.org
+    Author: Holger Winter <dreary@online.de>
+    Author: Jan Dittberner <jan@dittberner.info>
+    Author: Jeremias Arnstadt <j.arnstadt@art-ifact.de>
+    license:
+    Date: May 19th, 2013 
+    Version: 1.1
+*/
+
+/* colors */
+
+$font-header: #584a4a;
+
+/* FONTS */
+
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/DroidSans.ttf");
+}
+
+
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: bold;
+  src: url("/fonts/DroidSans-Bold.ttf");
+}
+
+
+@font-face {
+  font-family: "Harabara";
+  font-style: normal;
+  src: url('/fonts/Harabara.ttf');
+}
+
+
+/* GENERAL */
+
+body {
+  padding: 0;
+  margin: 0;
+  background: url("../images/background.jpg") no-repeat center center fixed;
+   -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: #000;
+  font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+a {
+  color: #584a4a !important;
+}
+
+input[type=submit],
+button,
+a.btn {
+  background: #7f7665;
+  padding: 10px;
+  font-size: 1.35em;
+  color: #FFF !important;
+  text-shadow: 1px 1px 0 #524c42;
+  min-width: 100px;
+  min-height: 22px;
+  line-height: 22px;
+  border: 1px solid #615a4f;
+  box-shadow: 0 1px 0 #9e9482 inset;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  text-decoration:none !important;
+
+  &:hover {
+    background: #5a5348;
+  }
+
+  &.secondary {
+    color: #b6aa97 !important;
+    text-shadow: 1px 1px 0 #fff;
+    background: #f7f3e5;
+    box-shadow: 0 1px 0 #fff inset;
+    border: 1px solid #b6aa97;
+
+    &:hover {
+      background: #5a5348 !important;
+      box-shadow: 0 1px 0 #9e9482 inset;
+      text-shadow: 1px 1px 0 #524c42 !important;
+      color: #fff !important;
+    }
+  }
+}
+
+input[type=text],
+input[type=password] {
+  padding: 10px;
+  font-size: 1.35em;
+  border: 1px solid #d8ccb3;
+  background-color: #f7f3e5;
+  box-shadow: 0 1px 0 #fff inset;
+  color: #4f4b42;
+  min-height: 22px;
+  line-height: 22px;
+}
+
+.right {
+  float:right;
+}
+
+.left {
+  float:left;
+}
+
+.white-box {
+  padding: 20px;
+  margin: 0 2% 2% 0;
+  background-color: #FFF;
+  float: right;
+  width: 44%;
+  box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.13);
+  border-radius: 4px;
+  min-height: 110px;
+
+  &:nth-child(2n) {
+    float:left;
+  }
+  p {
+    line-height: 24px;
+  }
+  canvas {
+    width:100% !important;
+    height: auto !important;
+  }
+  h2 {
+    font-size: 31px !important;
+    color: rgb(194, 185, 185);
+  }
+}
+
+.white-box-center {
+  text-align: center;
+}
+
+.white-box form {
+  margin: 24px 0;
+
+  &#coffeeform,
+  &#mateform,
+  &#login {
+    input[type=text],
+    input[type=password] {
+      min-width: 184px;
+      width: 44%;
+    }
+    input[type=submit],
+    a.btn {
+      width: 50%;
+    }
+    p {
+      clear: both;
+    }
+  }
+
+  &#login {
+    input[type=text],
+    input[type=password] {
+      width: 44.56% !important;
+    }
+    a.btn {
+      width: 44%;
+    }
+  }
+}
+
+.usercard, .rankbox {
+  width: 45%;
+  margin-right: 5%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  float: left;
+}
+
+.rightfloated {
+  float: right;
+}
+
+.clearfix {
+  clear: both;
+  height: 0;
+}
+
+ul.userlist {
+  list-style: none;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  font-weight: bold;
+  color: inherit;
+  &:hover {
+    text-decoration: underline;
+  }
+  img {
+    border: none;
+  }
+}
+
+strong {
+  font-weight: bold;
+}
+
+.default_input_field {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  background-color: #E7E7E7;
+  color: #201200;
+  min-height: 22px;
+}
+
+.inlineform {
+  
+  select {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    background-color: #E7E7E7;
+    color: #201200;
+    min-height: 22px;
+    line-height: 22px;
+  }
+}
+
+.hiddeninput {
+  display: none;
+}
+
+.otrblockform input[type="submit"] {
+  padding: 30px;
+  font-size: 30px;
+  background-color: #201200;
+  border: none;
+  color: #FFF;
+  min-width: 300px;
+  min-height: 60px;
+  line-height: 60px;
+}
+
+/* WRAPPER */
+
+#wrapper {
+  padding: 0;
+  margin: 0 auto;
+  width: 80%;
+}
+
+/* HEADER */
+
+#header {
+  padding: 10px 10px 10px 100px;
+  margin: 0;
+  color: $font-header;
+  background-image: url('/images/logo.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  h1 {
+    font-family: "Harabara";
+    font-size: 48px;
+    margin-bottom: 1px;
+    max-width: 32%;
+  }
+  p {
+    margin-top: 0;
+    max-width: 32%;
+  }
+}
+
+/* FOOTER */
+
+.footer {
+  clear: both;
+
+  .footertext {
+    font-size: small;
+  }
+}
+
+
+/* NAVIGATION */
+
+#navigation {
+  margin: 0 auto 18px;
+  width:50%;
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    li {
+      margin: 0 0 0 -3px;
+      display: inline-block;
+      border-right: 1px solid #a3a3a3;
+      box-shadow: 1px 0 0 #fff;
+      
+      &:last-child {
+        border-right: 0;
+        box-shadow: 0 0 0 #fff;
+      }
+
+      a {
+        display: inline-block;
+        font-weight: normal;
+        color: #000;
+        background-repeat: no-repeat;
+        padding: 10px 10px 10px 32px;
+        background-position: 8px 9px;
+
+        &:hover {
+          text-decoration: none;
+          background-color: #ece7dd;
+        }
+
+        &.navindex {
+          background-image: url('/images/home.png');
+        }
+        &.navplusone {
+          background-image: url('/images/tag.png');
+        }
+        &.navprofile {
+          background-image: url('/images/profile.png');
+        }
+        &.navexplore {
+          background-image: url('/images/list.png');
+        }
+        &.navoverall {
+          background-image: url('/images/flask.png');
+        }
+        &.navabout {
+          background-image: url('/images/user-4.png');
+        }
+        &.navlogout {
+          background-image: url('/images/out.png');
+        }
+      }
+    }
+  }
+}
+
+p {
+  &.flash-success, &.flash-info {
+    padding: 10px 10px 10px 20px;
+    margin: 0;
+    background-image: url('/images/info.png');
+    background-repeat: no-repeat;
+    background-position: left center;
+  }
+  &.flash-error, &.flash-warning {
+    padding: 10px 10px 10px 20px;
+    margin: 0;
+    background-image: url('/images/alert.png');
+    background-repeat: no-repeat;
+    background-position: left center;
+  }
+}
+
+/* CONTENT */
+
+#content {
+  padding: 0;
+  margin: 0;
+  h2 {
+    padding: 0 0 10px 0;
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  h3 {
+    padding: 0 0 10px 0;
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+
+/* REGISTER */
+
+.register_field_standard {
+  padding: 5px;
+  margin: 0 0 5px 0;
+  display: block;
+  font-size: 12px;
+  border: none;
+  background-color: #E7E7E7;
+  color: #201200;
+  min-height: 22px;
+}
+
+.register_button_standard {
+  padding: 5px;
+  font-size: 14px;
+  background-color: #2A2A2A;
+  border: none;
+  color: #FFF;
+  min-width: 100px;
+}
+
+/* Responsive */
+
+@media screen and (max-width: 1250px) {
+  #wrapper {
+
+    #navigation {
+      width: 58%;
+    }
+
+    .white-box {
+      margin: 0 1% 2% 0;
+
+      form {
+          &#coffeeform input[type=text],
+          &#mateform input[type=text] {
+            width: 52% !important;
+          }
+          &#coffeeform input[type=submit], 
+          &#mateform input[type=submit],
+          &#login input[type=submit],
+          a.btn.secondary {
+            width: 40%;
+          }
+        }
+    }
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  /* iPhone, Android rules here */
+  #wrapper {
+    padding: 0px;
+    width: 94%;
+    margin: 0 auto;
+
+    #header p {
+      max-width:85%;
+    }
+
+    #navigation {
+      width: 100%;
+
+      ul li a {
+        padding: 10px 10px 10px 30px;
+      }
+    }
+
+    .white-box {
+      width: 92%;
+      float: none !important;
+
+      form {
+        &#coffeeform input[type=text],
+        &#mateform input[type=text],
+        &#login input[type=text],
+        &#login input[type=password],
+        a.btn.secondary {
+          width: 95.5% !important;
+          padding: 15px 8px;
+        }
+        &#coffeeform input[type=submit], 
+        &#mateform input[type=submit],
+        &#login input[type=submit] {
+          width: 100%;
+          padding: 15px 8px;
+        }
+      }
+    }
+  }
+}
+
+/* Normal mode */
+
+.weight-display div.edit, .weight-edit div.show {
+  display: none;
+}
+
+/* Editor mode */
