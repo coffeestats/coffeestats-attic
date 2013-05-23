@@ -8,7 +8,7 @@ if (($_SERVER['REQUEST_METHOD'] === 'POST') && isset($_POST['cid'])) {
     if (delete_caffeine_entry($cid, $_SESSION['login_id'])) {
         flash('Entry deleted successfully!', FLASH_SUCCESS);
     }
-    redirect_to('plusone');
+    redirect_to('profile');
 }
 elseif (isset($_GET['c']) && isset($_SESSION['login_id']))
 {
@@ -36,7 +36,7 @@ printf(
     get_entrytype($entry['ctype']), $entry['cdate'],
     format_timezone($entry['ctimezone']));
 ?>?</p>
-        <p><input type="submit" name="submit" value="Yes!" /> <a href="plusone">No, cancel</a></p>
+        <p><input type="submit" name="submit" value="Yes!" /> <a href="profile">No, cancel</a></p>
     </form>
 </div>
 <?php
