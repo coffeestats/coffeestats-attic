@@ -27,6 +27,7 @@ if (($userinfo = find_user_by_login($profileuser)) === NULL) {
     // no result found
     errorpage('Error', 'No profile found', '404 No Profile Found');
 }
+
 $profileid = $userinfo['uid'];
 $profilename = $userinfo['uname'];
 $profileforename = $userinfo['ufname'];
@@ -133,6 +134,7 @@ if (isset($info['afterlist'])) {
 }
 ?>
 </div>
+<?php if ($ownprofile) { ?>
 <div class="white-box">
     <h2>Coffee or Mate?</h2>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="inlineform">
@@ -163,7 +165,8 @@ printf(
         <?php } ?>
     </table>
 </div>
-<?php endif; ?>
+<?php endif;
+} ?>
 <div class="white-box">
     <h2>Caffeine today</h2>
     <canvas id="coffeetoday" width="590" height="240" ></canvas>

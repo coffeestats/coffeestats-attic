@@ -37,6 +37,12 @@ define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
 define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
 define('SITE_ADMINMAIL', 'COFFEESTATS_SITE_ADMINMAIL');
 
+$ACTION_TYPES = array(
+    'activate_mail' => 1,
+    'reset_password' => 2,
+    'change_email' => 3,
+);
+
 $ENTRY_TYPES = array(
     0 => 'coffee',
     1 => 'mate',
@@ -45,33 +51,37 @@ $ENTRY_TYPES = array(
 /**
  * Store a flash message in the flash message stack.
  */
-function flash($message, $level=FLASH_INFO) {
+function flash($message, $level=FLASH_INFO, $category='system') {
     if (!isset($_SESSION)) {
         session_start();
     }
     if (!isset($_SESSION['flash'])) {
         $_SESSION['flash'] = array();
     }
-    array_push($_SESSION['flash'], array($level, $message));
+    if (!isset($_SESSION['flash'][$category])) {
+        $_SESSION['flash'][$category] = array();
+    }
+    array_push($_SESSION['flash'][$category], array($level, $message));
 }
 
 /**
  * Returns TRUE if there are messages in the flash message stack.
  */
-function peek_flash() {
+function peek_flash($category='system') {
     return (
         isset($_SESSION) &&
         isset($_SESSION['flash']) &&
-        (count($_SESSION['flash']) > 0));
+        isset($_SESSION['flash'][$category]) &&
+        (count($_SESSION['flash'][$category]) > 0));
 }
 
 /**
  * Get the first message from the flash message stack.
  */
-function pop_flash() {
+function pop_flash($category='system') {
     $message = NULL;
-    if (peek_flash()) {
-        $message = array_shift($_SESSION['flash']);
+    if (peek_flash($category)) {
+        $message = array_shift($_SESSION['flash'][$category]);
     }
     return $message;
 }
@@ -283,12 +293,6 @@ function send_caffeine_mail($to, &$files) {
 function generate_actioncode($data) {
     return md5(sprintf("%s%s%s", get_setting(SITE_SECRET), mt_rand(), $data));
 }
-
-$ACTION_TYPES = array(
-    'activate_mail' => 1,
-    'reset_password' => 2,
-    'change_email' => 3,
-);
 
 /**
  * Create an entry in the cs_actions table.
