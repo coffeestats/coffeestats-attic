@@ -3,6 +3,7 @@
  * Password reset request page.
  */
 include_once('../includes/common.php');
+include_once('../includes/queries.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['email'])) {
