@@ -410,19 +410,72 @@ p {
 
 /* Responsive */
 
-@media screen and (max-width: 480px) {
-  /* iPhone, Android rules here */
+@media screen and (max-width: 1250px) {
   #wrapper {
-    padding: 0px;
-    width: 310px;
+
+    #navigation {
+      width: 58%;
+    }
+
+    .white-box {
+      margin: 0 1% 2% 0;
+
+      form {
+          &#coffeeform input[type=text],
+          &#mateform input[type=text] {
+            width: 52% !important;
+          }
+          &#coffeeform input[type=submit], 
+          &#mateform input[type=submit],
+          &#login input[type=submit],
+          a.btn.secondary {
+            width: 40%;
+          }
+        }
+    }
   }
 }
 
-@media screen and (max-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
+@media screen and (max-width: 1000px) {
   /* iPhone, Android rules here */
   #wrapper {
     padding: 0px;
-    width: 310px;
+    width: 94%;
+    margin: 0 auto;
+
+    #header p {
+      max-width:85%;
+    }
+
+    #navigation {
+      width: 100%;
+
+      ul li a {
+        padding: 10px 10px 10px 30px;
+      }
+    }
+
+    .white-box {
+      width: 92%;
+      float: none !important;
+
+      form {
+        &#coffeeform input[type=text],
+        &#mateform input[type=text],
+        &#login input[type=text],
+        &#login input[type=password],
+        a.btn.secondary {
+          width: 95.5% !important;
+          padding: 15px 8px;
+        }
+        &#coffeeform input[type=submit], 
+        &#mateform input[type=submit],
+        &#login input[type=submit] {
+          width: 100%;
+          padding: 15px 8px;
+        }
+      }
+    }
   }
 }
 

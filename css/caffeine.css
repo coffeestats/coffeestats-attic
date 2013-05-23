@@ -315,16 +315,38 @@ p.flash-error, p.flash-warning {
   min-width: 100px; }
 
 /* Responsive */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 1250px) {
+  #wrapper #navigation {
+    width: 58%; }
+  #wrapper .white-box {
+    margin: 0 1% 2% 0; }
+    #wrapper .white-box form#coffeeform input[type=text], #wrapper .white-box form#mateform input[type=text] {
+      width: 52% !important; }
+    #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit], #wrapper .white-box form#login input[type=submit],
+    #wrapper .white-box form a.btn.secondary {
+      width: 40%; } }
+@media screen and (max-width: 1000px) {
   /* iPhone, Android rules here */
   #wrapper {
     padding: 0px;
-    width: 310px; } }
-@media screen and (max-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
-  /* iPhone, Android rules here */
-  #wrapper {
-    padding: 0px;
-    width: 310px; } }
+    width: 94%;
+    margin: 0 auto; }
+    #wrapper #header p {
+      max-width: 85%; }
+    #wrapper #navigation {
+      width: 100%; }
+      #wrapper #navigation ul li a {
+        padding: 10px 10px 10px 30px; }
+    #wrapper .white-box {
+      width: 92%;
+      float: none !important; }
+      #wrapper .white-box form#coffeeform input[type=text], #wrapper .white-box form#mateform input[type=text], #wrapper .white-box form#login input[type=text], #wrapper .white-box form#login input[type=password],
+      #wrapper .white-box form a.btn.secondary {
+        width: 95.5% !important;
+        padding: 15px 8px; }
+      #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit], #wrapper .white-box form#login input[type=submit] {
+        width: 100%;
+        padding: 15px 8px; } }
 /* Normal mode */
 .weight-display div.edit, .weight-edit div.show {
   display: none; }
