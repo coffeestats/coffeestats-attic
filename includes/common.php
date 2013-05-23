@@ -37,6 +37,12 @@ define('SITE_SECRET', 'COFFEESTATS_SITE_SECRET');
 define('SITE_NAME', 'COFFEESTATS_SITE_NAME');
 define('SITE_ADMINMAIL', 'COFFEESTATS_SITE_ADMINMAIL');
 
+$ACTION_TYPES = array(
+    'activate_mail' => 1,
+    'reset_password' => 2,
+    'change_email' => 3,
+);
+
 $ENTRY_TYPES = array(
     0 => 'coffee',
     1 => 'mate',
@@ -283,12 +289,6 @@ function send_caffeine_mail($to, &$files) {
 function generate_actioncode($data) {
     return md5(sprintf("%s%s%s", get_setting(SITE_SECRET), mt_rand(), $data));
 }
-
-$ACTION_TYPES = array(
-    'activate_mail' => 1,
-    'reset_password' => 2,
-    'change_email' => 3,
-);
 
 /**
  * Create an entry in the cs_actions table.
