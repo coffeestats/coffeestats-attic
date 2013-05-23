@@ -53,6 +53,10 @@ body {
   font-weight: normal;
 }
 
+a {
+  color: #584a4a !important;
+}
+
 input[type=submit],
 button {
   background: #7f7665;
@@ -82,6 +86,14 @@ input[type=password] {
   color: #4f4b42;
   min-height: 22px;
   line-height: 22px;
+}
+
+.right {
+  float:right;
+}
+
+.left {
+  float:left;
 }
 
 .white-box {
@@ -118,13 +130,18 @@ input[type=password] {
   margin: 24px 0;
 
   &#coffeeform,
-  &#mateform {
-    input[type=text] {
+  &#mateform,
+  &#login {
+    input[type=text],
+    input[type=password] {
       min-width: 184px;
-      width: 44%%;
+      width: 44.56%;
     }
     input[type=submit] {
       width: 50%;
+    }
+    p {
+      clear: both;
     }
   }
 }

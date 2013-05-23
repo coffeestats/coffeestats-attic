@@ -40,6 +40,9 @@ body {
   font-size: 14px;
   font-weight: normal; }
 
+a {
+  color: #584a4a !important; }
+
 input[type=submit],
 button {
   background: #7f7665;
@@ -68,6 +71,12 @@ input[type=password] {
   min-height: 22px;
   line-height: 22px; }
 
+.right {
+  float: right; }
+
+.left {
+  float: left; }
+
 .white-box {
   padding: 20px;
   margin: 0 2% 2% 0;
@@ -93,11 +102,14 @@ input[type=password] {
 
 .white-box form {
   margin: 24px 0; }
-  .white-box form#coffeeform input[type=text], .white-box form#mateform input[type=text] {
+  .white-box form#coffeeform input[type=text],
+  .white-box form#coffeeform input[type=password], .white-box form#mateform input[type=text], .white-box form#mateform input[type=password], .white-box form#login input[type=text], .white-box form#login input[type=password] {
     min-width: 184px;
-    width: 44%%; }
-  .white-box form#coffeeform input[type=submit], .white-box form#mateform input[type=submit] {
+    width: 44.56%; }
+  .white-box form#coffeeform input[type=submit], .white-box form#mateform input[type=submit], .white-box form#login input[type=submit] {
     width: 50%; }
+  .white-box form#coffeeform p, .white-box form#mateform p, .white-box form#login p {
+    clear: both; }
 
 .usercard, .rankbox {
   width: 45%;
