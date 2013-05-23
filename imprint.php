@@ -1,4 +1,8 @@
 <?php
+session_start();
+if (isset($_SESSION['login_user'])) {
+    include("auth/lock.php");
+}
 include("header.php");
 ?>
 <div class="white-box">
