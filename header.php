@@ -31,18 +31,16 @@ if (isset($login_session)) {
 <?php
 if (isset($login_session)) {
 ?>
-            <div class="white-box">
                 <div id="navigation">
                     <ul>
-                        <li id="navindex"><a href="index">Home</a></li>
-                        <li id="navplusone"><a href="plusone">Update</a></li>
-                        <li id="navprofile"><a href="profile">Profile</a></li>
-                        <li id="navexplore"><a href="explore">Explore</a></li>
-                        <li id="navoverall"><a href="overall">Overall Stats</a></li>
-                        <li id="navabout"><a href="about">About</a></li>
+                        <li><a href="index" class="navindex">Home</a></li>
+                        <li><a href="plusone" class="navplusone">Update</a></li>
+                        <li><a href="profile" class="navprofile">Profile</a></li>
+                        <li><a href="explore" class="navexplore">Explore</a></li>
+                        <li><a href="overall" class="navoverall">Overall Stats</a></li>
+                        <li><a href="about" class="navabout">About</a></li>
                     </ul>
                 </div>
-            </div>
 <?php
 }
 
