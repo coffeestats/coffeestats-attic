@@ -1,7 +1,7 @@
 <?php
 include("header.php");
 ?>
-<div class="white-box">
+<div class="white-box fullWidth">
     <h2>Imprint</h2>
     <p>As this site is hosted and built in Germany the law enforces us to have
     a so called "Impressum" Page in german language.</p>
