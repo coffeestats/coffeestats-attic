@@ -51,33 +51,37 @@ $ENTRY_TYPES = array(
 /**
  * Store a flash message in the flash message stack.
  */
-function flash($message, $level=FLASH_INFO) {
+function flash($message, $level=FLASH_INFO, $category='system') {
     if (!isset($_SESSION)) {
         session_start();
     }
     if (!isset($_SESSION['flash'])) {
         $_SESSION['flash'] = array();
     }
-    array_push($_SESSION['flash'], array($level, $message));
+    if (!isset($_SESSION['flash'][$category])) {
+        $_SESSION['flash'][$category] = array();
+    }
+    array_push($_SESSION['flash'][$category], array($level, $message));
 }
 
 /**
  * Returns TRUE if there are messages in the flash message stack.
  */
-function peek_flash() {
+function peek_flash($category='system') {
     return (
         isset($_SESSION) &&
         isset($_SESSION['flash']) &&
-        (count($_SESSION['flash']) > 0));
+        isset($_SESSION['flash'][$category]) &&
+        (count($_SESSION['flash'][$category]) > 0));
 }
 
 /**
  * Get the first message from the flash message stack.
  */
-function pop_flash() {
+function pop_flash($category='system') {
     $message = NULL;
-    if (peek_flash()) {
-        $message = array_shift($_SESSION['flash']);
+    if (peek_flash($category)) {
+        $message = array_shift($_SESSION['flash'][$category]);
     }
     return $message;
 }
