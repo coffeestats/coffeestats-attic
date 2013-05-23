@@ -108,6 +108,8 @@ input[type=password] {
   min-height: 110px; }
   .white-box:nth-child(2n) {
     float: left; }
+  .white-box.fullWidth {
+    width: 94%; }
   .white-box p {
     line-height: 24px; }
   .white-box canvas {
