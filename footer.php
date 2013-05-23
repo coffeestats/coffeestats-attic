@@ -7,7 +7,7 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 $siteid = get_setting(PIWIK_SITE_ID, FALSE);
 ?>
 <!-- begin of footer.php -->
-    <div class="white-box">
+    <div class="footer">
       <p class="footertext"><a href="#">coffeestats.org</a> is a project by <a href="http://dittberner.info">Jan Dittberner</a> &amp; <a href="http://noqqe.de">Florian Baumann</a>.
       See <a href="/imprint">Imprint</a>.</p>
     </div>
