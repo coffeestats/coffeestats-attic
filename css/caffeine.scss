@@ -72,7 +72,8 @@ button {
   }
 }
 
-input[type=text] {
+input[type=text],
+input[type=password] {
   padding: 10px;
   font-size: 1.35em;
   border: 1px solid #d8ccb3;
