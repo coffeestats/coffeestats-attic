@@ -67,6 +67,9 @@ button {
   box-shadow: 0 1px 0 #9e9482 inset;
   cursor: pointer;
 
+  &:hover {
+    background: #5a5348;
+  }
 }
 
 input[type=text] {
