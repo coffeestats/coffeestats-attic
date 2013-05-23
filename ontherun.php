@@ -1,6 +1,7 @@
 <?php
 include_once('includes/common.php');
 include_once('includes/validation.php');
+include_once('includes/queries.php');
 
 if (isset($_GET['t']) && isset($_GET['u'])) {
     if ((($user = sanitize_username($_GET['u'])) !== FALSE) &&
