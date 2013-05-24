@@ -128,7 +128,12 @@ input[type=password] {
   width: 44%;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.13);
   border-radius: 4px;
-  min-height: 110px;
+  min-height: 115px;
+
+  &.update,
+  &.today {
+    min-height: 285px;
+  }
 
   &:nth-child(2n) {
     float:left;

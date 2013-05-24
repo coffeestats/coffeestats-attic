@@ -144,7 +144,7 @@ foreach ($info['data'] as $key => $value) { ?>
 </div>
 </div>
 <?php if ($ownprofile) { ?>
-<div class="white-box">
+<div class="white-box update">
     <h2>Coffee or Mate?</h2>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="inlineform">
         <div>
@@ -176,7 +176,7 @@ printf(
 </div>
 <?php endif;
 } ?>
-<div class="white-box">
+<div class="white-box today">
     <h2>Caffeine today</h2>
     <canvas id="coffeetoday" width="590" height="240" ></canvas>
 </div>

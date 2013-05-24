@@ -109,7 +109,9 @@ input[type=password] {
   width: 44%;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.13);
   border-radius: 4px;
-  min-height: 110px; }
+  min-height: 115px; }
+  .white-box.update, .white-box.today {
+    min-height: 285px; }
   .white-box:nth-child(2n) {
     float: left; }
   .white-box.fullWidth {
