@@ -46,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         flash("Your username or password seems to be invalid or you did not activate your account yet :(", FLASH_ERROR);
     }
+    redirect_to($_SERVER['REQUEST_URI']);
 }
 
 include_once("../includes/jsvalidation.php");
@@ -62,14 +63,13 @@ include("../header.php");
     <h2>Login</h2>
     <form action="<?php echo($_SERVER['REQUEST_URI']); ?>" method="post" class="inlineform" id="login">
         <div class="left">
-            <input type="text" name="username" id="username" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>placeholder="Username" />
+            <input type="text" required pattern="[a-z][a-z0-9_-]{1,29}" name="username" id="username" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>placeholder="Username" />
             <input type="submit" name="submit" value="Login"/>
         </div>
         <div class="left">
-            <input type="password" name="password" id="password" placeholder="Password"/>
+            <input type="password" required name="password" id="password" placeholder="Password"/>
             <a href="register" class="btn secondary">register</a>
         </div>
-        
         <p>Forgot your password? <a href="passwordreset">Request a password reset</a>.</p>
         <p>Oh, you don't have an account yet?<br/>
         Simply register one <a href="register">here</a>.</p>
@@ -87,7 +87,14 @@ include("../header.php");
 <script type="text/javascript" src="../lib/Chart.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#username').focus();
+    $('input#username').focus().bind('invalid', usernamefieldvalidation);
+    $('input#password').bind('invalid', function(event) {
+        if (this.validity.valueMissing) {
+            this.setCustomValidity('Password must not be empty!');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
 
     var lineChartData = {
         labels: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],

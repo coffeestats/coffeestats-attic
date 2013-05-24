@@ -81,12 +81,12 @@ include('../header.php');
         <p>Fill these fields with your data, write down what reCAPTCHA says u and click Register!</p>
         <div class="left">
             <b>General</b><br/>
-            <input type="text" name="username" id="username" maxlength="30" placeholder="Username" class="register_field_standard" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>/>
-            <input type="password" name="password" id="password" maxlength="20" placeholder="Password" class="register_field_standard" />
-            <input type="password" name="password2" id="password2" placeholder="Repeat" class="register_field_standard" />
-            <input type="text" name="email" id="email" maxlength="128" placeholder="E-Mail" class="register_field_standard" <?php if (isset($email)) { printf('value="%s"', htmlspecialchars($email)); } ?>/>
+            <input type="text" name="username" required pattern="[a-z][a-z0-9_-]{1,29}" id="username" maxlength="30" placeholder="Username" class="register_field_standard" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>/>
+            <input type="password" name="password" required pattern=".{8,}" id="password" maxlength="20" placeholder="Password" class="register_field_standard" />
+            <input type="password" name="password2" required pattern=".{8,}" id="password2" placeholder="Repeat" class="register_field_standard" />
+            <input type="email" name="email" id="email" pattern="[A-Za-z0-9._%+-]+@[^@]+" required maxlength="128" placeholder="E-Mail" class="register_field_standard" <?php if (isset($email)) { printf('value="%s"', htmlspecialchars($email)); } ?>/>
         </div>
-            
+
         <div class="left">
             <b>Additional</b><br/>
             <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" class="register_field_standard" <?php if (isset($firstname)) { printf('value="%s"', htmlspecialchars($firstname)); } ?>/>
@@ -106,7 +106,10 @@ js_sanitize_string();
 ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#username').focus();
+    $('input#username').bind('invalid', usernamefieldvalidation).focus();
+    $('input#password').bind('invalid', pwfieldvalidation);
+    $('input#password2').bind('invalid', pwfieldvalidation);
+    $('input#email').bind('invalid', emailfieldvalidation);
 
     $('form').submit(function(event) {
         return sanitize_username('input#username')

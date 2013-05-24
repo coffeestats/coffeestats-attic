@@ -162,8 +162,8 @@ include("header.php");
         <h3>General</h3>
         <div class="left">
             <input type="text" name="username" id="username" maxlength="30" value="<?php echo htmlspecialchars($profile['login']); ?>" readonly="readonly" />
-            <input type="password" name="password" id="password" maxlength="20" placeholder="Password" />
-            <input type="password" name="password2" id="password2" placeholder="Repeat" />
+            <input type="password" name="password" pattern=".{8,}" id="password" maxlength="20" placeholder="Password" />
+            <input type="password" name="password2" pattern=".{8,}" id="password2" placeholder="Repeat" />
         </div>
     </div>
     <div class="usercard">
@@ -174,7 +174,7 @@ include("header.php");
             <input type="text" name="location" id="location" maxlength="20" placeholder="Location" <?php if (!empty($profile['location'])) { printf('value="%s"', htmlspecialchars($profile['location'])); } ?>/>
         </div>
     </div>
-    <input type="text" name="email" id="email" maxlength="128" placeholder="E-Mail" value="<?php echo htmlspecialchars($profile['email']); ?>" />
+    <input type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[^@]+" required id="email" maxlength="128" placeholder="E-Mail" value="<?php echo htmlspecialchars($profile['email']); ?>" />
     <div class="clearfix"></div>
     <p><input type="submit" name="submit" value="Update my settings" /></p>
     </form>
@@ -205,7 +205,9 @@ js_sanitize_string();
 ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#password').focus();
+    $('input#password').focus().bind('invalid', pwfieldvalidation);
+    $('input#password2').bind('invalid', pwfieldvalidation);
+    $('input#email').bind('invalid', emailfieldvalidation);
 
     $('form').submit(function(event) {
         return sanitize_password('input#password', 'input#password2', true)
