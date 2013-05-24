@@ -160,19 +160,21 @@ include("header.php");
     <input type="hidden" name="action" value="update" />
     <div class="usercard">
         <h3>General</h3>
-        <p>
-        <input type="text" name="username" id="username" maxlength="30" value="<?php echo htmlspecialchars($profile['login']); ?>" readonly="readonly" />
-        <input type="password" name="password" id="password" maxlength="20" placeholder="Password" />
-        <input type="password" name="password2" id="password2" placeholder="Repeat" />
-        <input type="text" name="email" id="email" maxlength="128" placeholder="E-Mail" value="<?php echo htmlspecialchars($profile['email']); ?>" /></p>
+        <div class="left">
+            <input type="text" name="username" id="username" maxlength="30" value="<?php echo htmlspecialchars($profile['login']); ?>" readonly="readonly" />
+            <input type="password" name="password" id="password" maxlength="20" placeholder="Password" />
+            <input type="password" name="password2" id="password2" placeholder="Repeat" />
+        </div>
     </div>
     <div class="usercard">
         <h3>Additional</h3>
-        <p>
-        <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" <?php if (!empty($profile['firstname'])) { printf('value="%s"', htmlspecialchars($profile['firstname'])); } ?>/>
-        <input type="text" name="lastname" id="lastname" maxlength="20" placeholder="Last name" <?php if (!empty($profile['lastname'])) { printf('value="%s"', htmlspecialchars($profile['lastname'])); } ?>/>
-        <input type="text" name="location" id="location" maxlength="20" placeholder="Location" <?php if (!empty($profile['location'])) { printf('value="%s"', htmlspecialchars($profile['location'])); } ?>/></p>
+        <div class="left">
+            <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" <?php if (!empty($profile['firstname'])) { printf('value="%s"', htmlspecialchars($profile['firstname'])); } ?>/>
+            <input type="text" name="lastname" id="lastname" maxlength="20" placeholder="Last name" <?php if (!empty($profile['lastname'])) { printf('value="%s"', htmlspecialchars($profile['lastname'])); } ?>/>
+            <input type="text" name="location" id="location" maxlength="20" placeholder="Location" <?php if (!empty($profile['location'])) { printf('value="%s"', htmlspecialchars($profile['location'])); } ?>/>
+        </div>
     </div>
+    <input type="text" name="email" id="email" maxlength="128" placeholder="E-Mail" value="<?php echo htmlspecialchars($profile['email']); ?>" />
     <div class="clearfix"></div>
     <p><input type="submit" name="submit" value="Update my settings" /></p>
     </form>

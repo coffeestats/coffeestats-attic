@@ -76,27 +76,26 @@ include('../includes/jsvalidation.php');
 include('../header.php');
 ?>
 <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
-    <div class="white-box">
+    <div class="white-box fullWidth">
         <h2>Register</h2>
         <p>Fill these fields with your data, write down what reCAPTCHA says u and click Register!</p>
-        <p>
-        <b>General</b><br/>
-        <input type="text" name="username" id="username" maxlength="30" placeholder="Username" class="register_field_standard" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>/>
-        <input type="password" name="password" id="password" maxlength="20" placeholder="Password" class="register_field_standard" />
-        <input type="password" name="password2" id="password2" placeholder="Repeat" class="register_field_standard" />
-        <input type="text" name="email" id="email" maxlength="128" placeholder="E-Mail" class="register_field_standard" <?php if (isset($email)) { printf('value="%s"', htmlspecialchars($email)); } ?>/></p>
-        <p><b>Additional</b><br/>
-        <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" class="register_field_standard" <?php if (isset($firstname)) { printf('value="%s"', htmlspecialchars($firstname)); } ?>/>
-        <input type="text" name="lastname" id="lastname" maxlength="20" placeholder="Last name" class="register_field_standard" <?php if (isset($lastname)) { printf('value="%s"', htmlspecialchars($lastname)); } ?>/>
-        <input type="text" name="location" id="location" maxlength="20" placeholder="Location" class="register_field_standard" <?php if (isset($location)) { printf('value="%s"', htmlspecialchars($location)); } ?>/>
-        </p>
-    </div> <!-- end of white-box -->
-
-    <div class="white-box"><?php echo recaptcha_get_html($publickey, $error, true); ?></div>
-
-    <div class="white-box">
+        <div class="left">
+            <b>General</b><br/>
+            <input type="text" name="username" id="username" maxlength="30" placeholder="Username" class="register_field_standard" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>/>
+            <input type="password" name="password" id="password" maxlength="20" placeholder="Password" class="register_field_standard" />
+            <input type="password" name="password2" id="password2" placeholder="Repeat" class="register_field_standard" />
+            <input type="text" name="email" id="email" maxlength="128" placeholder="E-Mail" class="register_field_standard" <?php if (isset($email)) { printf('value="%s"', htmlspecialchars($email)); } ?>/>
+        </div>
+            
+        <div class="left">
+            <b>Additional</b><br/>
+            <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" class="register_field_standard" <?php if (isset($firstname)) { printf('value="%s"', htmlspecialchars($firstname)); } ?>/>
+            <input type="text" name="lastname" id="lastname" maxlength="20" placeholder="Last name" class="register_field_standard" <?php if (isset($lastname)) { printf('value="%s"', htmlspecialchars($lastname)); } ?>/>
+            <input type="text" name="location" id="location" maxlength="20" placeholder="Location" class="register_field_standard" <?php if (isset($location)) { printf('value="%s"', htmlspecialchars($location)); } ?>/>
+        </div>
+        <?php echo recaptcha_get_html($publickey, $error, true); ?>
         <input type="submit" value="Register!" class="register_button_standard" />
-    </div>
+    </div> <!-- end of white-box -->
 </form>
 <script type="text/javascript" src="../lib/jquery.min.js"></script>
 <?php

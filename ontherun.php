@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include_once('includes/jsvalidation.php');
 include("header.php");
 ?>
-<div class="white-box">
+<div class="white-box fullWidth">
     <h2>On the run?</h2>
     <center>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="otrblockform">

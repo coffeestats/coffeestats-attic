@@ -59,7 +59,8 @@ a.btn {
   cursor: pointer;
   display: inline-block;
   text-align: center;
-  text-decoration: none !important; }
+  text-decoration: none !important;
+  font-weight: normal !important; }
   input[type=submit]:hover,
   button:hover,
   a.btn:hover {
@@ -97,6 +98,9 @@ input[type=password] {
 .left {
   float: left; }
 
+.clear {
+  clear: both; }
+
 .white-box {
   padding: 20px;
   margin: 0 2% 2% 0;
@@ -105,7 +109,9 @@ input[type=password] {
   width: 44%;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.13);
   border-radius: 4px;
-  min-height: 110px; }
+  min-height: 115px; }
+  .white-box.update, .white-box.today {
+    min-height: 285px; }
   .white-box:nth-child(2n) {
     float: left; }
   .white-box.fullWidth {
@@ -118,6 +124,22 @@ input[type=password] {
   .white-box h2 {
     font-size: 31px !important;
     color: #c2b9b9; }
+  .white-box .pagelinks {
+    display: inline-block;
+    width: 100%; }
+    .white-box .pagelinks div.left {
+      width: 50%; }
+      .white-box .pagelinks div.left a.btn {
+        width: 94%;
+        margin-bottom: 10px;
+        display: block; }
+    .white-box .pagelinks div.right {
+      margin-right: 21px; }
+  .white-box .profilelist {
+    padding-left: 0; }
+    .white-box .profilelist li {
+      list-style: none;
+      margin: 7px 0; }
 
 .white-box-center {
   text-align: center; }
@@ -130,21 +152,37 @@ input[type=password] {
     width: 44%; }
   .white-box form#coffeeform input[type=submit],
   .white-box form#coffeeform a.btn, .white-box form#mateform input[type=submit], .white-box form#mateform a.btn, .white-box form#login input[type=submit], .white-box form#login a.btn {
-    width: 50%; }
+    width: 49.56%; }
   .white-box form#coffeeform p, .white-box form#mateform p, .white-box form#login p {
     clear: both; }
+  .white-box form.coffeeform #email {
+    width: 92.3%; }
+  .white-box form#login div.left {
+    width: 48%; }
+    .white-box form#login div.left:first-child {
+      margin-right: 2%; }
   .white-box form#login input[type=text],
   .white-box form#login input[type=password] {
-    width: 44.56% !important; }
+    width: 89.5% !important; }
+  .white-box form#login input[type=submit] {
+    width: 100% !important; }
   .white-box form#login a.btn {
-    width: 44%; }
+    width: 89.5%;
+    font-weight: normal !important;
+    margin: 2px 0; }
 
 .usercard, .rankbox {
   width: 45%;
   margin-right: 5%;
   margin-bottom: 10px;
   margin-top: 10px;
-  float: left; }
+  float: left;
+  display: inline-block; }
+  .usercard div.left, .rankbox div.left {
+    display: inline-block; }
+    .usercard div.left input, .rankbox div.left input {
+      display: inline-block;
+      width: 94%; }
 
 .rightfloated {
   float: right; }
@@ -191,13 +229,7 @@ strong {
 
 .otrblockform input[type="submit"] {
   padding: 30px;
-  font-size: 30px;
-  background-color: #201200;
-  border: none;
-  color: #FFF;
-  min-width: 300px;
-  min-height: 60px;
-  line-height: 60px; }
+  font-size: 2em; }
 
 /* WRAPPER */
 #wrapper {
@@ -298,23 +330,22 @@ p.flash-error, p.flash-warning {
     font-weight: bold; }
 
 /* REGISTER */
-.register_field_standard {
-  padding: 5px;
-  margin: 0 0 5px 0;
-  display: block;
-  font-size: 12px;
-  border: none;
-  background-color: #E7E7E7;
-  color: #201200;
-  min-height: 22px; }
+.white-box.fullWidth div.left {
+  width: 33%; }
+  .white-box.fullWidth div.left b {
+    display: inline-block;
+    margin-bottom: 10px; }
+  .white-box.fullWidth div.left input {
+    width: 80%; }
+.white-box.fullWidth #recaptcha_widget_div {
+  float: left;
+  margin-top: 23px; }
 
 .register_button_standard {
-  padding: 5px;
-  font-size: 14px;
-  background-color: #2A2A2A;
-  border: none;
-  color: #FFF;
-  min-width: 100px; }
+  clear: both;
+  float: left;
+  margin-top: 10px;
+  min-width: 28.4% !important; }
 
 /* Responsive */
 @media screen and (max-width: 1250px) {
@@ -324,9 +355,12 @@ p.flash-error, p.flash-warning {
     margin: 0 1% 2% 0; }
     #wrapper .white-box form#coffeeform input[type=text], #wrapper .white-box form#mateform input[type=text] {
       width: 52% !important; }
-    #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit], #wrapper .white-box form#login input[type=submit],
-    #wrapper .white-box form a.btn.secondary {
-      width: 40%; } }
+    #wrapper .white-box form#coffeeform input[type=submit] input[type=password],
+    #wrapper .white-box form#coffeeform input[type=submit] input[type=text], #wrapper .white-box form#mateform input[type=submit] input[type=password], #wrapper .white-box form#mateform input[type=submit] input[type=text], #wrapper .white-box form#login input[type=password], #wrapper .white-box form#login input[type=text] {
+      min-width: 0 !important;
+      width: 89.5% !important; }
+    #wrapper .white-box form#coffeeform input[type=submit] input[type=submit], #wrapper .white-box form#mateform input[type=submit] input[type=submit], #wrapper .white-box form#login input[type=submit] {
+      width: 49.56%; } }
 @media screen and (max-width: 1000px) {
   /* iPhone, Android rules here */
   #wrapper {
@@ -346,9 +380,35 @@ p.flash-error, p.flash-warning {
       #wrapper .white-box form a.btn.secondary {
         width: 95.5% !important;
         padding: 15px 8px; }
-      #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit], #wrapper .white-box form#login input[type=submit] {
+      #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit] {
+        width: 98.8%; }
+      #wrapper .white-box form#coffeeform input[type=submit] div.left, #wrapper .white-box form#mateform input[type=submit] div.left, #wrapper .white-box form#login div.left {
+        clear: both;
+        width: 100%; }
+      #wrapper .white-box form#coffeeform input[type=submit] input[type=submit], #wrapper .white-box form#mateform input[type=submit] input[type=submit], #wrapper .white-box form#login input[type=submit] {
         width: 100%;
-        padding: 15px 8px; } }
+        padding: 15px 8px; }
+
+  /* REGISTER */
+  .white-box.fullWidth div.left {
+    width: 100%;
+    float: none !important;
+    display: block;
+    margin-top: 24px; }
+    .white-box.fullWidth div.left b {
+      display: inline-block;
+      margin-bottom: 10px; }
+    .white-box.fullWidth div.left input {
+      width: 97%; }
+  .white-box.fullWidth #recaptcha_widget_div {
+    float: none;
+    display: block;
+    margin-top: 23px; }
+
+  .register_button_standard {
+    float: none;
+    margin-top: 10px;
+    min-width: 100% !important; } }
 /* Normal mode */
 .weight-display div.edit, .weight-edit div.show {
   display: none; }

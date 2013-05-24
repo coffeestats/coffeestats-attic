@@ -74,6 +74,7 @@ a.btn {
   display: inline-block;
   text-align: center;
   text-decoration:none !important;
+  font-weight: normal !important;
 
   &:hover {
     background: #5a5348;
@@ -115,6 +116,10 @@ input[type=password] {
   float:left;
 }
 
+.clear {
+  clear:both;
+}
+
 .white-box {
   padding: 20px;
   margin: 0 2% 2% 0;
@@ -123,7 +128,12 @@ input[type=password] {
   width: 44%;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.13);
   border-radius: 4px;
-  min-height: 110px;
+  min-height: 115px;
+
+  &.update,
+  &.today {
+    min-height: 285px;
+  }
 
   &:nth-child(2n) {
     float:left;
@@ -144,6 +154,33 @@ input[type=password] {
     font-size: 31px !important;
     color: rgb(194, 185, 185);
   }
+
+  .pagelinks {
+    display:inline-block;
+    width: 100%;
+
+    div.left {
+      width: 50%;
+
+      a.btn {
+        width: 94%;
+        margin-bottom: 10px;
+        display: block;
+      }
+    }
+    div.right {
+      margin-right: 21px;
+    }
+  }
+
+  .profilelist {
+    padding-left:0;
+
+    li {
+      list-style: none;
+      margin: 7px 0;
+    }
+  }
 }
 
 .white-box-center {
@@ -163,20 +200,41 @@ input[type=password] {
     }
     input[type=submit],
     a.btn {
-      width: 50%;
+      width: 49.56%;
     }
     p {
       clear: both;
     }
   }
 
-  &#login {
-    input[type=text],
-    input[type=password] {
-      width: 44.56% !important;
+  &.coffeeform {
+    #email {
+      width: 92.3%;
     }
+  }
+
+  &#login {
+    div.left {
+      width: 48%;
+
+      &:first-child {
+        margin-right: 2%;
+      }
+    }
+
+    input[type=text],
+    input[type=password]  {
+      width: 89.5% !important;
+    }
+
+    input[type=submit] {
+      width: 100% !important
+    }
+
     a.btn {
-      width: 44%;
+      width: 89.5%;
+      font-weight:normal !important;
+      margin: 2px 0;
     }
   }
 }
@@ -187,6 +245,16 @@ input[type=password] {
   margin-bottom: 10px;
   margin-top: 10px;
   float: left;
+  display:inline-block;
+
+  div.left {
+    display:inline-block;
+
+    input {
+      display:inline-block;
+      width:94%;
+    }
+  }
 }
 
 .rightfloated {
@@ -247,13 +315,7 @@ strong {
 
 .otrblockform input[type="submit"] {
   padding: 30px;
-  font-size: 30px;
-  background-color: #201200;
-  border: none;
-  color: #FFF;
-  min-width: 300px;
-  min-height: 60px;
-  line-height: 60px;
+  font-size: 2em;
 }
 
 /* WRAPPER */
@@ -393,24 +455,31 @@ p {
 
 /* REGISTER */
 
-.register_field_standard {
-  padding: 5px;
-  margin: 0 0 5px 0;
-  display: block;
-  font-size: 12px;
-  border: none;
-  background-color: #E7E7E7;
-  color: #201200;
-  min-height: 22px;
+.white-box.fullWidth {
+  div.left {
+    width: 33%;
+
+    b {
+      display: inline-block;
+      margin-bottom:10px;
+    }
+
+    input {
+      width:80%;
+    }
+  }
+
+  #recaptcha_widget_div {
+    float: left;
+    margin-top:23px;
+  }
 }
 
 .register_button_standard {
-  padding: 5px;
-  font-size: 14px;
-  background-color: #2A2A2A;
-  border: none;
-  color: #FFF;
-  min-width: 100px;
+  clear: both;
+  float: left;
+  margin-top: 10px;
+  min-width: 28.4% !important;
 }
 
 /* Responsive */
@@ -432,9 +501,17 @@ p {
           }
           &#coffeeform input[type=submit], 
           &#mateform input[type=submit],
-          &#login input[type=submit],
-          a.btn.secondary {
-            width: 40%;
+          &#login {
+            
+            input[type=password],
+            input[type=text] {
+              min-width: 0 !important;
+              width: 89.5% !important;
+            }
+
+            input[type=submit] {
+              width: 49.56%;
+            }
           }
         }
     }
@@ -473,15 +550,59 @@ p {
           width: 95.5% !important;
           padding: 15px 8px;
         }
+        &#coffeeform input[type=submit],
+        &#mateform input[type=submit] {
+          width: 98.8%
+        }
         &#coffeeform input[type=submit], 
         &#mateform input[type=submit],
-        &#login input[type=submit] {
-          width: 100%;
-          padding: 15px 8px;
+        &#login {
+          div.left {
+            clear:both;
+            width: 100%;
+          }
+          input[type=submit] {
+            width: 100%;
+            padding: 15px 8px;
+          }
         }
       }
     }
   }
+
+  /* REGISTER */
+
+.white-box.fullWidth {
+  div.left {
+    width: 100%;
+    float: none !important;
+    display: block;
+    margin-top: 24px;
+
+    b {
+      display: inline-block;
+      margin-bottom:10px;
+    }
+
+    input {
+      width:97%;
+    }
+  }
+
+  #recaptcha_widget_div {
+    float: none;
+    display: block;
+    margin-top:23px;
+  }
+}
+
+.register_button_standard {
+  float: none;
+  margin-top: 10px;
+  min-width: 100% !important;
+}
+
+
 }
 
 /* Normal mode */
