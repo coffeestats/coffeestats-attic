@@ -167,7 +167,7 @@ input[type=password] {
     }
     input[type=submit],
     a.btn {
-      width: 50%;
+      width: 49.56%;
     }
     p {
       clear: both;
@@ -181,12 +181,27 @@ input[type=password] {
   }
 
   &#login {
-    input[type=text],
-    input[type=password] {
-      width: 44.56% !important;
+    div.left {
+      width: 48%;
+
+      &:first-child {
+        margin-right: 2%;
+      }
     }
+
+    input[type=text],
+    input[type=password]  {
+      width: 88% !important;
+    }
+
+    input[type=submit] {
+      width: 100% !important
+    }
+
     a.btn {
-      width: 44%;
+      width: 89.5%;
+      font-weight:normal !important;
+      margin: 2px 0;
     }
   }
 }
@@ -459,9 +474,17 @@ p {
           }
           &#coffeeform input[type=submit], 
           &#mateform input[type=submit],
-          &#login input[type=submit],
-          a.btn.secondary {
-            width: 40%;
+          &#login {
+            
+            input[type=password],
+            input[type=text] {
+              min-width: 0 !important;
+              width: 89.5% !important;
+            }
+
+            input[type=submit] {
+              width: 49.56%;
+            }
           }
         }
     }

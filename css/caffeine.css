@@ -133,16 +133,24 @@ input[type=password] {
     width: 44%; }
   .white-box form#coffeeform input[type=submit],
   .white-box form#coffeeform a.btn, .white-box form#mateform input[type=submit], .white-box form#mateform a.btn, .white-box form#login input[type=submit], .white-box form#login a.btn {
-    width: 50%; }
+    width: 49.56%; }
   .white-box form#coffeeform p, .white-box form#mateform p, .white-box form#login p {
     clear: both; }
   .white-box form.coffeeform #email {
     width: 92.3%; }
+  .white-box form#login div.left {
+    width: 48%; }
+    .white-box form#login div.left:first-child {
+      margin-right: 2%; }
   .white-box form#login input[type=text],
   .white-box form#login input[type=password] {
-    width: 44.56% !important; }
+    width: 88% !important; }
+  .white-box form#login input[type=submit] {
+    width: 100% !important; }
   .white-box form#login a.btn {
-    width: 44%; }
+    width: 89.5%;
+    font-weight: normal !important;
+    margin: 2px 0; }
 
 .usercard, .rankbox {
   width: 45%;
@@ -334,9 +342,12 @@ p.flash-error, p.flash-warning {
     margin: 0 1% 2% 0; }
     #wrapper .white-box form#coffeeform input[type=text], #wrapper .white-box form#mateform input[type=text] {
       width: 52% !important; }
-    #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit], #wrapper .white-box form#login input[type=submit],
-    #wrapper .white-box form a.btn.secondary {
-      width: 40%; } }
+    #wrapper .white-box form#coffeeform input[type=submit] input[type=password],
+    #wrapper .white-box form#coffeeform input[type=submit] input[type=text], #wrapper .white-box form#mateform input[type=submit] input[type=password], #wrapper .white-box form#mateform input[type=submit] input[type=text], #wrapper .white-box form#login input[type=password], #wrapper .white-box form#login input[type=text] {
+      min-width: 0 !important;
+      width: 89.5% !important; }
+    #wrapper .white-box form#coffeeform input[type=submit] input[type=submit], #wrapper .white-box form#mateform input[type=submit] input[type=submit], #wrapper .white-box form#login input[type=submit] {
+      width: 49.56%; } }
 @media screen and (max-width: 1000px) {
   /* iPhone, Android rules here */
   #wrapper {
