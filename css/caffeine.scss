@@ -74,6 +74,7 @@ a.btn {
   display: inline-block;
   text-align: center;
   text-decoration:none !important;
+  font-weight: normal !important;
 
   &:hover {
     background: #5a5348;
@@ -147,6 +148,33 @@ input[type=password] {
   h2 {
     font-size: 31px !important;
     color: rgb(194, 185, 185);
+  }
+
+  .pagelinks {
+    display:inline-block;
+    width: 100%;
+
+    div.left {
+      width: 50%;
+
+      a.btn {
+        width: 94%;
+        margin-bottom: 10px;
+        display: block;
+      }
+    }
+    div.right {
+      margin-right: 21px;
+    }
+  }
+
+  .profilelist {
+    padding-left:0;
+
+    li {
+      list-style: none;
+      margin: 7px 0;
+    }
   }
 }
 

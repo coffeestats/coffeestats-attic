@@ -59,7 +59,8 @@ a.btn {
   cursor: pointer;
   display: inline-block;
   text-align: center;
-  text-decoration: none !important; }
+  text-decoration: none !important;
+  font-weight: normal !important; }
   input[type=submit]:hover,
   button:hover,
   a.btn:hover {
@@ -121,6 +122,22 @@ input[type=password] {
   .white-box h2 {
     font-size: 31px !important;
     color: #c2b9b9; }
+  .white-box .pagelinks {
+    display: inline-block;
+    width: 100%; }
+    .white-box .pagelinks div.left {
+      width: 50%; }
+      .white-box .pagelinks div.left a.btn {
+        width: 94%;
+        margin-bottom: 10px;
+        display: block; }
+    .white-box .pagelinks div.right {
+      margin-right: 21px; }
+  .white-box .profilelist {
+    padding-left: 0; }
+    .white-box .profilelist li {
+      list-style: none;
+      margin: 7px 0; }
 
 .white-box-center {
   text-align: center; }

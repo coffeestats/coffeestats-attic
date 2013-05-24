@@ -50,15 +50,15 @@ if ($ownprofile) {
             'Your Mate total' => $total['mate'],
         ),
         'extra' => array(
-            sprintf('Your <a href="%s">public profile page</a>', $public_url),
-            sprintf('Your <a href="%s">on-the-run</a> URL', $otr_url),
+            sprintf('<a class="btn secondary" href="%s">public profile page</a>', $public_url),
+            sprintf('<a class="btn secondary" href="%s">on-the-run</a>', $otr_url),
         ),
         'afterlist' => sprintf(
-            '<a href="https://www.facebook.com/sharer.php?u=%1$s&t=My%%20coffee%%20statistics">' .
+            '<a title="share your public profile page on facebook" href="https://www.facebook.com/sharer.php?u=%1$s&t=My%%20coffee%%20statistics">' .
             '<img src="images/facebook40.png" alt="facebook share icon" /></a> ' .
-            '<a href="https://twitter.com/intent/tweet?original_referer=%1$s&text=My%%20coffee%%20statistics&tw_p=tweetbutton&url=%1$s&via=coffeestats">' .
+            '<a title="share your public profile page on twitter" href="https://twitter.com/intent/tweet?original_referer=%1$s&text=My%%20coffee%%20statistics&tw_p=tweetbutton&url=%1$s&via=coffeestats">' .
             '<img src="images/twitter40.png" alt="twitter share" /></a> ' .
-            '<a href="https://plus.google.com/share?url=%1$s">' .
+            '<a title="share your public profile page on gplus" href="https://plus.google.com/share?url=%1$s">' .
             '<img src="images/googleplus40.png" alt="google plus share" /></a>',
             urlencode(public_url($profileuser))),
     );
@@ -113,25 +113,35 @@ include("header.php");
     </div>
 <?php } ?>
     <h2><?php echo $info['title']; ?></h2>
-    <ul>
+    <ul class="profilelist">
 <?php
 foreach ($info['data'] as $key => $value) { ?>
         <li><?php echo $key; ?>: <?php echo $value; ?></li>
 <?php
 }
-if (isset($info['extra'])) {
-    foreach ($info['extra'] as $value) { ?>
-        <li><?php echo $value; ?></li>
-<?php
-    }
-}
 ?>
+
     </ul>
-<?php
-if (isset($info['afterlist'])) {
-    echo $info['afterlist'];
-}
-?>
+<div class="pagelinks">
+    <div class="left">
+        <?php
+            if (isset($info['extra'])) {
+                foreach ($info['extra'] as $value) { ?>
+                    <?php echo $value; ?>
+            <?php
+                }
+            }
+        ?>
+    </div>
+    <div class="right">
+        <?php
+            if (isset($info['afterlist'])) {
+                echo $info['afterlist'];
+            }
+        ?>
+    </div>
+    
+</div>
 </div>
 <?php if ($ownprofile) { ?>
 <div class="white-box">
