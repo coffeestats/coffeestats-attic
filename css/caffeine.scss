@@ -115,6 +115,10 @@ input[type=password] {
   float:left;
 }
 
+.clear {
+  clear:both;
+}
+
 .white-box {
   padding: 20px;
   margin: 0 2% 2% 0;
@@ -393,24 +397,31 @@ p {
 
 /* REGISTER */
 
-.register_field_standard {
-  padding: 5px;
-  margin: 0 0 5px 0;
-  display: block;
-  font-size: 12px;
-  border: none;
-  background-color: #E7E7E7;
-  color: #201200;
-  min-height: 22px;
+.white-box.fullWidth {
+  div.left {
+    width: 33%;
+
+    b {
+      display: inline-block;
+      margin-bottom:10px;
+    }
+
+    input {
+      width:80%;
+    }
+  }
+
+  #recaptcha_widget_div {
+    float: left;
+    margin-top:23px;
+  }
 }
 
 .register_button_standard {
-  padding: 5px;
-  font-size: 14px;
-  background-color: #2A2A2A;
-  border: none;
-  color: #FFF;
-  min-width: 100px;
+  clear: both;
+  float: left;
+  margin-top: 10px;
+  min-width: 28.4% !important;
 }
 
 /* Responsive */
