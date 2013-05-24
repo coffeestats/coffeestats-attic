@@ -16,6 +16,26 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 </head>
 <body>
     <div id="wrapper">
+<?php
+flash('Test Success', FLASH_SUCCESS);
+flash('Test Success 2', FLASH_SUCCESS);
+flash('Test Info', FLASH_INFO);
+// flash('Test Warning', FLASH_WARNING);
+// flash('Test Error', FLASH_ERROR);
+if (peek_flash()) {
+?>
+        <ul class="flash-messages" id="system-flash">
+<?php
+    while (($message = pop_flash()) !== NULL) {
+?>
+            <li class="flash-<?php echo $message[0]; ?>"><?php echo $message[1]; ?></li>
+<?php
+    }
+?>
+        </ul>
+<?php
+}
+?>
         <div id="header">
 <?php
 if (isset($login_session)) {
@@ -40,20 +60,6 @@ if (isset($login_session)) {
                         <li><a href="about" class="navabout">About</a></li>
                     </ul>
                 </div>
-<?php
-}
-
-if (peek_flash()) {
-?>
-            <div class="white-box">
-<?php
-    while (($message = pop_flash()) !== NULL) {
-?>
-                <p class="flash-<?php echo $message[0]; ?>"><?php echo $message[1]; ?></p>
-<?php
-    }
-?>
-            </div>
 <?php
 }
 ?>

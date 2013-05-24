@@ -14,6 +14,19 @@ $siteid = get_setting(PIWIK_SITE_ID, FALSE);
   </div><!-- close content -->
 </div><!-- close wrapper -->
 
+<script type="text/javascript" src="/lib/jquery.min.js"></script>
+<script type="text/javascript">
+function checkEmptyFlash() {
+    var emptyflash = $('ul:empty').filter('#system-flash');
+    console.log(emptyflash.length);
+    // .remove();
+};
+
+$(document).ready(function() {
+    $('#system-flash').children('.flash-info').delay(4000).fadeOut(1000, function() { this.remove(); checkEmptyFlash(); });
+    $('#system-flash').children('.flash-success').delay(4000).fadeOut(1000, function() { this.remove(); checkEmptyFlash(); });
+});
+</script>
 <?php
 if ($siteid !== NULL) {
     $piwikhost = get_setting(PIWIK_HOST);

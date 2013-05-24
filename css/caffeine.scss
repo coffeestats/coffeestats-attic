@@ -239,6 +239,34 @@ input[type=password] {
   }
 }
 
+.flash-messages {
+    background-color: yellow;
+    position: relative;
+    top: 0px;
+    left:10%;
+    width:80%;
+    padding:10pt;
+
+    li {
+        list-style-type: none;
+        padding:5pt;
+        margin-top: 5pt;
+    }
+
+    .flash-success {
+        background-color: green;
+    }
+    .flash-info {
+        background-color: blue;
+    }
+    .flash-warning {
+        background-color: rgb(80,80,0);
+    }
+    .flash-error {
+        background-color: red;
+    }
+}
+
 .usercard, .rankbox {
   width: 45%;
   margin-right: 5%;

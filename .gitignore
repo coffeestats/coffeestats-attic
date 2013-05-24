@@ -2,3 +2,4 @@
 devdocs/*.pdf
 devdocs/tests/testdocs/
 tmp/*.csv
+.sass-cache/

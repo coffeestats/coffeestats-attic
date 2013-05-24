@@ -171,6 +171,26 @@ input[type=password] {
     font-weight: normal !important;
     margin: 2px 0; }
 
+.flash-messages {
+  background-color: yellow;
+  position: relative;
+  top: 0px;
+  left: 10%;
+  width: 80%;
+  padding: 10pt; }
+  .flash-messages li {
+    list-style-type: none;
+    padding: 5pt;
+    margin-top: 5pt; }
+  .flash-messages .flash-success {
+    background-color: green; }
+  .flash-messages .flash-info {
+    background-color: blue; }
+  .flash-messages .flash-warning {
+    background-color: #505000; }
+  .flash-messages .flash-error {
+    background-color: red; }
+
 .usercard, .rankbox {
   width: 45%;
   margin-right: 5%;
