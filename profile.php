@@ -140,12 +140,12 @@ foreach ($info['data'] as $key => $value) { ?>
             }
         ?>
     </div>
-    
 </div>
 </div>
 <?php if ($ownprofile) { ?>
 <div class="white-box update">
     <h2>Coffee or Mate?</h2>
+    <?php render_flash('registerdrink'); ?>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="inlineform">
         <div>
             <input type="submit" value="Coffee!" />
