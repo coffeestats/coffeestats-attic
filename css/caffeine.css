@@ -136,6 +136,8 @@ input[type=password] {
     width: 50%; }
   .white-box form#coffeeform p, .white-box form#mateform p, .white-box form#login p {
     clear: both; }
+  .white-box form.coffeeform #email {
+    width: 92.3%; }
   .white-box form#login input[type=text],
   .white-box form#login input[type=password] {
     width: 44.56% !important; }
@@ -147,7 +149,13 @@ input[type=password] {
   margin-right: 5%;
   margin-bottom: 10px;
   margin-top: 10px;
-  float: left; }
+  float: left;
+  display: inline-block; }
+  .usercard div.left, .rankbox div.left {
+    display: inline-block; }
+    .usercard div.left input, .rankbox div.left input {
+      display: inline-block;
+      width: 94%; }
 
 .rightfloated {
   float: right; }
