@@ -87,6 +87,19 @@ function pop_flash($category='system') {
 }
 
 /**
+ * Render a list of flash messages for the given type.
+ */
+function render_flash($category) {
+    printf('<ul class="flash-messages" id="%s-flash">', $category);
+    while (($message = pop_flash($category)) !== NULL) {
+        printf(
+            '<li class="flash-%s">%s <a href="#" class="close">X</a></li>',
+            $message[0], $message[1]);
+    }
+    print('</ul>');
+}
+
+/**
  * Redirect to given URL.
  */
 function redirect_to($url, $permanent=FALSE) {
@@ -468,7 +481,7 @@ function register_coffee($uid, $coffeetime, $timezone) {
         flash(sprintf(
             'Error: Your last coffee was less than 5 minutes ago at %s%s. O_o',
             $cafinfo['cdate'], format_timezone($cafinfo['ctimezone'])),
-            FLASH_WARNING);
+            FLASH_WARNING, 'registerdrink');
         return;
     }
     create_caffeine($coffeetime, $uid, 0);
@@ -476,7 +489,7 @@ function register_coffee($uid, $coffeetime, $timezone) {
         sprintf(
            'Your coffee at %s%s has been registered!',
            $coffeetime, format_timezone($timezone)),
-        FLASH_SUCCESS);
+        FLASH_SUCCESS, 'registerdrink');
 }
 
 /**
@@ -489,7 +502,7 @@ function register_mate($uid, $matetime, $timezone) {
         flash(sprintf(
             "Error: Your last mate was less than 5 minutes ago at %s%s. O_o",
             $cafinfo['cdate'], format_timezone($cafinfo['ctimezone'])),
-            FLASH_WARNING);
+            FLASH_WARNING, 'registerdrink');
         return;
     }
     create_caffeine($matetime, $uid, 1);
@@ -497,7 +510,7 @@ function register_mate($uid, $matetime, $timezone) {
         sprintf(
             'Your mate at %s%s has been registered!',
             $matetime, format_timezone($timezone)),
-        FLASH_SUCCESS);
+        FLASH_SUCCESS, 'registerdrink');
 }
 
 /**

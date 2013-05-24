@@ -15,38 +15,32 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
     <link rel="shortcut icon" href="../images/favicon.png" type="image/x-icon">
 </head>
 <body>
+    <?php render_flash('system'); ?>
     <div id="wrapper">
-<ul class="flash-messages" id="system-flash"><?php
-if (peek_flash()) {
-    while (($message = pop_flash()) !== NULL) {
-?><li class="flash-<?php echo $message[0]; ?>"><?php echo $message[1]; ?> <a href="#" class="close">X</a></li><?php
-    }
-}
-?></ul>
-      <div id="header">
+        <div id="header">
 <?php
 if (isset($login_session)) {
 ?>
-          <div id="account" class="rightfloated"><a href="settings">Settings</a> / <a href="auth/logout">Logout</a></div>
+            <div id="account" class="rightfloated"><a href="settings">Settings</a> / <a href="auth/logout">Logout</a></div>
 <?php
 }
 ?>
-          <h1><a href="/">coffeestats.org</a></h1>
-          <p>...about what keeps you awake at night.</p>
-      </div>
-      <div id="content">
+            <h1><a href="/">coffeestats.org</a></h1>
+            <p>...about what keeps you awake at night.</p>
+        </div>
+        <div id="content">
 <?php
 if (isset($login_session)) {
 ?>
-          <div id="navigation">
-              <ul>
-                  <li><a href="index" class="navindex">Home</a></li>
-                  <li><a href="profile" class="navprofile">Profile</a></li>
-                  <li><a href="explore" class="navexplore">Explore</a></li>
-                  <li><a href="overall" class="navoverall">Overall Stats</a></li>
-                  <li><a href="about" class="navabout">About</a></li>
-              </ul>
-          </div>
+            <div id="navigation">
+                <ul>
+                    <li><a href="index" class="navindex">Home</a></li>
+                    <li><a href="profile" class="navprofile">Profile</a></li>
+                    <li><a href="explore" class="navexplore">Explore</a></li>
+                    <li><a href="overall" class="navoverall">Overall Stats</a></li>
+                    <li><a href="about" class="navabout">About</a></li>
+                </ul>
+            </div>
 <?php
 }
 ?>

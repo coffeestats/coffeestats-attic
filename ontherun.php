@@ -54,6 +54,7 @@ include("header.php");
 <div class="white-box fullWidth">
     <h2>On the run?</h2>
     <center>
+    <?php render_flash('registerdrink'); ?>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="otrblockform">
     <input type="submit" value="Coffee!" /><br />
     <input type="hidden" id="coffeetime" name="coffeetime" />

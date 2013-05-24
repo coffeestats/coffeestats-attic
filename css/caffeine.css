@@ -171,45 +171,54 @@ input[type=password] {
     font-weight: normal !important;
     margin: 2px 0; }
 
-.flash-messages {
+li.flash-success, li.flash-info, li.flash-warning, li.flash-error {
+  list-style-type: none;
+  padding: 10px 10px 10px 25px;
+  margin-bottom: 5pt;
+  border-radius: 4px;
+  background-repeat: no-repeat;
+  background-position: 5px center; }
+  li.flash-success .close, li.flash-info .close, li.flash-warning .close, li.flash-error .close {
+    float: right;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000000;
+    text-shadow: 0 1px 0 #ffffff;
+    opacity: 0.2; }
+
+.flash-success {
+  background-image: url("/images/info.png");
+  color: #468847;
+  background-color: #dff0d8;
+  border-color: #d6e9c6; }
+
+.flash-info {
+  background-image: url("/images/info.png");
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border-color: #bce8f1; }
+
+.flash-warning {
+  background-image: url("/images/alert.png");
+  color: #c09853;
+  background-color: #fcf8e3;
+  border: 1px solid #fbeed5; }
+
+.flash-error {
+  background-image: url("/images/alert.png");
+  color: #b94a48;
+  background-color: #f2dede;
+  border: 1px solid #eed3d7; }
+
+ul.flash-messages {
+  margin: 0px;
+  padding: 0px; }
+
+#system-flash .flash-messages {
   background: transparent;
   position: absolute;
   top: 0px;
   width: 60%; }
-  .flash-messages li {
-    list-style-type: none;
-    padding: 10px 10px 10px 25px;
-    margin-bottom: 5pt;
-    border-radius: 4px;
-    background-repeat: no-repeat;
-    background-position: 5px center; }
-    .flash-messages li .close {
-      float: right;
-      font-size: 16px;
-      font-weight: bold;
-      color: #000000;
-      text-shadow: 0 1px 0 #ffffff;
-      opacity: 0.2; }
-  .flash-messages .flash-success {
-    background-image: url("/images/info.png");
-    color: #468847;
-    background-color: #dff0d8;
-    border-color: #d6e9c6; }
-  .flash-messages .flash-info {
-    background-image: url("/images/info.png");
-    color: #3a87ad;
-    background-color: #d9edf7;
-    border-color: #bce8f1; }
-  .flash-messages .flash-warning {
-    background-image: url("/images/alert.png");
-    color: #c09853;
-    background-color: #fcf8e3;
-    border: 1px solid #fbeed5; }
-  .flash-messages .flash-error {
-    background-image: url("/images/alert.png");
-    color: #b94a48;
-    background-color: #f2dede;
-    border: 1px solid #eed3d7; }
 
 .usercard, .rankbox {
   width: 45%;
