@@ -191,7 +191,7 @@ input[type=password] {
 
     input[type=text],
     input[type=password]  {
-      width: 88% !important;
+      width: 89.5% !important;
     }
 
     input[type=submit] {
@@ -525,9 +525,15 @@ p {
         }
         &#coffeeform input[type=submit], 
         &#mateform input[type=submit],
-        &#login input[type=submit] {
-          width: 100%;
-          padding: 15px 8px;
+        &#login {
+          div.left {
+            clear:both;
+            width: 100%;
+          }
+          input[type=submit] {
+            width: 100%;
+            padding: 15px 8px;
+          }
         }
       }
     }
