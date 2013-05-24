@@ -315,13 +315,7 @@ strong {
 
 .otrblockform input[type="submit"] {
   padding: 30px;
-  font-size: 30px;
-  background-color: #201200;
-  border: none;
-  color: #FFF;
-  min-width: 300px;
-  min-height: 60px;
-  line-height: 60px;
+  font-size: 2em;
 }
 
 /* WRAPPER */
@@ -555,6 +549,10 @@ p {
         a.btn.secondary {
           width: 95.5% !important;
           padding: 15px 8px;
+        }
+        &#coffeeform input[type=submit],
+        &#mateform input[type=submit] {
+          width: 98.8%
         }
         &#coffeeform input[type=submit], 
         &#mateform input[type=submit],

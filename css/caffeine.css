@@ -229,13 +229,7 @@ strong {
 
 .otrblockform input[type="submit"] {
   padding: 30px;
-  font-size: 30px;
-  background-color: #201200;
-  border: none;
-  color: #FFF;
-  min-width: 300px;
-  min-height: 60px;
-  line-height: 60px; }
+  font-size: 2em; }
 
 /* WRAPPER */
 #wrapper {
@@ -386,6 +380,8 @@ p.flash-error, p.flash-warning {
       #wrapper .white-box form a.btn.secondary {
         width: 95.5% !important;
         padding: 15px 8px; }
+      #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit] {
+        width: 98.8%; }
       #wrapper .white-box form#coffeeform input[type=submit] div.left, #wrapper .white-box form#mateform input[type=submit] div.left, #wrapper .white-box form#login div.left {
         clear: both;
         width: 100%; }
