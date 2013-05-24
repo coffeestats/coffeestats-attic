@@ -82,6 +82,7 @@ a.btn {
       color: #fff !important; }
 
 input[type=text],
+input[type=email],
 input[type=password] {
   padding: 10px;
   font-size: 1.35em;
