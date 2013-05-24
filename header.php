@@ -17,22 +17,12 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 <body>
     <div id="wrapper">
 <?php
-flash('Test Success', FLASH_SUCCESS);
-flash('Test Success 2', FLASH_SUCCESS);
-flash('Test Info', FLASH_INFO);
-// flash('Test Warning', FLASH_WARNING);
-// flash('Test Error', FLASH_ERROR);
 if (peek_flash()) {
-?>
-        <ul class="flash-messages" id="system-flash">
-<?php
+?><ul class="flash-messages" id="system-flash"><?php
     while (($message = pop_flash()) !== NULL) {
-?>
-            <li class="flash-<?php echo $message[0]; ?>"><?php echo $message[1]; ?></li>
-<?php
+?><li class="flash-<?php echo $message[0]; ?>"><?php echo $message[1]; ?> <a href="#" class="close">X</a></li><?php
     }
-?>
-        </ul>
+?></ul>
 <?php
 }
 ?>

@@ -4,7 +4,7 @@
     Author: Jan Dittberner <jan@dittberner.info>
     Author: Jeremias Arnstadt <j.arnstadt@art-ifact.de>
     license:
-    Date: May 19th, 2013 
+    Date: May 24th, 2013
     Version: 1.1
 */
 /* colors */
@@ -172,24 +172,44 @@ input[type=password] {
     margin: 2px 0; }
 
 .flash-messages {
-  background-color: yellow;
-  position: relative;
+  background: transparent;
+  position: absolute;
   top: 0px;
-  left: 10%;
-  width: 80%;
-  padding: 10pt; }
+  width: 60%; }
   .flash-messages li {
     list-style-type: none;
-    padding: 5pt;
-    margin-top: 5pt; }
+    padding: 10px 10px 10px 25px;
+    margin-bottom: 5pt;
+    border-radius: 4px;
+    background-repeat: no-repeat;
+    background-position: 5px center; }
+    .flash-messages li .close {
+      float: right;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000000;
+      text-shadow: 0 1px 0 #ffffff;
+      opacity: 0.2; }
   .flash-messages .flash-success {
-    background-color: green; }
+    background-image: url("/images/info.png");
+    color: #468847;
+    background-color: #dff0d8;
+    border-color: #d6e9c6; }
   .flash-messages .flash-info {
-    background-color: blue; }
+    background-image: url("/images/info.png");
+    color: #3a87ad;
+    background-color: #d9edf7;
+    border-color: #bce8f1; }
   .flash-messages .flash-warning {
-    background-color: #505000; }
+    background-image: url("/images/alert.png");
+    color: #c09853;
+    background-color: #fcf8e3;
+    border: 1px solid #fbeed5; }
   .flash-messages .flash-error {
-    background-color: red; }
+    background-image: url("/images/alert.png");
+    color: #b94a48;
+    background-color: #f2dede;
+    border: 1px solid #eed3d7; }
 
 .usercard, .rankbox {
   width: 45%;
@@ -320,19 +340,6 @@ strong {
           background-image: url("/images/user-4.png"); }
         #navigation ul li a.navlogout {
           background-image: url("/images/out.png"); }
-
-p.flash-success, p.flash-info {
-  padding: 10px 10px 10px 20px;
-  margin: 0;
-  background-image: url("/images/info.png");
-  background-repeat: no-repeat;
-  background-position: left center; }
-p.flash-error, p.flash-warning {
-  padding: 10px 10px 10px 20px;
-  margin: 0;
-  background-image: url("/images/alert.png");
-  background-repeat: no-repeat;
-  background-position: left center; }
 
 /* CONTENT */
 #content {

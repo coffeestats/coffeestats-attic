@@ -4,7 +4,7 @@
     Author: Jan Dittberner <jan@dittberner.info>
     Author: Jeremias Arnstadt <j.arnstadt@art-ifact.de>
     license:
-    Date: May 19th, 2013 
+    Date: May 24th, 2013
     Version: 1.1
 */
 
@@ -240,30 +240,52 @@ input[type=password] {
 }
 
 .flash-messages {
-    background-color: yellow;
-    position: relative;
+    background: transparent;
+    position: absolute;
     top: 0px;
-    left:10%;
-    width:80%;
-    padding:10pt;
+    width: 60%;
 
     li {
         list-style-type: none;
-        padding:5pt;
-        margin-top: 5pt;
+        padding: 10px 10px 10px 25px;
+        margin-bottom: 5pt;
+        border-radius: 4px;
+        background-repeat: no-repeat;
+        background-position: 5px center;
+
+        .close {
+            float: right;
+            font-size: 16px;
+            font-weight: bold;
+            color: #000000;
+            text-shadow: 0 1px 0 #ffffff;
+            opacity: 0.2;
+        }
     }
 
     .flash-success {
-        background-color: green;
+        background-image: url('/images/info.png');
+        color: #468847;
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
     }
     .flash-info {
-        background-color: blue;
+        background-image: url('/images/info.png');
+        color: #3a87ad;
+        background-color: #d9edf7;
+        border-color: #bce8f1;
     }
     .flash-warning {
-        background-color: rgb(80,80,0);
+        background-image: url('/images/alert.png');
+        color: #c09853;
+        background-color: #fcf8e3;
+        border: 1px solid #fbeed5;
     }
     .flash-error {
-        background-color: red;
+        background-image: url('/images/alert.png');
+        color: #b94a48;
+        background-color: #f2dede;
+        border: 1px solid #eed3d7;
     }
 }
 
@@ -325,7 +347,7 @@ strong {
 }
 
 .inlineform {
-  
+
   select {
     padding: 10px;
     font-size: 16px;
@@ -400,7 +422,7 @@ strong {
       display: inline-block;
       border-right: 1px solid #a3a3a3;
       box-shadow: 1px 0 0 #fff;
-      
+
       &:last-child {
         border-right: 0;
         box-shadow: 0 0 0 #fff;
@@ -442,23 +464,6 @@ strong {
         }
       }
     }
-  }
-}
-
-p {
-  &.flash-success, &.flash-info {
-    padding: 10px 10px 10px 20px;
-    margin: 0;
-    background-image: url('/images/info.png');
-    background-repeat: no-repeat;
-    background-position: left center;
-  }
-  &.flash-error, &.flash-warning {
-    padding: 10px 10px 10px 20px;
-    margin: 0;
-    background-image: url('/images/alert.png');
-    background-repeat: no-repeat;
-    background-position: left center;
   }
 }
 
@@ -527,10 +532,10 @@ p {
           &#mateform input[type=text] {
             width: 52% !important;
           }
-          &#coffeeform input[type=submit], 
+          &#coffeeform input[type=submit],
           &#mateform input[type=submit],
           &#login {
-            
+
             input[type=password],
             input[type=text] {
               min-width: 0 !important;
@@ -582,7 +587,7 @@ p {
         &#mateform input[type=submit] {
           width: 98.8%
         }
-        &#coffeeform input[type=submit], 
+        &#coffeeform input[type=submit],
         &#mateform input[type=submit],
         &#login {
           div.left {

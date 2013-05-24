@@ -16,15 +16,12 @@ $siteid = get_setting(PIWIK_SITE_ID, FALSE);
 
 <script type="text/javascript" src="/lib/jquery.min.js"></script>
 <script type="text/javascript">
-function checkEmptyFlash() {
-    var emptyflash = $('ul:empty').filter('#system-flash');
-    console.log(emptyflash.length);
-    // .remove();
-};
-
 $(document).ready(function() {
-    $('#system-flash').children('.flash-info').delay(4000).fadeOut(1000, function() { this.remove(); checkEmptyFlash(); });
-    $('#system-flash').children('.flash-success').delay(4000).fadeOut(1000, function() { this.remove(); checkEmptyFlash(); });
+    $('#system-flash').children('.flash-info').delay(4000).fadeOut(1000, function() { this.remove(); });
+    $('#system-flash').children('.flash-success').delay(4000).fadeOut(1000, function() { this.remove(); });
+    $('#system-flash a.close').click(function(event) {
+        $(this).parent().fadeOut(1000, function() { this.remove(); });
+    });
 });
 </script>
 <?php
@@ -47,8 +44,7 @@ if ($siteid !== NULL) {
 </script>
 <!-- End Piwik Code -->
 <?php
-    }
+}
 ?>
-
 </body>
 </html>
