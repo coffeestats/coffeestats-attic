@@ -17,9 +17,9 @@ $siteid = get_setting(PIWIK_SITE_ID, FALSE);
 <script type="text/javascript" src="/lib/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#system-flash').children('.flash-info').delay(4000).fadeOut(1000, function() { this.remove(); });
-    $('#system-flash').children('.flash-success').delay(4000).fadeOut(1000, function() { this.remove(); });
-    $('#system-flash a.close').click(function(event) {
+    $('.flash-info').delay(4000).fadeOut(1000, function() { this.remove(); });
+    $('.flash-success').delay(4000).fadeOut(1000, function() { this.remove(); });
+    $('li a.close').click(function(event) {
         $(this).parent().fadeOut(1000, function() { this.remove(); });
     });
 });
