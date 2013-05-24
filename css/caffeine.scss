@@ -493,6 +493,40 @@ p {
       }
     }
   }
+
+  /* REGISTER */
+
+.white-box.fullWidth {
+  div.left {
+    width: 100%;
+    float: none !important;
+    display: block;
+    margin-top: 24px;
+
+    b {
+      display: inline-block;
+      margin-bottom:10px;
+    }
+
+    input {
+      width:97%;
+    }
+  }
+
+  #recaptcha_widget_div {
+    float: none;
+    display: block;
+    margin-top:23px;
+  }
+}
+
+.register_button_standard {
+  float: none;
+  margin-top: 10px;
+  min-width: 100% !important;
+}
+
+
 }
 
 /* Normal mode */

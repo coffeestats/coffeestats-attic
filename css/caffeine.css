@@ -350,7 +350,28 @@ p.flash-error, p.flash-warning {
         padding: 15px 8px; }
       #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit], #wrapper .white-box form#login input[type=submit] {
         width: 100%;
-        padding: 15px 8px; } }
+        padding: 15px 8px; }
+
+  /* REGISTER */
+  .white-box.fullWidth div.left {
+    width: 100%;
+    float: none !important;
+    display: block;
+    margin-top: 24px; }
+    .white-box.fullWidth div.left b {
+      display: inline-block;
+      margin-bottom: 10px; }
+    .white-box.fullWidth div.left input {
+      width: 97%; }
+  .white-box.fullWidth #recaptcha_widget_div {
+    float: none;
+    display: block;
+    margin-top: 23px; }
+
+  .register_button_standard {
+    float: none;
+    margin-top: 10px;
+    min-width: 100% !important; } }
 /* Normal mode */
 .weight-display div.edit, .weight-edit div.show {
   display: none; }
