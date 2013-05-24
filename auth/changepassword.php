@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         redirect_to('../index');
     }
+    redirect_to($_SERVER['REQUEST_URI']);
 }
 
 include_once('../includes/jsvalidation.php');
@@ -51,8 +52,8 @@ include('../header.php');
     <h2>Change Your Password</h2>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
     <p>
-        <input type="password" name="password" id="password" />
-        <input type="password" name="password2" id="password2" />
+        <input type="password" required pattern=".{8,}" name="password" id="password" />
+        <input type="password" required pattern=".{8,}" name="password2" id="password2" />
         <input type="submit" name="Reset my password" />
     </p>
     </form>
@@ -61,7 +62,18 @@ include('../header.php');
 <?php js_sanitize_password(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#password').focus();
+    function pwfieldvalidation(event) {
+        if (this.validity.valueMissing) {
+            this.setCustomValidity('Password must not be empty!');
+        } else if (this.validity.patternMismatch) {
+            this.setCustomValidity('Password must be at least 8 characters long!');
+        } else {
+            this.setCustomValidity('');
+        }
+    }
+
+    $('input#password').focus().bind('invalid', pwfieldvalidation);
+    $('input#password2').bind('invalid', pwfieldvalidation);
 
     $('form').submit(function(event) {
         return sanitize_password('input#password', 'input#password2');
