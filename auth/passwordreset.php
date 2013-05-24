@@ -40,15 +40,7 @@ include('../header.php');
 <?php js_sanitize_email(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#email').focus().bind('invalid', function(event) {
-        if (this.validity.patternMismatch) {
-            this.setCustomValidity('Email address must contain a local part and a domain part separated by an @ sign!');
-        } else if (this.validity.valueMissing) {
-            this.setCustomValidity('Email address must not be empty!');
-        } else {
-            this.setCustomValidity('');
-        }
-    });
+    $('input#email').focus().bind('invalid', emailfieldvalidation);
 
     $('form').submit(function(event) {
         return sanitize_email('input#email');

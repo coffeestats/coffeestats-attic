@@ -87,7 +87,14 @@ include("../header.php");
 <script type="text/javascript" src="../lib/Chart.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#username').focus();
+    $('input#username').focus().bind('invalid', usernamefieldvalidation);
+    $('input#password').bind('invalid', function(event) {
+        if (this.validity.valueMissing) {
+            this.setCustomValidity('Password must not be empty!');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
 
     var lineChartData = {
         labels: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat",],
@@ -110,26 +117,6 @@ $(document).ready(function() {
     }
 
     new Chart(document.getElementById("coffeeexample").getContext("2d")).Line(lineChartData);
-
-    var usernamefield = document.getElementById('username');
-    usernamefield.addEventListener('invalid', function(event) {
-        if (event.target.validity.patternMismatch) {
-            event.target.setCustomValidity('Invalid username! A username has at least 3 characters, starting with a letter. It may consist of letters, digits, hypens and underscores.');
-        } else if (event.target.validity.valueMissing) {
-            event.target.setCustomValidity('Username must not be empty!');
-        } else {
-            event.target.setCustomValidity('');
-        }
-    }, false);
-
-    var passwordfield = document.getElementById('password');
-    passwordfield.addEventListener('invalid', function(event) {
-        if (event.target.validity.valueMissing) {
-            event.target.setCustomValidity('Password must not be empty!');
-        } else {
-            event.target.setCustomValidity('');
-        }
-    }, false);
 
     $('form').submit(function(event) {
         return sanitize_username('input#username')

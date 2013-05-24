@@ -32,6 +32,16 @@ function js_sanitize_email() {
 <script type="text/javascript">
     var emailpat = /^([A-Za-z0-9._%+-]+)@([^@]+)$/;
 
+    function emailfieldvalidation(event) {
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity('Email address must contain a local part and a domain part separated by an @ sign!');
+        } else if (this.validity.valueMissing) {
+            this.setCustomValidity('Email address must not be empty!');
+        } else {
+            this.setCustomValidity('');
+        }
+    }
+
     function sanitize_email(fieldspec, mandatory) {
         mandatory = typeof mandatory !== 'undefined' ? mandatory : true;
         var emfield = $(fieldspec);
@@ -60,6 +70,16 @@ function js_sanitize_username() {
 ?>
 <script type="text/javascript">
     var usernamepat = /^[a-z][a-z0-9_-]{1,29}$/;
+
+    function usernamefieldvalidation(event) {
+        if (this.validity.patternMismatch) {
+            this.setCustomValidity('Invalid username! A username has at least 3 characters, starting with a letter. It may consist of letters, digits, hypens and underscores.');
+        } else if (this.validity.valueMissing) {
+            this.setCustomValidity('Username must not be empty!');
+        } else {
+            this.setCustomValidity('');
+        }
+    }
 
     function sanitize_username(fieldspec) {
         var unfield = $(fieldspec);
@@ -142,6 +162,16 @@ function js_sanitize_datetime() {
 function js_sanitize_password() {
 ?>
 <script type="text/javascript">
+    function pwfieldvalidation(event) {
+        if (this.validity.valueMissing) {
+            this.setCustomValidity('Password must not be empty!');
+        } else if (this.validity.patternMismatch) {
+            this.setCustomValidity('Password must be at least 8 characters long!');
+        } else {
+            this.setCustomValidity('');
+        }
+    }
+
     function sanitize_password(pwfieldspec, repfieldspec, allowempty) {
         allowempty = typeof allowempty !== 'undefined' ? allowempty : false;
         var pwfield = $(pwfieldspec);

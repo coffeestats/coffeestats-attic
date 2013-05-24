@@ -62,16 +62,6 @@ include('../header.php');
 <?php js_sanitize_password(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    function pwfieldvalidation(event) {
-        if (this.validity.valueMissing) {
-            this.setCustomValidity('Password must not be empty!');
-        } else if (this.validity.patternMismatch) {
-            this.setCustomValidity('Password must be at least 8 characters long!');
-        } else {
-            this.setCustomValidity('');
-        }
-    }
-
     $('input#password').focus().bind('invalid', pwfieldvalidation);
     $('input#password2').bind('invalid', pwfieldvalidation);
 
