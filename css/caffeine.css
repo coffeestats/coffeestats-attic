@@ -35,7 +35,7 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  color: #000;
+  color: black;
   font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif;
   font-size: 14px;
   font-weight: normal; }
@@ -56,9 +56,8 @@ a.btn {
   background: #7f7665;
   padding: 10px;
   font-size: 1.35em;
-  color: #FFF !important;
+  color: white !important;
   text-shadow: 1px 1px 0 #524c42;
-  /*  min-width: 100px;*/
   min-height: 22px;
   line-height: 22px;
   border: 1px solid #615a4f;
@@ -191,6 +190,7 @@ li.flash-success, li.flash-info, li.flash-warning, li.flash-error {
   list-style-type: none;
   padding: 10px 10px 10px 25px;
   margin-bottom: 5pt;
+  border: 1px solid #000000;
   border-radius: 4px;
   background-repeat: no-repeat;
   background-position: 5px center; }
@@ -218,13 +218,13 @@ li.flash-success, li.flash-info, li.flash-warning, li.flash-error {
   background-image: url("/images/alert.png");
   color: #c09853;
   background-color: #fcf8e3;
-  border: 1px solid #fbeed5; }
+  border-color: #fbeed5; }
 
 .flash-error {
   background-image: url("/images/alert.png");
   color: #b94a48;
   background-color: #f2dede;
-  border: 1px solid #eed3d7; }
+  border-color: #eed3d7; }
 
 ul.flash-messages {
   margin: 0px;
@@ -434,22 +434,16 @@ strong {
         width: 100%; }
 
   /* REGISTER */
-  .white-box.fullWidth {
-    /*#recaptcha_widget_div {
-      float: none;
-      display: block;
-      margin-top:23px;
-    } */ }
-    .white-box.fullWidth .left {
-      width: 100%;
-      float: none !important;
-      display: block;
-      margin-top: 24px; }
-      .white-box.fullWidth .left b {
-        display: inline-block;
-        margin-bottom: 10px; }
-      .white-box.fullWidth .left input {
-        width: 97%; } }
+  .white-box.fullWidth .left {
+    width: 100%;
+    float: none !important;
+    display: block;
+    margin-top: 24px; }
+    .white-box.fullWidth .left b {
+      display: inline-block;
+      margin-bottom: 10px; }
+    .white-box.fullWidth .left input {
+      width: 97%; } }
 /* Normal mode */
 .weight-display div.edit, .weight-edit div.show {
   display: none; }

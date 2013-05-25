@@ -68,6 +68,7 @@ include("../header.php");
     track of it -- enabling us to present you with awesome statistics about
     your general coffee consumption. Why? Just because, of course!</p>
 </div>
+<div class="clear"></div>
 <div class="white-box">
     <h2>Graphs!</h2>
     Overall Coffee vs. Mate consumption<br><br>
