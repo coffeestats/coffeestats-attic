@@ -120,7 +120,7 @@ function errorpage($title, $text, $http_status=NULL) {
     }
     include(sprintf('%s/../header.php', dirname(__FILE__)));
 ?>
-<div class="white-box">
+<div class="white-box fullWidth">
     <h2><?php echo $title; ?></h2>
     <p><?php echo $text ?></p>
 </div>

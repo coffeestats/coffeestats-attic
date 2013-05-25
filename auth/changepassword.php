@@ -48,14 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include_once('../includes/jsvalidation.php');
 include('../header.php');
 ?>
-<div class="white-box">
+<div class="white-box fullWidth">
     <h2>Change Your Password</h2>
-    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
-    <p>
-        <input type="password" required pattern=".{8,}" name="password" id="password" autofocus />
-        <input type="password" required pattern=".{8,}" name="password2" id="password2" />
-        <input type="submit" name="Reset my password" />
-    </p>
+    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
+    <input type="password" required pattern=".{8,}" placeholder="Password" name="password" id="password" autofocus class="left" />
+    <input type="password" required pattern=".{8,}" placeholder="Repeat password" name="password2" id="password2" class="left" />
+    <input type="submit" name="Reset my password" class="left" />
     </form>
 </div>
 <script type="text/javascript" src="../lib/jquery.min.js"></script>

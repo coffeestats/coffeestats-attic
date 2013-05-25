@@ -52,13 +52,6 @@ include_once("../includes/jsvalidation.php");
 include("../header.php");
 ?>
 <div class="white-box">
-    <h2>What is coffeestats.org?</h2>
-    <p>You like coffee, mate, graphs and nerdy statistics? Well, we do too!</p>
-    <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep
-    track of it -- enabling us to present you with awesome statistics about
-    your general coffee consumption. Why? Just because, of course!</p>
-</div>
-<div class="white-box">
     <h2>Login</h2>
     <form action="<?php echo($_SERVER['REQUEST_URI']); ?>" method="post" class="inlineform" id="login">
         <input type="text" required pattern="[a-z][a-z0-9_-]{1,29}" name="username" id="username" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>placeholder="Username" autofocus class="left" />
@@ -67,6 +60,13 @@ include("../header.php");
         <a href="register" class="btn secondary left">Register</a>
     </form>
     <p>Forgot your password? <a href="passwordreset">Request a password reset</a>.</p>
+</div>
+<div class="white-box">
+    <h2>What is coffeestats.org?</h2>
+    <p>You like coffee, mate, graphs and nerdy statistics? Well, we do too!</p>
+    <p>It's dead-simple: You enjoy your fix of coffee as usual and we keep
+    track of it -- enabling us to present you with awesome statistics about
+    your general coffee consumption. Why? Just because, of course!</p>
 </div>
 <div class="white-box">
     <h2>Graphs!</h2>

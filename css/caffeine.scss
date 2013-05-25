@@ -134,7 +134,7 @@ input[type=password] {
   padding: 20px;
   margin: 0 2% 2% 0;
   background-color: #FFF;
-  float: right;
+  float: left;
   width: 44%;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.13);
   border-radius: 4px;
@@ -143,10 +143,6 @@ input[type=password] {
   &.update,
   &.today {
     min-height: 285px;
-  }
-
-  &:nth-child(2n) {
-    float:left;
   }
 
   &.fullWidth {
@@ -218,6 +214,18 @@ form .leftform {
 
   &:nth-child(odd) {
     margin-right: 2%;
+  }
+}
+
+.fullWidth form .leftform {
+  width: 30%;
+
+  &:nth-child(odd) {
+    margin-right:0;
+  }
+
+  &:nth-child(2) {
+    margin:0 2%;
   }
 }
 
@@ -557,14 +565,28 @@ strong {
       float: none !important;
 
       form {
-        .left {
+        .left, .leftform {
           clear:both;
           width: 100% !important;
+        }
+
+        .leftform {
+          margin:5pt 0;
+
+          #recaptcha_widget_div {
+              margin:0;
+          }
         }
 
         &.otrblockform input {
             margin:5pt 0;
             width:98.8%;
+        }
+
+        &.coffeeform {
+            #email {
+                width:100%;
+            }
         }
       }
     }
@@ -589,11 +611,11 @@ strong {
       }
     }
 
-    #recaptcha_widget_div {
+    /*#recaptcha_widget_div {
       float: none;
       display: block;
       margin-top:23px;
-    }
+    } */
   }
 }
 

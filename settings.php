@@ -160,7 +160,7 @@ include("header.php");
     <div class="leftform">
         <h3>General</h3>
         <input type="text" name="username" id="username" maxlength="30" value="<?php echo htmlspecialchars($profile['login']); ?>" readonly="readonly" />
-        <input type="password" name="password" pattern=".{8,}" id="password" maxlength="20" placeholder="Password" />
+        <input type="password" name="password" pattern=".{8,}" id="password" maxlength="20" placeholder="Password" autofocus />
         <input type="password" name="password2" pattern=".{8,}" id="password2" placeholder="Repeat" />
     </div>
     <div class="leftform">
@@ -174,6 +174,7 @@ include("header.php");
     <input type="hidden" name="action" value="update" />
     <p><input type="submit" name="submit" value="Update my settings" /></p>
     </form>
+    <div class="clear"></div>
 </div>
 
 <div class="white-box">
@@ -201,7 +202,7 @@ js_sanitize_string();
 ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#password').focus().bind('invalid', pwfieldvalidation);
+    $('input#password').bind('invalid', pwfieldvalidation);
     $('input#password2').bind('invalid', pwfieldvalidation);
     $('input#email').bind('invalid', emailfieldvalidation);
 

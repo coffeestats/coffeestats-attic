@@ -114,15 +114,13 @@ input[type=password] {
   padding: 20px;
   margin: 0 2% 2% 0;
   background-color: #FFF;
-  float: right;
+  float: left;
   width: 44%;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.13);
   border-radius: 4px;
   min-height: 115px; }
   .white-box.update, .white-box.today {
     min-height: 285px; }
-  .white-box:nth-child(2n) {
-    float: left; }
   .white-box.fullWidth {
     width: 94%; }
   .white-box p {
@@ -168,6 +166,13 @@ form .leftform {
   form .left:nth-child(odd),
   form .leftform:nth-child(odd) {
     margin-right: 2%; }
+
+.fullWidth form .leftform {
+  width: 30%; }
+  .fullWidth form .leftform:nth-child(odd) {
+    margin-right: 0; }
+  .fullWidth form .leftform:nth-child(2) {
+    margin: 0 2%; }
 
 .leftform {
   display: inline-block; }
@@ -408,28 +413,36 @@ strong {
     #wrapper .white-box {
       width: 92%;
       float: none !important; }
-      #wrapper .white-box form .left {
+      #wrapper .white-box form .left, #wrapper .white-box form .leftform {
         clear: both;
         width: 100% !important; }
+      #wrapper .white-box form .leftform {
+        margin: 5pt 0; }
+        #wrapper .white-box form .leftform #recaptcha_widget_div {
+          margin: 0; }
       #wrapper .white-box form.otrblockform input {
         margin: 5pt 0;
         width: 98.8%; }
+      #wrapper .white-box form.coffeeform #email {
+        width: 100%; }
 
   /* REGISTER */
-  .white-box.fullWidth .left {
-    width: 100%;
-    float: none !important;
-    display: block;
-    margin-top: 24px; }
-    .white-box.fullWidth .left b {
-      display: inline-block;
-      margin-bottom: 10px; }
-    .white-box.fullWidth .left input {
-      width: 97%; }
-  .white-box.fullWidth #recaptcha_widget_div {
-    float: none;
-    display: block;
-    margin-top: 23px; } }
+  .white-box.fullWidth {
+    /*#recaptcha_widget_div {
+      float: none;
+      display: block;
+      margin-top:23px;
+    } */ }
+    .white-box.fullWidth .left {
+      width: 100%;
+      float: none !important;
+      display: block;
+      margin-top: 24px; }
+      .white-box.fullWidth .left b {
+        display: inline-block;
+        margin-bottom: 10px; }
+      .white-box.fullWidth .left input {
+        width: 97%; } }
 /* Normal mode */
 .weight-display div.edit, .weight-edit div.show {
   display: none; }
