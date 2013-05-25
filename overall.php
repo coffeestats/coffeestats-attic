@@ -11,7 +11,7 @@ $byweekdayrows = weekdaily_caffeine_alltime();
 
 include("header.php");
 ?>
-<div class="white-box">
+<div class="white-box fullWidth">
   <h2>Overall Statistics</h2>
 
   <p>We love stats. On overall statistics we started making awesome graphs examining the daily coffee
@@ -19,6 +19,7 @@ include("header.php");
 
   <p>Hint: Yellow will always be Mate.</p>
 </div>
+<div><!--space--></div>
 <div class="white-box">
   <h2>Caffeine today</h2>
   <canvas id="coffeetoday" width="590" height="240" ></canvas>

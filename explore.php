@@ -14,10 +14,11 @@ $longestjoined = longest_joined_users(5);
 
 include("header.php");
 ?>
-<div class="white-box">
+<div class="white-box fullWidth">
     <h2>Explore!</h2>
     <p>You're not the only human at this site! Great, isn't it? Lets see the stats of some other guys.</p>
 </div>
+<div><!--space--></div>
 <div class="white-box">
     <h2>Caffeine Activity</h2>
     <ul class="userlist">

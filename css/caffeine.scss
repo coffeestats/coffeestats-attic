@@ -102,10 +102,7 @@ a {
 
 a.btn, input {
   box-sizing: border-box;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  margin-left: 0;
-  margin-right: 0;
+  margin: 2px 0;
 }
 
 input[type=submit],
@@ -177,18 +174,27 @@ input[type=password] {
   margin: 0 2% 2% 0;
   background-color: $white-box-background;
   float: left;
-  width: 44%;
+  width: 48%;
+  box-sizing: border-box;
   box-shadow: 1px 1px 12px $white-box-shadow;
   border-radius: 4px;
   min-height: 115px;
 
-  &.update,
+  &.update {
+    min-height: 317px;
+  }
   &.today {
-    min-height: 285px;
+    min-height: 318px;
   }
 
   &.fullWidth {
-    width: 94%;
+    width: 100%;
+    margin: 0 0 2% 0;
+  }
+
+  &:nth-child(odd) {
+    float: right;
+    margin: 0 0 2% 0;
   }
 
   p {
@@ -229,19 +235,15 @@ input[type=password] {
       margin: 7px 0;
     }
   }
-}
 
-.white-box:nth-child(odd) {
-    float:right;
+  p {
+    margin: 14px 0;
+    clear: both;
+  }
 }
 
 .white-box-center {
     text-align: center;
-}
-
-.white-box p {
-  margin: 14px 0;
-  clear:both;
 }
 
 form {
