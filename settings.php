@@ -185,7 +185,7 @@ include("header.php");
     <p><input type="submit" name="submit" value="Export, please!" /></p>
     </form>
 </div>
-
+<div><!-- space --></div>
 <div class="white-box">
     <h2>Delete your data</h2>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="coffeeform">
