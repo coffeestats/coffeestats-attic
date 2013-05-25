@@ -202,25 +202,25 @@ li.flash-success, li.flash-info, li.flash-warning, li.flash-error {
     text-shadow: 0 1px 0 white;
     opacity: 0.2; }
 
-.flash-success {
+li.flash-success {
   background-image: url("/images/info.png");
   color: #468847;
   background-color: #dff0d8;
   border-color: #d6e9c6; }
 
-.flash-info {
+li.flash-info {
   background-image: url("/images/info.png");
   color: #3a87ad;
   background-color: #d9edf7;
   border-color: #bce8f1; }
 
-.flash-warning {
+li.flash-warning {
   background-image: url("/images/alert.png");
   color: #c09853;
   background-color: #fcf8e3;
   border-color: #fbeed5; }
 
-.flash-error {
+li.flash-error {
   background-image: url("/images/alert.png");
   color: #b94a48;
   background-color: #f2dede;

@@ -317,25 +317,25 @@ li {
     }
 }
 
-.flash-success {
+li.flash-success {
     background-image: url('/images/info.png');
     color: $success-color;
     background-color: $success-background;
     border-color: $success-border;
 }
-.flash-info {
+li.flash-info {
     background-image: url('/images/info.png');
     color: $info-color;
     background-color: $info-background;
     border-color: $info-border;
 }
-.flash-warning {
+li.flash-warning {
     background-image: url('/images/alert.png');
     color: $warning-color;
     background-color: $warning-background;
     border-color: $warning-border;
 }
-.flash-error {
+li.flash-error {
     background-image: url('/images/alert.png');
     color: $error-color;
     background-color: $error-background;
