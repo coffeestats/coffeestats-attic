@@ -71,8 +71,6 @@ include("../header.php");
             <a href="register" class="btn secondary">register</a>
         </div>
         <p>Forgot your password? <a href="passwordreset">Request a password reset</a>.</p>
-        <p>Oh, you don't have an account yet?<br/>
-        Simply register one <a href="register">here</a>.</p>
         <?php if (isset($error)) { echo("$error"); } ?>
     </form>
 </div>
