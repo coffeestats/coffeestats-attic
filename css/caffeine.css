@@ -45,6 +45,7 @@ a {
 
 a.btn, input {
   box-sizing: border-box;
+  -moz-box-sizing: border-box;
   margin: 2px 0; }
 
 input[type=submit],
@@ -113,6 +114,7 @@ input[type=password] {
   float: left;
   width: 48%;
   box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.13);
   border-radius: 4px;
   min-height: 115px; }
