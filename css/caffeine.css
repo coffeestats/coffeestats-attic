@@ -43,6 +43,13 @@ body {
 a {
   color: #584a4a !important; }
 
+a.btn, input {
+  box-sizing: border-box;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 0;
+  margin-right: 0; }
+
 input[type=submit],
 button,
 a.btn {
@@ -51,7 +58,7 @@ a.btn {
   font-size: 1.35em;
   color: #FFF !important;
   text-shadow: 1px 1px 0 #524c42;
-  min-width: 100px;
+  /*  min-width: 100px;*/
   min-height: 22px;
   line-height: 22px;
   border: 1px solid #615a4f;
@@ -96,7 +103,8 @@ input[type=password] {
 .right {
   float: right; }
 
-.left {
+.left,
+.leftform {
   float: left; }
 
 .clear {
@@ -145,32 +153,31 @@ input[type=password] {
 .white-box-center {
   text-align: center; }
 
-.white-box form {
-  margin: 24px 0; }
-  .white-box form#coffeeform input[type=text],
-  .white-box form#coffeeform input[type=password], .white-box form#mateform input[type=text], .white-box form#mateform input[type=password], .white-box form#login input[type=text], .white-box form#login input[type=password] {
-    min-width: 184px;
-    width: 44%; }
-  .white-box form#coffeeform input[type=submit],
-  .white-box form#coffeeform a.btn, .white-box form#mateform input[type=submit], .white-box form#mateform a.btn, .white-box form#login input[type=submit], .white-box form#login a.btn {
-    width: 49.56%; }
-  .white-box form#coffeeform p, .white-box form#mateform p, .white-box form#login p {
-    clear: both; }
-  .white-box form.coffeeform #email {
-    width: 92.3%; }
-  .white-box form#login div.left {
-    width: 48%; }
-    .white-box form#login div.left:first-child {
-      margin-right: 2%; }
-  .white-box form#login input[type=text],
-  .white-box form#login input[type=password] {
-    width: 89.5% !important; }
-  .white-box form#login input[type=submit] {
-    width: 100% !important; }
-  .white-box form#login a.btn {
-    width: 89.5%;
-    font-weight: normal !important;
-    margin: 2px 0; }
+.white-box p {
+  margin: 14px 0;
+  clear: both; }
+
+form {
+  margin: 14px 0; }
+  form.coffeeform #email {
+    width: 98%; }
+
+form .left,
+form .leftform {
+  width: 48%; }
+  form .left:nth-child(odd),
+  form .leftform:nth-child(odd) {
+    margin-right: 2%; }
+
+.leftform {
+  display: inline-block; }
+  .leftform input {
+    width: 100%; }
+
+form.otrblockform input[type=submit] {
+  width: 50%;
+  padding: 30px;
+  font-size: 2em; }
 
 li.flash-success, li.flash-info, li.flash-warning, li.flash-error {
   list-style-type: none;
@@ -277,10 +284,6 @@ strong {
 .hiddeninput {
   display: none; }
 
-.otrblockform input[type="submit"] {
-  padding: 30px;
-  font-size: 2em; }
-
 /* WRAPPER */
 #wrapper {
   padding: 0;
@@ -378,26 +381,18 @@ strong {
   float: left;
   margin-top: 23px; }
 
-.register_button_standard {
+/*.register_button_standard {
   clear: both;
   float: left;
   margin-top: 10px;
-  min-width: 28.4% !important; }
-
+  min-width: 28.4% !important;
+} */
 /* Responsive */
 @media screen and (max-width: 1250px) {
   #wrapper #navigation {
     width: 58%; }
   #wrapper .white-box {
-    margin: 0 1% 2% 0; }
-    #wrapper .white-box form#coffeeform input[type=text], #wrapper .white-box form#mateform input[type=text] {
-      width: 52% !important; }
-    #wrapper .white-box form#coffeeform input[type=submit] input[type=password],
-    #wrapper .white-box form#coffeeform input[type=submit] input[type=text], #wrapper .white-box form#mateform input[type=submit] input[type=password], #wrapper .white-box form#mateform input[type=submit] input[type=text], #wrapper .white-box form#login input[type=password], #wrapper .white-box form#login input[type=text] {
-      min-width: 0 !important;
-      width: 89.5% !important; }
-    #wrapper .white-box form#coffeeform input[type=submit] input[type=submit], #wrapper .white-box form#mateform input[type=submit] input[type=submit], #wrapper .white-box form#login input[type=submit] {
-      width: 49.56%; } }
+    margin: 0 1% 2% 0; } }
 @media screen and (max-width: 1000px) {
   /* iPhone, Android rules here */
   #wrapper {
@@ -413,39 +408,28 @@ strong {
     #wrapper .white-box {
       width: 92%;
       float: none !important; }
-      #wrapper .white-box form#coffeeform input[type=text], #wrapper .white-box form#mateform input[type=text], #wrapper .white-box form#login input[type=text], #wrapper .white-box form#login input[type=password],
-      #wrapper .white-box form a.btn.secondary {
-        width: 95.5% !important;
-        padding: 15px 8px; }
-      #wrapper .white-box form#coffeeform input[type=submit], #wrapper .white-box form#mateform input[type=submit] {
-        width: 98.8%; }
-      #wrapper .white-box form#coffeeform input[type=submit] div.left, #wrapper .white-box form#mateform input[type=submit] div.left, #wrapper .white-box form#login div.left {
+      #wrapper .white-box form .left {
         clear: both;
-        width: 100%; }
-      #wrapper .white-box form#coffeeform input[type=submit] input[type=submit], #wrapper .white-box form#mateform input[type=submit] input[type=submit], #wrapper .white-box form#login input[type=submit] {
-        width: 100%;
-        padding: 15px 8px; }
+        width: 100% !important; }
+      #wrapper .white-box form.otrblockform input {
+        margin: 5pt 0;
+        width: 98.8%; }
 
   /* REGISTER */
-  .white-box.fullWidth div.left {
+  .white-box.fullWidth .left {
     width: 100%;
     float: none !important;
     display: block;
     margin-top: 24px; }
-    .white-box.fullWidth div.left b {
+    .white-box.fullWidth .left b {
       display: inline-block;
       margin-bottom: 10px; }
-    .white-box.fullWidth div.left input {
+    .white-box.fullWidth .left input {
       width: 97%; }
   .white-box.fullWidth #recaptcha_widget_div {
     float: none;
     display: block;
-    margin-top: 23px; }
-
-  .register_button_standard {
-    float: none;
-    margin-top: 10px;
-    min-width: 100% !important; } }
+    margin-top: 23px; } }
 /* Normal mode */
 .weight-display div.edit, .weight-edit div.show {
   display: none; }

@@ -57,6 +57,14 @@ a {
   color: #584a4a !important;
 }
 
+a.btn, input {
+  box-sizing: border-box;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 input[type=submit],
 button,
 a.btn {
@@ -65,7 +73,7 @@ a.btn {
   font-size: 1.35em;
   color: #FFF !important;
   text-shadow: 1px 1px 0 #524c42;
-  min-width: 100px;
+/*  min-width: 100px;*/
   min-height: 22px;
   line-height: 22px;
   border: 1px solid #615a4f;
@@ -113,7 +121,8 @@ input[type=password] {
   float:right;
 }
 
-.left {
+.left,
+.leftform {
   float:left;
 }
 
@@ -188,55 +197,43 @@ input[type=password] {
   text-align: center;
 }
 
-.white-box form {
-  margin: 24px 0;
+.white-box p {
+  margin: 14px 0;
+  clear:both;
+}
 
-  &#coffeeform,
-  &#mateform,
-  &#login {
-    input[type=text],
-    input[type=password] {
-      min-width: 184px;
-      width: 44%;
-    }
-    input[type=submit],
-    a.btn {
-      width: 49.56%;
-    }
-    p {
-      clear: both;
-    }
-  }
+form {
+  margin: 14px 0;
 
   &.coffeeform {
-    #email {
-      width: 92.3%;
-    }
-  }
-
-  &#login {
-    div.left {
-      width: 48%;
-
-      &:first-child {
-        margin-right: 2%;
+      #email {
+          width:98%;
       }
-    }
+  }
+}
 
-    input[type=text],
-    input[type=password]  {
-      width: 89.5% !important;
-    }
+form .left,
+form .leftform {
+  width: 48%;
 
-    input[type=submit] {
-      width: 100% !important
-    }
+  &:nth-child(odd) {
+    margin-right: 2%;
+  }
+}
 
-    a.btn {
-      width: 89.5%;
-      font-weight:normal !important;
-      margin: 2px 0;
-    }
+.leftform {
+  display:inline-block;
+
+  input {
+    width: 100%;
+  }
+}
+
+form.otrblockform {
+  input[type=submit] {
+    width:50%;
+    padding: 30px;
+    font-size: 2em;
   }
 }
 
@@ -372,11 +369,6 @@ strong {
 
 .hiddeninput {
   display: none;
-}
-
-.otrblockform input[type="submit"] {
-  padding: 30px;
-  font-size: 2em;
 }
 
 /* WRAPPER */
@@ -519,12 +511,12 @@ strong {
   }
 }
 
-.register_button_standard {
+/*.register_button_standard {
   clear: both;
   float: left;
   margin-top: 10px;
   min-width: 28.4% !important;
-}
+} */
 
 /* Responsive */
 
@@ -537,27 +529,6 @@ strong {
 
     .white-box {
       margin: 0 1% 2% 0;
-
-      form {
-          &#coffeeform input[type=text],
-          &#mateform input[type=text] {
-            width: 52% !important;
-          }
-          &#coffeeform input[type=submit],
-          &#mateform input[type=submit],
-          &#login {
-
-            input[type=password],
-            input[type=text] {
-              min-width: 0 !important;
-              width: 89.5% !important;
-            }
-
-            input[type=submit] {
-              width: 49.56%;
-            }
-          }
-        }
     }
   }
 }
@@ -586,29 +557,14 @@ strong {
       float: none !important;
 
       form {
-        &#coffeeform input[type=text],
-        &#mateform input[type=text],
-        &#login input[type=text],
-        &#login input[type=password],
-        a.btn.secondary {
-          width: 95.5% !important;
-          padding: 15px 8px;
+        .left {
+          clear:both;
+          width: 100% !important;
         }
-        &#coffeeform input[type=submit],
-        &#mateform input[type=submit] {
-          width: 98.8%
-        }
-        &#coffeeform input[type=submit],
-        &#mateform input[type=submit],
-        &#login {
-          div.left {
-            clear:both;
-            width: 100%;
-          }
-          input[type=submit] {
-            width: 100%;
-            padding: 15px 8px;
-          }
+
+        &.otrblockform input {
+            margin:5pt 0;
+            width:98.8%;
         }
       }
     }
@@ -616,37 +572,29 @@ strong {
 
   /* REGISTER */
 
-.white-box.fullWidth {
-  div.left {
-    width: 100%;
-    float: none !important;
-    display: block;
-    margin-top: 24px;
+  .white-box.fullWidth {
+    .left {
+      width: 100%;
+      float: none !important;
+      display: block;
+      margin-top: 24px;
 
-    b {
-      display: inline-block;
-      margin-bottom:10px;
+      b {
+        display: inline-block;
+        margin-bottom:10px;
+      }
+
+      input {
+        width:97%;
+      }
     }
 
-    input {
-      width:97%;
+    #recaptcha_widget_div {
+      float: none;
+      display: block;
+      margin-top:23px;
     }
   }
-
-  #recaptcha_widget_div {
-    float: none;
-    display: block;
-    margin-top:23px;
-  }
-}
-
-.register_button_standard {
-  float: none;
-  margin-top: 10px;
-  min-width: 100% !important;
-}
-
-
 }
 
 /* Normal mode */

@@ -50,8 +50,8 @@ if ($ownprofile) {
             'Your Mate total' => $total['mate'],
         ),
         'extra' => array(
-            sprintf('<a class="btn secondary" href="%s">public profile page</a>', $public_url),
-            sprintf('<a class="btn secondary" href="%s">on-the-run</a>', $otr_url),
+            sprintf('<a class="btn secondary left" href="%s">public profile page</a>', $public_url),
+            sprintf('<a class="btn secondary left" href="%s">on-the-run</a>', $otr_url),
         ),
         'afterlist' => sprintf(
             '<a title="share your public profile page on facebook" href="https://www.facebook.com/sharer.php?u=%1$s&t=My%%20coffee%%20statistics">' .
@@ -146,17 +146,13 @@ foreach ($info['data'] as $key => $value) { ?>
 <div class="white-box update">
     <h2>Coffee or Mate?</h2>
     <?php render_flash('registerdrink'); ?>
-    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform" class="inlineform">
-        <div>
-            <input type="submit" value="Coffee!" />
-            <input type="text" id="coffeetime" name="coffeetime" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" class="datetime_field" />
-        </div>
+    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="coffeeform">
+        <input type="submit" value="Coffee!" class="left" />
+        <input type="text" id="coffeetime" name="coffeetime" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" class="datetime_field left" />
     </form>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="mateform" class="inlineform">
-        <div>
-            <input type="submit" value="Mate!" />
-            <input type="text" id="matetime" name="matetime" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" class="datetime_field" />
-        </div>
+        <input type="submit" value="Mate!" class="left" />
+        <input type="text" id="matetime" name="matetime" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" class="datetime_field left" />
     </form>
 </div>
 

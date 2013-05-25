@@ -157,25 +157,21 @@ include("header.php");
     <h2>Update your profile</h2>
     <p>You may change your information.</p>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="coffeeform">
-    <input type="hidden" name="action" value="update" />
-    <div class="usercard">
+    <div class="leftform">
         <h3>General</h3>
-        <div class="left">
-            <input type="text" name="username" id="username" maxlength="30" value="<?php echo htmlspecialchars($profile['login']); ?>" readonly="readonly" />
-            <input type="password" name="password" pattern=".{8,}" id="password" maxlength="20" placeholder="Password" />
-            <input type="password" name="password2" pattern=".{8,}" id="password2" placeholder="Repeat" />
-        </div>
+        <input type="text" name="username" id="username" maxlength="30" value="<?php echo htmlspecialchars($profile['login']); ?>" readonly="readonly" />
+        <input type="password" name="password" pattern=".{8,}" id="password" maxlength="20" placeholder="Password" />
+        <input type="password" name="password2" pattern=".{8,}" id="password2" placeholder="Repeat" />
     </div>
-    <div class="usercard">
+    <div class="leftform">
         <h3>Additional</h3>
-        <div class="left">
-            <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" <?php if (!empty($profile['firstname'])) { printf('value="%s"', htmlspecialchars($profile['firstname'])); } ?>/>
-            <input type="text" name="lastname" id="lastname" maxlength="20" placeholder="Last name" <?php if (!empty($profile['lastname'])) { printf('value="%s"', htmlspecialchars($profile['lastname'])); } ?>/>
-            <input type="text" name="location" id="location" maxlength="20" placeholder="Location" <?php if (!empty($profile['location'])) { printf('value="%s"', htmlspecialchars($profile['location'])); } ?>/>
-        </div>
+        <input type="text" name="firstname" id="firstname" maxlength="20" placeholder="First name" <?php if (!empty($profile['firstname'])) { printf('value="%s"', htmlspecialchars($profile['firstname'])); } ?>/>
+        <input type="text" name="lastname" id="lastname" maxlength="20" placeholder="Last name" <?php if (!empty($profile['lastname'])) { printf('value="%s"', htmlspecialchars($profile['lastname'])); } ?>/>
+        <input type="text" name="location" id="location" maxlength="20" placeholder="Location" <?php if (!empty($profile['location'])) { printf('value="%s"', htmlspecialchars($profile['location'])); } ?>/>
     </div>
     <input type="email" name="email" pattern="[A-Za-z0-9._%+-]+@[^@]+" required id="email" maxlength="128" placeholder="E-Mail" value="<?php echo htmlspecialchars($profile['email']); ?>" />
     <div class="clearfix"></div>
+    <input type="hidden" name="action" value="update" />
     <p><input type="submit" name="submit" value="Update my settings" /></p>
     </form>
 </div>

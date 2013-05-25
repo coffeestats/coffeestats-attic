@@ -52,7 +52,7 @@ include('../header.php');
     <h2>Change Your Password</h2>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
     <p>
-        <input type="password" required pattern=".{8,}" name="password" id="password" />
+        <input type="password" required pattern=".{8,}" name="password" id="password" autofocus />
         <input type="password" required pattern=".{8,}" name="password2" id="password2" />
         <input type="submit" name="Reset my password" />
     </p>
@@ -62,8 +62,12 @@ include('../header.php');
 <?php js_sanitize_password(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#password').focus().bind('invalid', pwfieldvalidation);
+    $('input#password').bind('invalid', pwfieldvalidation);
     $('input#password2').bind('invalid', pwfieldvalidation);
+
+    if (!("autofocus" in document.createElement('input'))) {
+        $("input#password").focus();
+    }
 
     $('form').submit(function(event) {
         return sanitize_password('input#password', 'input#password2');
