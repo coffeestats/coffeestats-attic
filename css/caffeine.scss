@@ -58,7 +58,7 @@ $success-border: #d6e9c6;
 /* FONTS */
 
 @font-face {
-  font-family: 'Droid Sans';
+  font-family: Droid Sans;
   font-style: normal;
   font-weight: normal;
   src: url("/fonts/DroidSans.ttf");
@@ -66,7 +66,7 @@ $success-border: #d6e9c6;
 
 
 @font-face {
-  font-family: 'Droid Sans';
+  font-family: Droid Sans;
   font-style: normal;
   font-weight: bold;
   src: url("/fonts/DroidSans-Bold.ttf");
@@ -74,7 +74,7 @@ $success-border: #d6e9c6;
 
 
 @font-face {
-  font-family: "Harabara";
+  font-family: Harabara;
   font-style: normal;
   src: url('/fonts/Harabara.ttf');
 }
@@ -104,6 +104,7 @@ a.btn, input {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   margin: 2px 0;
+  font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif;
 }
 
 input[type=submit],
@@ -114,8 +115,7 @@ a.btn {
   font-size: 1.35em;
   color: $button-color !important;
   text-shadow: 1px 1px 0 $button-text-shadow;
-  min-height: 22px;
-  line-height: 22px;
+  min-height: 25px;
   border: 1px solid $button-border;
   box-shadow: 0 1px 0 $button-shadow inset;
   cursor: pointer;
@@ -153,8 +153,7 @@ input[type=password] {
   background-color: $input-background;
   box-shadow: 0 1px 0 $input-shadow inset;
   color: $input-color;
-  min-height: 22px;
-  line-height: 22px;
+  min-height: 25px;
 }
 
 .right {

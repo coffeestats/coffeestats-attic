@@ -10,19 +10,19 @@
 /* colors */
 /* FONTS */
 @font-face {
-  font-family: 'Droid Sans';
+  font-family: Droid Sans;
   font-style: normal;
   font-weight: normal;
   src: url("/fonts/DroidSans.ttf"); }
 
 @font-face {
-  font-family: 'Droid Sans';
+  font-family: Droid Sans;
   font-style: normal;
   font-weight: bold;
   src: url("/fonts/DroidSans-Bold.ttf"); }
 
 @font-face {
-  font-family: "Harabara";
+  font-family: Harabara;
   font-style: normal;
   src: url("/fonts/Harabara.ttf"); }
 
@@ -46,7 +46,8 @@ a {
 a.btn, input {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  margin: 2px 0; }
+  margin: 2px 0;
+  font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif; }
 
 input[type=submit],
 button,
@@ -56,8 +57,7 @@ a.btn {
   font-size: 1.35em;
   color: white !important;
   text-shadow: 1px 1px 0 #524c42;
-  min-height: 22px;
-  line-height: 22px;
+  min-height: 25px;
   border: 1px solid #615a4f;
   box-shadow: 0 1px 0 #9e9482 inset;
   cursor: pointer;
@@ -94,8 +94,7 @@ input[type=password] {
   background-color: #f7f3e5;
   box-shadow: 0 1px 0 white inset;
   color: #4f4b42;
-  min-height: 22px;
-  line-height: 22px; }
+  min-height: 25px; }
 
 .right {
   float: right; }

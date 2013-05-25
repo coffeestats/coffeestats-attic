@@ -150,7 +150,7 @@ foreach ($info['data'] as $key => $value) { ?>
         <input type="submit" value="Coffee!" class="left" />
         <input type="text" id="coffeetime" name="coffeetime" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" class="datetime_field left" />
     </form>
-    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="mateform" class="inlineform">
+    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="mateform" class="inlineform clear">
         <input type="submit" value="Mate!" class="left" />
         <input type="text" id="matetime" name="matetime" placeholder="<?php echo date('Y-m-d H:i', time()); ?>" class="datetime_field left" />
     </form>
