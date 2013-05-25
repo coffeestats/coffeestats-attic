@@ -30,7 +30,7 @@ include('../header.php');
     <h2>Request a password reset</h2>
     <p>Please enter the email address that you used when you registered. We will send you an email with a link that you can use to reset your password.</p>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
-        <input type="email" required pattern="[A-Za-z0-9._%+-]+@[^@]+" name="email" id="email" class="left" />
+        <input type="email" required pattern="[A-Za-z0-9._%+-]+@[^@]+" name="email" id="email" autofocus class="left" />
         <input type="submit" name="submit" value="Send me a reset link!" class="left" />
     </form>
     <p></p>
@@ -39,7 +39,11 @@ include('../header.php');
 <?php js_sanitize_email(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('input#email').focus().bind('invalid', emailfieldvalidation);
+    $('input#email').bind('invalid', emailfieldvalidation);
+
+    if (!("autofocus" in document.createElement('input'))) {
+        $("input#email").focus();
+    }
 
     $('form').submit(function(event) {
         return sanitize_email('input#email');

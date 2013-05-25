@@ -26,17 +26,18 @@ else {
 
 include('header.php');
 ?>
-<div class="white-box">
+<div class="white-box fullWidth">
     <h2>Confirm deletion</h2>
-    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
-        <input type="hidden" name="cid" value="<?php echo $entry['cid']; ?>" />
-        <p><?php
+    <p><?php
 printf(
     "Do you really want to delete your %s entry at %s%s",
     get_entrytype($entry['ctype']), $entry['cdate'],
     format_timezone($entry['ctimezone']));
 ?>?</p>
-        <p><input type="submit" name="submit" value="Yes!" /> <a href="profile">No, cancel</a></p>
+    <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
+        <input type="submit" name="submit" value="Yes!" class="left" />
+        <a href="profile" class="btn secondary left">No, cancel</a>
+        <input type="hidden" name="cid" value="<?php echo $entry['cid']; ?>" />
     </form>
 </div>
 <?php

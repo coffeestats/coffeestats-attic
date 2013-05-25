@@ -113,6 +113,10 @@ $(document).ready(function() {
     $('input#password2').bind('invalid', pwfieldvalidation);
     $('input#email').bind('invalid', emailfieldvalidation);
 
+    if (!("autofocus" in document.createElement('input'))) {
+        $("input#username").focus();
+    }
+
     $('form').submit(function(event) {
         return sanitize_username('input#username')
             && sanitize_password('input#password', 'input#password2')

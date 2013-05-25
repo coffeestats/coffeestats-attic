@@ -23,17 +23,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 include("header.php");
 ?>
-<div class="white-box">
+<div class="white-box fullWidth">
+    <p>You have not defined your timezone yet. Now is a good time to select it.</p>
     <p>Detected timezone: <span id="timezoneinfo">Not detected yet</span></p>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" class="inlineform">
-        <p>
-            <select name="timezone" id="tzselect">
+    <select name="timezone" id="tzselect" autofocus class="left">
 <?php foreach($tzlist as $tz) { ?>
-                <option><?php echo $tz; ?></option>
+        <option><?php echo $tz; ?></option>
 <?php } ?>
-            </select>
-            <input type="submit" name="submit" value="Select timezone" />
-        </p>
+    </select>
+    <input type="submit" name="submit" value="Select timezone" class="left" />
     </form>
 </div>
 <script type="text/javascript" src="lib/jquery.min.js"></script>
