@@ -11,6 +11,28 @@
 /* colors */
 
 $font-header: #584a4a;
+$text-color: #000000;
+$link-color: #584a4a;
+
+$button-color: #fff;
+$button-background: #7f7665;
+$button-text-shadow: #524c42;
+
+$error-color: #b94a48;
+$error-background: #f2dede;
+$error-border: #eed3d7;
+
+$warning-color: #c09853;
+$warning-background: #fcf8e3;
+$warning-border: #fbeed5;
+
+$info-color: #3a87ad;
+$info-background: #d9edf7;
+$info-border: #bce8f1;
+
+$success-color: #468847;
+$success-background: #dff0d8;
+$success-border: #d6e9c6;
 
 /* FONTS */
 
@@ -43,18 +65,18 @@ body {
   padding: 0;
   margin: 0;
   background: url("../images/background.jpg") no-repeat center center fixed;
-   -webkit-background-size: cover;
+  -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  color: #000;
+  color: $text-color;
   font-family: Droid Sans, Helvetica, Verdana, Arial, sans-serif;
   font-size: 14px;
   font-weight: normal;
 }
 
 a {
-  color: #584a4a !important;
+  color: $link-color !important;
 }
 
 a.btn, input {
@@ -68,12 +90,11 @@ a.btn, input {
 input[type=submit],
 button,
 a.btn {
-  background: #7f7665;
+  background: $button-background;
   padding: 10px;
   font-size: 1.35em;
-  color: #FFF !important;
-  text-shadow: 1px 1px 0 #524c42;
-/*  min-width: 100px;*/
+  color: $button-color !important;
+  text-shadow: 1px 1px 0 $button-text-shadow;
   min-height: 22px;
   line-height: 22px;
   border: 1px solid #615a4f;
@@ -257,6 +278,7 @@ li {
         list-style-type: none;
         padding: 10px 10px 10px 25px;
         margin-bottom: 5pt;
+        border: 1px solid #000000;
         border-radius: 4px;
         background-repeat: no-repeat;
         background-position: 5px center;
@@ -274,27 +296,27 @@ li {
 
 .flash-success {
     background-image: url('/images/info.png');
-    color: #468847;
-    background-color: #dff0d8;
-    border-color: #d6e9c6;
+    color: $success-color;
+    background-color: $success-background;
+    border-color: $success-border;
 }
 .flash-info {
     background-image: url('/images/info.png');
-    color: #3a87ad;
-    background-color: #d9edf7;
-    border-color: #bce8f1;
+    color: $info-color;
+    background-color: $info-background;
+    border-color: $info-border;
 }
 .flash-warning {
     background-image: url('/images/alert.png');
-    color: #c09853;
-    background-color: #fcf8e3;
-    border: 1px solid #fbeed5;
+    color: $warning-color;
+    background-color: $warning-background;
+    border-color: $warning-border;
 }
 .flash-error {
     background-image: url('/images/alert.png');
-    color: #b94a48;
-    background-color: #f2dede;
-    border: 1px solid #eed3d7;
+    color: $error-color;
+    background-color: $error-background;
+    border-color: $error-border;
 }
 
 ul.flash-messages {
