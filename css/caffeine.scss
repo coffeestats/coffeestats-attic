@@ -4,8 +4,8 @@
     Author: Jan Dittberner <jan@dittberner.info>
     Author: Jeremias Arnstadt <j.arnstadt@art-ifact.de>
     license:
-    Date: May 24th, 2013
-    Version: 1.1
+    Date: May 25th, 2013
+    Version: 1.2
 */
 
 /* colors */
@@ -187,6 +187,10 @@ input[type=password] {
       margin: 7px 0;
     }
   }
+}
+
+.white-box:nth-child(odd) {
+    float:right;
 }
 
 .white-box-center {
@@ -538,6 +542,10 @@ strong {
     .white-box {
       margin: 0 1% 2% 0;
     }
+
+    .white-box:nth-child(odd) {
+      margin: 0 0 2% 1%;
+    }
   }
 }
 
@@ -558,6 +566,10 @@ strong {
       ul li a {
         padding: 10px 10px 10px 30px;
       }
+    }
+
+    .white-box, .white-box:nth-child(odd) {
+        margin: 24px 0px 0px;
     }
 
     .white-box {
@@ -610,12 +622,6 @@ strong {
         width:97%;
       }
     }
-
-    /*#recaptcha_widget_div {
-      float: none;
-      display: block;
-      margin-top:23px;
-    } */
   }
 }
 

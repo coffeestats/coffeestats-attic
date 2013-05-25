@@ -50,7 +50,7 @@ if ($ownprofile) {
             'Your Mate total' => $total['mate'],
         ),
         'extra' => array(
-            sprintf('<a class="btn secondary left" href="%s">public profile page</a>', $public_url),
+            sprintf('<a class="btn secondary left" href="%s">public profile</a>', $public_url),
             sprintf('<a class="btn secondary left" href="%s">on-the-run</a>', $otr_url),
         ),
         'afterlist' => sprintf(
