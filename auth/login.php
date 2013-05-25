@@ -64,10 +64,9 @@ include("../header.php");
         <input type="text" required pattern="[a-z][a-z0-9_-]{1,29}" name="username" id="username" <?php if (isset($username)) { printf('value="%s"', htmlspecialchars($username)); } ?>placeholder="Username" autofocus class="left" />
         <input type="password" required name="password" id="password" placeholder="Password" class="left" />
         <input type="submit" name="submit" value="Login" class="left" />
+        <a href="register" class="btn secondary left">Register</a>
     </form>
     <p>Forgot your password? <a href="passwordreset">Request a password reset</a>.</p>
-    <p>Oh, you don't have an account yet?<br/>
-    Simply register one <a href="register">here</a>.</p>
 </div>
 <div class="white-box">
     <h2>Graphs!</h2>
