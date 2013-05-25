@@ -51,12 +51,12 @@ if ($ownprofile) {
         ),
         'extra' => array(
             sprintf('<a class="btn secondary left" href="%s">public profile</a>', $public_url),
-            sprintf('<a class="btn secondary left" href="%s">on-the-run</a>', $otr_url),
+            sprintf('<a class="btn secondary left" href="%s">on-the-run</a>', htmlspecialchars($otr_url)),
         ),
         'afterlist' => sprintf(
-            '<a title="share your public profile page on facebook" href="https://www.facebook.com/sharer.php?u=%1$s&t=My%%20coffee%%20statistics">' .
+            '<a title="share your public profile page on facebook" href="https://www.facebook.com/sharer.php?u=%1$s&amp;t=My%%20coffee%%20statistics">' .
             '<img src="images/facebook40.png" alt="facebook share icon" /></a> ' .
-            '<a title="share your public profile page on twitter" href="https://twitter.com/intent/tweet?original_referer=%1$s&text=My%%20coffee%%20statistics&tw_p=tweetbutton&url=%1$s&via=coffeestats">' .
+            '<a title="share your public profile page on twitter" href="https://twitter.com/intent/tweet?original_referer=%1$s&amp;text=My%%20coffee%%20statistics&amp;tw_p=tweetbutton&amp;url=%1$s&amp;via=coffeestats">' .
             '<img src="images/twitter40.png" alt="twitter share" /></a> ' .
             '<a title="share your public profile page on gplus" href="https://plus.google.com/share?url=%1$s">' .
             '<img src="images/googleplus40.png" alt="google plus share" /></a>',
@@ -166,7 +166,7 @@ printf(
     "%s at %s%s",
     get_entrytype($entry['ctype']), $entry['cdate'],
     format_timezone($entry['ctimezone']));
-?></td><td><a href="delete?c=<?php echo $entry['cid']; ?>" data-cid="<?php echo $entry['cid']; ?>" class="deletecaffeine"> <img src="images/nope.png"></a></td></tr>
+?></td><td><a href="delete?c=<?php echo $entry['cid']; ?>" data-cid="<?php echo $entry['cid']; ?>" class="deletecaffeine"> <img src="images/nope.png" alt="delete"></a></td></tr>
         <?php } ?>
     </table>
 </div>
