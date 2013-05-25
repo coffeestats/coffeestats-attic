@@ -10,13 +10,27 @@
 
 /* colors */
 
-$font-header: #584a4a;
 $text-color: #000000;
 $link-color: #584a4a;
+$font-header: $link-color;
 
-$button-color: #fff;
 $button-background: #7f7665;
+$button-border: #615a4f;
+$button-color: #fff;
+$button-hover-background: #5a5348;
+$button-shadow: #9e9482;
 $button-text-shadow: #524c42;
+
+$button-secondary-background: #f7f3e5;
+$button-secondary-border: #b6aa97;
+$button-secondary-color: $button-secondary-border;
+$button-secondary-shadow: #fff;
+$button-secondary-text-shadow: $button-secondary-shadow;
+
+$input-background: $button-secondary-background;
+$input-border: #d8ccb3;
+$input-color: #4f4b42;
+$input-shadow: $button-secondary-shadow;
 
 $error-color: #b94a48;
 $error-background: #f2dede;
@@ -97,8 +111,8 @@ a.btn {
   text-shadow: 1px 1px 0 $button-text-shadow;
   min-height: 22px;
   line-height: 22px;
-  border: 1px solid #615a4f;
-  box-shadow: 0 1px 0 #9e9482 inset;
+  border: 1px solid $button-border;
+  box-shadow: 0 1px 0 $button-shadow inset;
   cursor: pointer;
   display: inline-block;
   text-align: center;
@@ -106,21 +120,21 @@ a.btn {
   font-weight: normal !important;
 
   &:hover {
-    background: #5a5348;
+    background: $button-hover-background;
   }
 
   &.secondary {
-    color: #b6aa97 !important;
-    text-shadow: 1px 1px 0 #fff;
-    background: #f7f3e5;
-    box-shadow: 0 1px 0 #fff inset;
-    border: 1px solid #b6aa97;
+    color: $button-secondary-color !important;
+    text-shadow: 1px 1px 0 $button-secondary-text-shadow;
+    background: $button-secondary-background;
+    box-shadow: 0 1px 0 $button-secondary-shadow inset;
+    border: 1px solid $button-secondary-border;
 
     &:hover {
-      background: #5a5348 !important;
-      box-shadow: 0 1px 0 #9e9482 inset;
-      text-shadow: 1px 1px 0 #524c42 !important;
-      color: #fff !important;
+      background: $button-hover-background !important;
+      box-shadow: 0 1px 0 $button-shadow inset;
+      text-shadow: 1px 1px 0 $button-text-shadow !important;
+      color: $button-color !important;
     }
   }
 }
@@ -130,10 +144,10 @@ input[type=email],
 input[type=password] {
   padding: 10px;
   font-size: 1.35em;
-  border: 1px solid #d8ccb3;
-  background-color: #f7f3e5;
-  box-shadow: 0 1px 0 #fff inset;
-  color: #4f4b42;
+  border: 1px solid $input-border;
+  background-color: $input-background;
+  box-shadow: 0 1px 0 $input-shadow inset;
+  color: $input-color;
   min-height: 22px;
   line-height: 22px;
 }

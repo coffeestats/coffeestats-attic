@@ -75,9 +75,9 @@ a.btn {
   button.secondary,
   a.btn.secondary {
     color: #b6aa97 !important;
-    text-shadow: 1px 1px 0 #fff;
+    text-shadow: 1px 1px 0 white;
     background: #f7f3e5;
-    box-shadow: 0 1px 0 #fff inset;
+    box-shadow: 0 1px 0 white inset;
     border: 1px solid #b6aa97; }
     input[type=submit].secondary:hover,
     button.secondary:hover,
@@ -85,7 +85,7 @@ a.btn {
       background: #5a5348 !important;
       box-shadow: 0 1px 0 #9e9482 inset;
       text-shadow: 1px 1px 0 #524c42 !important;
-      color: #fff !important; }
+      color: white !important; }
 
 input[type=text],
 input[type=email],
@@ -94,7 +94,7 @@ input[type=password] {
   font-size: 1.35em;
   border: 1px solid #d8ccb3;
   background-color: #f7f3e5;
-  box-shadow: 0 1px 0 #fff inset;
+  box-shadow: 0 1px 0 white inset;
   color: #4f4b42;
   min-height: 22px;
   line-height: 22px; }
