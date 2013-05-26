@@ -1,5 +1,6 @@
 .*.swp
+.sass-cache/
 devdocs/*.pdf
+devdocs/build/
 devdocs/tests/testdocs/
 tmp/*.csv
-.sass-cache/
