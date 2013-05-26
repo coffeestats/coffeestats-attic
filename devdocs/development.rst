@@ -83,9 +83,45 @@ you have to perform the following steps:
 
 .. _php-database-migration: https://github.com/alwex/php-database-migration
 
-CSS generation with SASS
+.. index:: sass
+
+CSS generation with Sass
 ========================
 
-.. todo::
+We use `Sass`_ to generate our Cascading Style Sheets (CSS) file. Sass is a CSS
+generator feeded by a CSS like language. On Debian systems you can install Sass
+by running:
 
-   document SASS
+.. code-block:: sh
+
+   sudo aptitude install ruby-sass
+
+On other systems with a Ruby Gems installation you can run:
+
+.. code-block:: sh
+
+   gem install sass
+
+During development you can continuosly run :program:`sass` to generate the
+:file:`css/caffeine.css`:
+
+.. code-block:: sh
+
+   sass --watch css/caffeine.scss:css/caffeine.css
+
+You can also run :program:`sass` before committing your changes on
+:file:`css/caffeine.scss` manually:
+
+.. code-block:: sh
+
+   sass css/caffeine.scss:css/caffeine.css
+
+.. index:: caffeine.scss, caffeine.css
+
+.. warning::
+
+   Please be aware that all changes in :file:`css/caffeine.css` you make
+   manually will be overwritten the next time somebody runs Sass. You should
+   always modify :file:`css/caffeine.scss` instead.
+
+.. _Sass: http://sass-lang.com/
