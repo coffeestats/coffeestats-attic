@@ -11,11 +11,17 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   intro
    deployment
    development
    api
 
+Introduction
+============
+
+Coffeestats is a web application originally available at
+https://coffeestats.org/. At the site you can register a user account and track
+your caffeine consumption. The site provides a nice graphical representation
+and a view other statistics of its user's caffeine consumption.
 
 .. todolist::
 

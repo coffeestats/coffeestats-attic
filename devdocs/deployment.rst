@@ -439,21 +439,21 @@ example values have a look at the example nginx configuration above.
 MySQL settings
 --------------
 
-``COFFEESTATS_MYSQL_HOSTNAME``
+.. envvar:: COFFEESTATS_MYSQL_HOSTNAME
+
     hostname of the MySQL database to use
 
+.. envvar:: COFFEESTATS_MYSQL_USER
 
-``COFFEESTATS_MYSQL_USER``
     user name for the MySQL database connection
 
+.. envvar:: COFFEESTATS_MYSQL_PASSWORD
 
-``COFFEESTATS_MYSQL_PASSWORD``
     password for the MySQL database connection
 
+.. envvar:: COFFEESTATS_MYSQL_DATABASE
 
-``COFFEESTATS_MYSQL_DATABASE``
     name of the MySQL database to use
-
 
 ReCAPTCHA settings
 ------------------
@@ -462,55 +462,53 @@ Coffeestats uses Google's ReCAPTCHA at registration time to make it harder to
 do malicious automatic registrations. You have to get a key pair for the
 ReCAPTCHA API from https://www.google.com/recaptcha/admin/create.
 
+.. envvar:: COFFEESTATS_RECAPTCHA_PUBLICKEY
 
-``COFFEESTATS_RECAPTCHA_PUBLICKEY``
     ReCAPTCHA API public key
 
+.. envvar:: COFFEESTATS_RECAPTCHA_PRIVATEKEY
 
-``COFFEESTATS_RECAPTCHA_PRIVATEKEY``
     ReCAPTCHA API private key
-
 
 Piwik settings
 --------------
 
 Coffeestats can use `Piwik`_ to track visitors. The Piwik functionality is
-optional and is activated by defining ``COFFEESTATS_PIWIK_SITEID``.
+optional and is activated by defining :envvar:`COFFEESTATS_PIWIK_SITEID`.
 
 
-``COFFEESTATS_PIWIK_HOST``
+.. envvar:: COFFEESTATS_PIWIK_HOST
+
     hostname of a `Piwik`_ server
 
+.. envvar:: COFFEESTATS_PIWIK_SITEID
 
-``COFFEESTATS_PIWIK_SITEID``
     Piwik server's siteid for the coffeestats instance
 
-
 .. _Piwik: http://piwik.org/
-
 
 General settings
 ----------------
 
-``COFFEESTATS_MAIL_FROM_ADDRESS``
-    email address as defined in `RFC-2822`_ section 3.4 for mails sent from
+.. envvar:: COFFEESTATS_MAIL_FROM_ADDRESS
+
+    email address as defined in :rfc:`5322` section 3.4 for mails sent from
     coffeestats
 
+.. envvar:: COFFEESTATS_SITE_NAME
 
-``COFFEESTATS_SITE_NAME``
     visible name of your coffeestats installation (i.e. for emails)
 
 
-``COFFEESTATS_SITE_SECRET``
+.. envvar:: COFFEESTATS_SITE_SECRET
+
     site specific secret that is used to encrypt values. It is important to
     make this a unique value per site and keep it secret.
 
 
-``COFFEESTATS_SITE_ADMINMAIL``
+.. envvar:: COFFEESTATS_SITE_ADMINMAIL
+
     email address where emails to the administrators are sent to.
-
-
-.. _RFC-2822: http://www.rfc-editor.org/rfc/rfc2822.txt
 
 
 .. rubric:: Footnotes
