@@ -10,6 +10,10 @@ Base URI
 The API is hosted at /api/v1 and provides several resources that are described
 in detail :ref:`below <section-resources>`.
 
+.. index:: authentication
+
+.. _rest authentication:
+
 Authentication
 ==============
 
