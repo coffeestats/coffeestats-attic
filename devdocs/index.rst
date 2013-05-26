@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    intro
+   deployment
    development
    api
 

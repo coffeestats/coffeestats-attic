@@ -168,6 +168,14 @@ FastCGI setup with a local Unix domain socket (idea from the `Linode Wiki`_).
 
 #. Open http://local.coffeestats.org/ in a browser of your choice
 
+Setup with Apache httpd
+=======================
+
+.. todo::
+
+   document Apache httpd setup
+
+
 Available Settings
 ==================
 
@@ -263,7 +271,6 @@ General settings
 
 .. _RFC-2822: http://www.rfc-editor.org/rfc/rfc2822.txt
 
-
 Unit tests
 ==========
 
@@ -322,3 +329,10 @@ you have to perform the following steps:
 
 
 .. _php-database-migration: https://github.com/alwex/php-database-migration
+
+CSS generation with SASS
+========================
+
+.. todo::
+
+   document SASS
