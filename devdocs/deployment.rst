@@ -441,19 +441,23 @@ MySQL settings
 
 .. envvar:: COFFEESTATS_MYSQL_HOSTNAME
 
-    hostname of the MySQL database to use
+    hostname of the MySQL database to use, use :php:const:`MYSQL_HOSTNAME` to
+    access this setting in PHP code.
 
 .. envvar:: COFFEESTATS_MYSQL_USER
 
-    user name for the MySQL database connection
+    user name for the MySQL database connection, use :php:const:`MYSQL_USER` to
+    access this setting in PHP code.
 
 .. envvar:: COFFEESTATS_MYSQL_PASSWORD
 
-    password for the MySQL database connection
+    password for the MySQL database connection, use :php:const:`MYSQL_PASSWORD`
+    to access this setting in PHP code.
 
 .. envvar:: COFFEESTATS_MYSQL_DATABASE
 
-    name of the MySQL database to use
+    name of the MySQL database to use, use :php:func:`get_setting` with
+    :php:const:`MYSQL_DATABASE` to access this setting in PHP code.
 
 ReCAPTCHA settings
 ------------------
@@ -464,11 +468,13 @@ ReCAPTCHA API from https://www.google.com/recaptcha/admin/create.
 
 .. envvar:: COFFEESTATS_RECAPTCHA_PUBLICKEY
 
-    ReCAPTCHA API public key
+    ReCAPTCHA API public key, use :php:func:`get_setting` with
+    :php:const:`RECAPTCHA_PUBLICKEY` to access this setting in PHP code.
 
 .. envvar:: COFFEESTATS_RECAPTCHA_PRIVATEKEY
 
-    ReCAPTCHA API private key
+    ReCAPTCHA API private key, use :php:func:`get_setting` with
+    :php:const:`RECAPTCHA_PRIVATEKEY` to access this setting in PHP code.
 
 Piwik settings
 --------------
@@ -476,14 +482,16 @@ Piwik settings
 Coffeestats can use `Piwik`_ to track visitors. The Piwik functionality is
 optional and is activated by defining :envvar:`COFFEESTATS_PIWIK_SITEID`.
 
-
 .. envvar:: COFFEESTATS_PIWIK_HOST
 
-    hostname of a `Piwik`_ server
+    hostname of a `Piwik`_ server, use :php:func:`get_setting` with
+    :php:const:`PIWIK_HOST` to access this setting in PHP code.
 
 .. envvar:: COFFEESTATS_PIWIK_SITEID
 
-    Piwik server's siteid for the coffeestats instance
+    Piwik server's siteid for the coffeestats instance, use
+    :php:func:`get_setting` with :php:const:`PIWIK_SITE_ID` to access this
+    setting in PHP code.
 
 .. _Piwik: http://piwik.org/
 
@@ -493,23 +501,30 @@ General settings
 .. envvar:: COFFEESTATS_MAIL_FROM_ADDRESS
 
     email address as defined in :rfc:`5322` section 3.4 for mails sent from
-    coffeestats
+    coffeestats, use :php:func:`get_setting` with
+    :php:const:`MAIL_FROM_ADDRESS` to access this setting in PHP code.
 
 .. envvar:: COFFEESTATS_SITE_NAME
 
-    visible name of your coffeestats installation (i.e. for emails)
-
+    visible name of your coffeestats installation (i.e. for emails), use
+    :php:func:`get_setting` with :php:const:`SITE_NAME` to access this setting
+    in PHP code.
 
 .. envvar:: COFFEESTATS_SITE_SECRET
 
-    site specific secret that is used to encrypt values. It is important to
-    make this a unique value per site and keep it secret.
+    site specific secret that is used to encrypt values, use
+    :php:func:`get_setting` with :php:const:`SITE_SECRET` to access this
+    setting in PHP code.
 
+    .. note::
+
+       It is important to make this a unique value per site and keep it secret.
 
 .. envvar:: COFFEESTATS_SITE_ADMINMAIL
 
-    email address where emails to the administrators are sent to.
-
+    email address where emails to the administrators are sent to, use
+    :php:func:`get_setting` with :php:const:`SITE_ADMINMAIL` to access this
+    setting in PHP code.
 
 .. rubric:: Footnotes
 
