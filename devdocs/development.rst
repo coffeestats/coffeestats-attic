@@ -851,35 +851,166 @@ and can be styled using CSS and handled with JavaScript if necessary.
 
 .. rubric:: mail and action related functions
 
-.. php:function:: send_system_mail($to: string, $subject: string, $body: string, &$files=NULL: array)
+.. php:function:: send_system_mail($to: string, $subject: string, $body: string, [&$files=NULL: array)
+
+   Send a mail from the address defined in setting
+   :php:const:`MAIL_FROM_ADDRESS` to the given recipient address. Use the given
+   subject and body, and attach the given files if there are any.
+
+   :param string $to: an email address
+   :param string $subject: the mail subject
+   :param string $body: the mail body text or text of the first (text/plain)
+      MIME body part
+   :param array &$files: reference to an array describing the files that should
+      be attached to the mail the array has the following structure:
+
+      .. code-block:: php
+
+         $files = array(
+            array(
+               'realfile' => 'filename on filesystem',
+               'filename' => 'filename in email',
+               'description' => 'description in email',
+               'content-type' => 'MIME content type'),
+            ...);
 
 .. php:function:: send_caffeine_mail($to: string, &$files: array)
 
+   Send a mail with template the caffeine usage exports in the given files to
+   the given email address:
+
+   :param string $to: an email address
+   :param array &$files: a reference to an array in the form accepted by
+      :php:func:`send_system_mail`
+
 .. php:function:: generate_actioncode($data: string) -> string
 
-.. php:function:: create_action_entry($cuid: int, $action_type: string, $data: string)
+   Generate a random action code based on the value of the setting
+   :php:const:`SITE_SECRET`, a random number and the given data.
+
+   :param string $data: data that will be used for the given action
+   :returns: MD5 hash of random data
+
+.. php:function:: create_action_entry($cuid: int, $action_type: string, $data: string) -> string
+
+   Create an entry in the actions database table. Uses
+   :php:func:`generate_actioncode` to generate an action code.
+
+   :param int $cuid: user id of the user for whom the action is meant
+   :param string $action_type: one of the keys in :php:global:`$ACTION_TYPES`
+   :returns: the action code for the generated action or :php:const:`FALSE` if a
+      wrong action type was passed into the function
 
 .. php:function:: get_action_url($actioncode: string) -> string
 
+   Get the absolute action URI for the given action code.
+
+   :param string $actioncode: an action code (i.e. from a call to
+      :php:func:`create_action_entry`)
+   :returns: an absolute URI to the :ref:`action page <URI /action>`
+
 .. php:function:: fill_mail_template($templatename: string, $placeholders: array) -> string
+
+   Fill the given mail template in :ref:`directory templates` with the given
+   set of place holders.
+
+   A template :file:`templates/hello.txt` like the following:
+
+   .. code-block:: text
+
+      Hello @planet@
+
+   and a call to this function:
+
+   .. code-block:: php
+
+      <?php
+      $placeholders = array('planet' => 'world');
+      print fill_mail_template('hello', $placeholders);
+      ?>
+
+   would generate the output ``Hello world``.
+
+   :param string $templatename: file basename (without directory or file
+      extension) that is relative to the templates directory
+   :param array $placeholders: associative array mapping place holder names to
+      their corresponding values
+   :returns: the template text with replaced place holder strings
+
+   .. note::
+
+      The function has no functionality to check for any place holders missing
+      in the given place holder array.
 
 .. php:function:: send_mail_activation_link($email: string)
 
+   Send a mail with an activation link to the given email address. This
+   function uses the template :file:`templates/activate_mail.txt`.
+
+   :param string $email: email address
+
 .. php:function:: send_reset_password_link($email: string)
+
+   Send a password reset link to the given email address. This function uses
+   the template :file:`templates/reset_password.txt`.
+
+   :param string $email: email address
 
 .. php:function:: send_change_email_link($email: string, $uid: int)
 
+   Send an email change confirmation link to the given email address to confirm
+   the change of the given user's email address. This function uses the
+   template file :file:`templates/mail.txt`.
+
+   :param string $email: email address
+   :param int $uid: user id
+
 .. php:function:: send_user_deletion($user: string, $id: int)
+
+   Send a message containing a user's deletion request to the site
+   administrator address specified in setting :php:const:`SITE_ADMINMAIL`.
+   This function uses the template :file:`templates/delete_user.txt`.
 
 .. php:function:: format_timezone($timezone: string) -> string
 
+   Format a time zone value for output.
+
+   :param string $timezone: time zone value or :php:const:`NULL`
+   :returns: the empty string or a formatted time zone value
+
 .. php:function:: register_coffee($uid: int, $coffeetime: string, $timezone: string)
+
+   Register a new coffee. Uses :php:func:`find_recent_caffeine` and
+   :php:func:`create_caffeine` from :file:`includes/queries.php`.
+
+   :param int $uid: user id
+   :param string $coffeetime: a string with a datetime specification
+   :param string $timezone: a time zone name
 
 .. php:function:: register_mate($uid: int, $matetime: string, $timezone: string)
 
+   Register a new mate. Uses :php:func:`find_recent_caffeine` and
+   :php:func:`create_caffeine` from :file:`includes/queries.php`.
+
+   :param int $uid: user id
+   :param string $matetime: a string with a datetime specification
+   :param string $timezone: a time zone name
+
 .. php:function:: get_entrytype($entrytype: int) -> string
 
+   Return a human readable name for the given numeric caffeinated drink type.
+   This function uses :php:global:`$ENTRY_TYPES`.
+
+   :param int $entrytype: numeric drink type
+   :returns: human readable caffeinated drink name or 'unknown'
+
 .. php:function:: load_user_profile($loginid: int) -> array
+
+   Load user profile information for the given user id.
+
+   :param int $loginid: user id
+   :returns: associative array with the keys 'login', 'firstname', 'lastname',
+      'location', 'email' and 'timezone'
 
 .. _ReCAPTCHA: https://www.google.com/recaptcha/
 
@@ -905,6 +1036,8 @@ Directory lib
 -------------
 
 .. index:: directory /templates
+
+.. _directory templates:
 
 Directory templates
 -------------------
