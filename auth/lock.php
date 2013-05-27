@@ -16,6 +16,6 @@ if (isset($_SESSION['login_user'])) {
 }
 
 if (!isset($login_session) || ($login_session === NULL)) {
-    redirect_to('auth/login');
+    redirect_to('/auth/login');
 }
 ?>

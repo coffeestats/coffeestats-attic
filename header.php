@@ -21,7 +21,7 @@ if (strcmp($_SERVER['SCRIPT_FILENAME'], __FILE__) == 0) {
 <?php
 if (isset($login_session)) {
 ?>
-            <div id="account" class="rightfloated"><a href="settings">Settings</a> / <a href="auth/logout">Logout</a></div>
+            <div id="account" class="rightfloated"><a href="/settings">Settings</a> / <a href="/auth/logout">Logout</a></div>
 <?php
 }
 ?>
@@ -34,11 +34,11 @@ if (isset($login_session)) {
 ?>
             <div id="navigation">
                 <ul>
-                    <li><a href="index" class="navindex">Home</a></li>
-                    <li><a href="profile" class="navprofile">Profile</a></li>
-                    <li><a href="explore" class="navexplore">Explore</a></li>
-                    <li><a href="overall" class="navoverall">Overall Stats</a></li>
-                    <li><a href="about" class="navabout">About</a></li>
+                    <li><a href="/index" class="navindex">Home</a></li>
+                    <li><a href="/profile" class="navprofile">Profile</a></li>
+                    <li><a href="/explore" class="navexplore">Explore</a></li>
+                    <li><a href="/overall" class="navoverall">Overall Stats</a></li>
+                    <li><a href="/about" class="navabout">About</a></li>
                 </ul>
             </div>
 <?php

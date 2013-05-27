@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_POST['timezone']),
             FLASH_SUCCESS);
         $_SESSION['timezone'] = $_POST['timezone'];
-        redirect_to('../index');
+        redirect_to('index');
     }
     else {
         errorpage('Bad Request', 'Input data is not as expected.', '400 Bad Request');
