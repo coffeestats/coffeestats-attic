@@ -31,6 +31,7 @@ body {
   padding: 0;
   margin: 0;
   background: url("../images/background.jpg") no-repeat center center fixed;
+  background-color: #cac8bb;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -133,7 +134,7 @@ input[type=password] {
     width: 100% !important;
     height: auto !important; }
   .white-box h2 {
-    font-size: 31px !important;
+    font-size: 2.4em !important;
     color: #c2b9b9; }
   .white-box .pagelinks {
     display: inline-block;
@@ -393,17 +394,27 @@ strong {
     padding: 0px;
     width: 94%;
     margin: 0 auto; }
+    #wrapper #header #account {
+      font-size: 1.4em; }
     #wrapper #header p {
       max-width: 85%; }
     #wrapper #navigation {
       width: 100%; }
       #wrapper #navigation ul li a {
-        padding: 10px 10px 10px 30px; }
+        padding: 10px 10px 10px 30px;
+        font-size: 1.4em;
+        background-position: 8px 14px; }
     #wrapper .white-box, #wrapper .white-box:nth-child(odd) {
       margin: 24px 0px 0px; }
     #wrapper .white-box {
       width: 92%;
-      float: none !important; }
+      float: none !important;
+      display: inline-block; }
+      #wrapper .white-box h2 {
+        font-size: 4em !important; }
+      #wrapper .white-box p {
+        line-height: 1.5em;
+        font-size: 1.5em; }
       #wrapper .white-box form .left, #wrapper .white-box form .leftform {
         clear: both;
         width: 100% !important; }
@@ -416,6 +427,24 @@ strong {
         width: 98.8%; }
       #wrapper .white-box form.coffeeform #email {
         width: 100%; }
+      #wrapper .white-box .profilelist {
+        font-size: 1.4em; }
+      #wrapper .white-box input[type=submit],
+      #wrapper .white-box a.btn {
+        font-size: 1.85em;
+        padding: 16px 14px; }
+      #wrapper .white-box input[type=text],
+      #wrapper .white-box input[type=email],
+      #wrapper .white-box input[type=password] {
+        font-size: 1.85em;
+        padding: 16px 14px; }
+      #wrapper .white-box table,
+      #wrapper .white-box li,
+      #wrapper .white-box .usercard,
+      #wrapper .white-box .rankbox {
+        font-size: 1.4em; }
+      #wrapper .white-box h3 {
+        font-size: 1.4em; }
 
   /* REGISTER */
   .white-box.fullWidth .left {
