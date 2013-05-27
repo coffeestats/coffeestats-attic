@@ -14,9 +14,11 @@ relevant:
 
 .. _git-dev-branch:
 
-.. todo::
+Branch ``dev``
+   This is the branch where development happens
 
-   say something about the branches
+Branch ``prod``
+   This is the branch containing the current production code
 
 .. index:: unit tests
 
@@ -1018,6 +1020,128 @@ and can be styled using CSS and handled with JavaScript if necessary.
 
 File :file:`jsvalidation.php`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This file provides several functions that render JavaScript validation code at
+the place they are called.
+
+.. php:function:: js_sanitize_not_empty()
+
+   Render the JavaScript function :js:func:`sanitize_not_empty` to check
+   whether a form field is not empty.
+
+.. php:function:: js_sanitize_email()
+
+   Render the JavaScript functions :js:func:`emailfieldvalidation` to set
+   custom messages for HTML5 email validation and :js:func:`sanitize_email` to
+   check whether a form field contains a valid email address.
+
+.. php:function:: js_sanitize_username()
+
+   Render the JavaScript functions :js:func:`usernamefieldvalidation` to set
+   custom messages for HTML5 validation and :js:func:`sanitize_username` to
+   check whether a form field contains a valid user name.
+
+.. php:function:: js_sanitize_datetime()
+
+   Render the JavaScript function :js:func:`sanitize_datetime` and helper code
+   to check whether a field contains a valid date time specification.
+
+.. php:function:: js_sanitize_password()
+
+   Render the JavaScript functions :js:func:`pwfieldvalidation` to set custom
+   messages for HTML5 validation and :js:func:`sanitize_password` to check
+   whether a form field contains a valid password.
+
+.. php:function:: js_sanitize_string()
+
+   Render the JavaScript function :js:func:`sanitize_string` to check whether a
+   form field contains a string.
+
+.. js:function:: sanitize_not_empty(fieldspec: string, message: string)
+
+   Sanitize the value in the specified field and make sure that the field is
+   not empty afterwards.
+
+   :param string fieldspec: `jQuery`_ selector that specifies a field
+   :param string message: the error text that is shown if the validation fails
+   :returns: :js:data:`true` if the validation is successful, otherwise
+      :js:data:`false`
+
+.. js:function:: emailfieldvalidation(event: Event)
+
+   Set custom validation messages for HTML5 email validation.
+
+   :param string event: validation event
+
+.. js:function:: sanitize_email(fieldspec: string[, mandatory: boolean)
+
+   Sanitize the value in the specified field and make sure that the field
+   contains a valid email address afterwards.
+
+   :param string fieldspec: `jQuery`_ selector that specifies a field
+   :param string mandatory: specifies whether the field is mandatory, defaults
+      to :js:data:`true`
+   :returns: :js:data:`true` if the validation is successful, otherwise
+      :js:data:`false`
+
+.. js:function:: usernamefieldvalidation(event: Event)
+
+   Set custom validation messages for HTML5 field validation.
+
+   :param string event: validation event
+
+.. js:function:: sanitize_username(fieldspec: string)
+
+   Sanitize the value in the specified field and make sure that the field
+   contains a valid user name afterwards.
+
+   :param string fieldspec: `jQuery`_ selector that specifies a field
+   :returns: :js:data:`true` if the validation is successful, otherwise
+      :js:data:`false`
+
+.. js:function:: sanitize_datetime(fieldspec: string)
+
+   Sanitize the value of the specified field, if the value is empty set it to
+   the current time and check whether the field contains a valid date time
+   value after these two steps.
+
+   :param string fieldspec: `jQuery`_ selector that specifies a field
+   :returns: :js:data:`true` if the validation is successful, otherwise
+      :js:data:`false`
+
+.. js:function:: pwfieldvalidation(event: Event)
+
+   Set custom validation messages for HTML5 field validation.
+
+   :param string event: validation event
+
+.. js:function:: sanitize_password(pwfieldspec: string, repfieldspec: string, allowempty: boolean)
+
+   Sanitize the values of the specified fields and make sure that both fields
+   contain a valid password that is equal in both of them afterwards.
+
+   :param string pwfieldspec: `jQuery`_ selector that specifies the password
+      field
+   :param string repfieldspec: `jQuery`_ selector that specifies the password
+      repeat field
+   :param boolean allowempty: specified whether empty passwords are allowed
+   :returns: :js:data:`true` if the validation is successful, otherwise
+      :js:data:`false`
+
+.. js:function:: sanitize_string(fieldspec: string, mandatory: string, fieldname: string)
+
+   Sanitize the value of the specified field and make sure that the field
+   contains a valid string afterwards.
+
+   :param string fieldspec: `jQuery`_ selector that specifies a field
+   :param boolean mandatory: specifies whether the field is mandatory, defaults
+      to :js:data:`true`
+   :param string fieldname: name of the field for a validation message,
+      defaults to :js:data:`Field`
+   :returns: :js:data:`true` if the validation is successful, otherwise
+      :js:data:`false`
+
+.. _jQuery: http://jquery.com/
 
 .. index:: queries.php, includes/queries.php
 
