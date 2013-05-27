@@ -14,9 +14,11 @@ relevant:
 
 .. _git-dev-branch:
 
-.. todo::
+Branch ``dev``
+   This is the branch where development happens
 
-   say something about the branches
+Branch ``prod``
+   This is the branch containing the current production code
 
 .. index:: unit tests
 
