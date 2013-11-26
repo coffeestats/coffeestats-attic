@@ -9,16 +9,9 @@ in the chapter :doc:`deployment`.
 Git branches
 ============
 
-The canonical git repository for coffeestats has some branches that are
-relevant:
-
-.. _git-dev-branch:
-
-Branch ``dev``
-   This is the branch where development happens
-
-Branch ``prod``
-   This is the branch containing the current production code
+Since we switched over to github we're going to use the typical workflow
+Merging things into master, working with Pull-Requests and testing in our staging
+environment. 
 
 .. index:: unit tests
 
