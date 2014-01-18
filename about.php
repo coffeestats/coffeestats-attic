@@ -11,7 +11,6 @@ include("header.php");
     <a href="http://creativecommons.org">CreativeCommons</a> license:</p>
 
     <ul>
-        <li><a href="http://subtlepatterns.com/?p=750">Woven</a> by Max Rudberg on subtlepatterns.com </li>
         <li><a href="http://chartjs.org">Chart.js</a> by Nick Downie</li> 
         <li><a href="http://www.dafont.com/harabara.font">Harabara</a> by André Harabara on dafont.com</li>
         <li><a href="http://adamwhitcroft.com/batch/">Batch Iconset</a> by Adam Whitcroft</li>
