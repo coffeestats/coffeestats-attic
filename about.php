@@ -19,6 +19,8 @@ include("header.php");
     <p>Follow us on <a href="https://twitter.com/coffeestats">Twitter</a> or
     <a href="http://www.facebook.com/pages/coffeestatsorg/135455386573798?sk=info">Facebook</a>!
     (We won't keep you from clicking "I like" either!)</p>
+
+    <p><script id='fb1dxpt'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=noqqe&title=coffeestats.org&url=https%3A%2F%2Fcoffeestats.org';f.title='Flattr';f.height=62;f.width=55;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb1dxpt');</script></p>
 </div>
 <div class="white-box">
     <h2>Changelog</h2>
