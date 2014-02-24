@@ -121,7 +121,7 @@ function api_flash_get(stdClass &$json) {
  * Get a list of $count random users.
  */
 function get_random_users($count) {
-    check_authentication();
+    check_token_authentication();
     $userdata = random_users($count);
     $retval = array();
     foreach ($userdata as $user) {
