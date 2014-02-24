@@ -22,6 +22,7 @@ function format_output($object) {
 
 include_once('../includes/queries.php');
 include_once('../includes/common.php');
+include_once('../includes/validation.php');
 
 /**
  * Put a flash message into the API category.
@@ -102,7 +103,7 @@ function check_token_authentication() {
  *        buffer.
  * @return The given object.
  */
-function api_flash_get(object &$json) {
+function api_flash_get(stdClass &$json) {
 	if (peek_flash(CATEGORY_API)) {
 		while (($message = pop_flash(CATEGORY_API)) !== NULL) {
 			list($level, $text) = $message;
@@ -174,8 +175,10 @@ function add_drink() {
 			switch ($type) {
 				case 'coffee':
 					$json->success = register_coffee($userinfo['uid'], $time, $userinfo['utimezone'], CATEGORY_API);
+					break;
 				case 'mate':
 					$json->success = register_mate($userinfo['uid'], $time, $userinfo['utimezone'], CATEGORY_API);
+					break;
 				default:
 					header('Status: 400 Bad Request');
 					api_flash("`beverage' contains an invalid value. Acceptable values are `coffee' and `mate'.");
