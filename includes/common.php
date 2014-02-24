@@ -476,20 +476,21 @@ function format_timezone($timezone) {
  *
  * TODO: move somewhere else, common.php should not require code from queries.php
  */
-function register_coffee($uid, $coffeetime, $timezone) {
+function register_coffee($uid, $coffeetime, $timezone, $category='registerdrink') {
     if (($cafinfo = find_recent_caffeine($coffeetime, $uid, 0)) !== NULL) {
         flash(sprintf(
             'Error: Your last coffee was less than 5 minutes ago at %s%s. O_o',
             $cafinfo['cdate'], format_timezone($cafinfo['ctimezone'])),
-            FLASH_WARNING, 'registerdrink');
-        return;
+            FLASH_WARNING, $category);
+        return FALSE;
     }
     create_caffeine($coffeetime, $uid, 0);
     flash(
         sprintf(
            'Your coffee at %s%s has been registered!',
            $coffeetime, format_timezone($timezone)),
-        FLASH_SUCCESS, 'registerdrink');
+        FLASH_SUCCESS, $category);
+	return TRUE;
 }
 
 /**
@@ -497,20 +498,21 @@ function register_coffee($uid, $coffeetime, $timezone) {
  *
  * TODO: move somewhere else, common.php should not require code from queries.php
  */
-function register_mate($uid, $matetime, $timezone) {
+function register_mate($uid, $matetime, $timezone, $category='registerdrink') {
     if (($cafinfo = find_recent_caffeine($matetime, $uid, 1)) !== NULL) {
         flash(sprintf(
             "Error: Your last mate was less than 5 minutes ago at %s%s. O_o",
             $cafinfo['cdate'], format_timezone($cafinfo['ctimezone'])),
-            FLASH_WARNING, 'registerdrink');
-        return;
+            FLASH_WARNING, $category);
+        return FALSE;
     }
     create_caffeine($matetime, $uid, 1);
     flash(
         sprintf(
             'Your mate at %s%s has been registered!',
             $matetime, format_timezone($timezone)),
-        FLASH_SUCCESS, 'registerdrink');
+        FLASH_SUCCESS, $category);
+	return TRUE;
 }
 
 /**
