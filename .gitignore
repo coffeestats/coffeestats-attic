@@ -1,5 +1,6 @@
 .*.swp
 .sass-cache/
+.vagrant/
 devdocs/*.pdf
 devdocs/build/
 devdocs/tests/testdocs/
