@@ -57,9 +57,9 @@ include("header.php");
 </div>
 <div class="white-box">
     <h2>Contribution</h2>
-    <p>coffeestats.org is a OpenSource. Feel free to <a href="https://github.com/coffeestats/coffeestats">contribute code</a>, 
+    <p>coffeestats.org is OpenSource. Feel free to <a href="https://github.com/coffeestats/coffeestats">contribute code</a>, 
       <a href="https://github.com/noqqe/devnull-as-a-service/issues?state=open">share your ideas or report bugs</a>!</p>
-    <p>Our documentation is at <a href="https://coffeestats.readthedocs.org">coffeestats.readthedocs.org</a>
+    <p>Development / deployment documentation is at <a href="https://coffeestats.readthedocs.org">coffeestats.readthedocs.org</a>
 
 
     <p>Or show some love &lt;3</p>
