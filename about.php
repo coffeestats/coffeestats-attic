@@ -20,13 +20,12 @@ include("header.php");
     <a href="http://www.facebook.com/pages/coffeestatsorg/135455386573798?sk=info">Facebook</a>!
     (We won't keep you from clicking "I like" either!)</p>
 
-    <p><script id='fb1dxpt'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=noqqe&title=coffeestats.org&url=https%3A%2F%2Fcoffeestats.org';f.title='Flattr';f.height=62;f.width=55;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb1dxpt');</script></p>
 </div>
 <div class="white-box">
     <h2>Changelog</h2>
     <ul>
+        <li>2014-02-20 REST API for add drinks by Clemens</li>
         <li>2013-05-23 New Design by Jeremias</li>
-        <li>... time flies ... many changes</li>
         <li>2013-05-07 Added nice social media icons to profile page</li>
         <li>2013-05-03 Public URL has changed (update your bookmarks!)</li>
         <li>2013-04-28 Performance and Security improvments</li>
@@ -48,12 +47,25 @@ include("header.php");
     <h2>Credits</h2>
     <p>Some awesome guys have been involved in growing up coffeestats.org so far.</p>
     <ul>
-        <li>Holger Winter (page design/layout)</li>
+        <li><a href="http://github.com/neverpanic">Clemens Lang</a> (implementing add-drink REST API)</li>
         <li><a href="http://www.art-ifact.de/">Jeremias Arnstadt</a> (new design)</li>
         <li><a href="http://dittberner.info">Jan Dittberner</a> (massive code improvements in many cases)</li>
         <li><a href="http://sotiriu.de">Nikolas Sotiriu</a> (testing the site for security flaws)</li>
+        <li><a href="http://noqqe.de">Florian Baumann</a> (initial development)</li>
+        <li>Holger Winter (page design/layout)</li>
     <ul>
 </div>
+<div class="white-box">
+    <h2>Contribution</h2>
+    <p>coffeestats.org is a OpenSource. Feel free to <a href="https://github.com/coffeestats/coffeestats">contribute code</a>, 
+      <a href="https://github.com/noqqe/devnull-as-a-service/issues?state=open">share your ideas or report bugs</a>!</p>
+    <p>Our documentation is at <a href="https://coffeestats.readthedocs.org">coffeestats.readthedocs.org</a>
+
+
+    <p>Or show some love &lt;3</p>
+    <p><script id='fb1dxpt'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=noqqe&title=coffeestats.org&url=https%3A%2F%2Fcoffeestats.org';f.title='Flattr';f.height=62;f.width=55;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb1dxpt');</script></p>
+</div>
+
 <?php
 include("footer.php");
 ?>
