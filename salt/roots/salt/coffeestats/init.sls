@@ -32,6 +32,13 @@ php-packages:
         - php5-fpm
         - php5-cgi
         - php5-mysql
+  file.directory:
+    - name: /etc/php5
+    - mode: 0755
+    - user: root
+    - group: root
+    - requires:
+      - pkg.installed: php5-cli
 
 /home/vagrant/csdev.sh:
   file.managed:
